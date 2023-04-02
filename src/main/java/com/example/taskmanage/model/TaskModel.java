@@ -1,16 +1,12 @@
-package entity;
+package com.example.taskmanage.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.stereotype.Component;
+
 import java.util.Date;
 
-@Entity
-public class TaskEntity {
+@Component
+public class TaskModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private Date startDate;
@@ -20,14 +16,6 @@ public class TaskEntity {
     private Long progress;
     private String progressType;
     private String status;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -69,20 +57,28 @@ public class TaskEntity {
         this.description = description;
     }
 
-    public Long getProgress() {
-        return progress;
-    }
-
-    public void setProgress(Long progress) {
-        this.progress = progress;
-    }
-
     public String getProgressType() {
         return progressType;
     }
 
     public void setProgressType(String progressType) {
         this.progressType = progressType;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getProgress() {
+        return progress;
+    }
+
+    public void setProgress(Long progress) {
+        this.progress = progress;
     }
 
     public String getStatus() {

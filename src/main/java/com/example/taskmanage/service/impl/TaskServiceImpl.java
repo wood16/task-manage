@@ -1,11 +1,11 @@
-package service.impl;
+package com.example.taskmanage.service.impl;
 
-import mapper.TaskMapper;
-import model.TaskModel;
+import com.example.taskmanage.mapper.TaskMapper;
+import com.example.taskmanage.model.TaskModel;
+import com.example.taskmanage.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.TaskRepository;
-import service.TaskService;
+import com.example.taskmanage.service.TaskService;
 
 import java.util.List;
 

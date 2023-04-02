@@ -1,10 +1,10 @@
-package controller;
+package com.example.taskmanage.controller;
 
-import model.TaskModel;
+import com.example.taskmanage.model.TaskModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import service.TaskService;
+import com.example.taskmanage.service.TaskService;
 
 import java.util.List;
 
@@ -14,8 +14,8 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @GetMapping("/task/getAll")
-    public List<TaskModel> getAll(){
+    @GetMapping("/tasks/getAll")
+    public List<TaskModel> getAll() {
 
         return taskService.getAllTask();
     }

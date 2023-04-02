@@ -1,7 +1,7 @@
-package mapper;
+package com.example.taskmanage.mapper;
 
-import entity.TaskEntity;
-import model.TaskModel;
+import com.example.taskmanage.entity.TaskEntity;
+import com.example.taskmanage.model.TaskModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
