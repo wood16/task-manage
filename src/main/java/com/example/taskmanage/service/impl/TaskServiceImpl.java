@@ -4,6 +4,9 @@ import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.model.TaskModel;
 import com.example.taskmanage.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.example.taskmanage.service.TaskService;
 
@@ -19,8 +22,10 @@ public class TaskServiceImpl implements TaskService {
     private TaskMapper taskMapper;
 
     @Override
-    public List<TaskModel> getAllTask() {
+    public Page<TaskModel> getAllTask(Pageable paging) {
 
-        return taskMapper.mapModelsFromEntities(taskRepository.findAll());
+        List<TaskModel> taskModels = taskMapper.mapModelsFromEntities(taskRepository.findAll(paging).getContent());
+
+        return new PageImpl<>(taskModels);
     }
 }
