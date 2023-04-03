@@ -1,5 +1,6 @@
 package com.example.taskmanage.service.impl;
 
+import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.model.TaskModel;
 import com.example.taskmanage.repository.TaskRepository;
@@ -27,5 +28,13 @@ public class TaskServiceImpl implements TaskService {
         List<TaskModel> taskModels = taskMapper.mapModelsFromEntities(taskRepository.findAll(paging).getContent());
 
         return new PageImpl<>(taskModels);
+    }
+
+    @Override
+    public TaskModel addTask(TaskModel taskModel) {
+
+        TaskEntity taskEntity = taskRepository.save(taskMapper.mapEntityFromModel(taskModel));
+
+        return taskMapper.mapModelFromEntity(taskEntity);
     }
 }

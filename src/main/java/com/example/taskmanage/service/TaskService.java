@@ -9,4 +9,5 @@ import java.util.List;
 public interface TaskService {
 
     Page<TaskModel> getAllTask(Pageable paging);
+    TaskModel addTask(TaskModel taskModel);
 }
