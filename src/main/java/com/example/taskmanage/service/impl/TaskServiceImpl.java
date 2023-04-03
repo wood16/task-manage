@@ -39,9 +39,7 @@ public class TaskServiceImpl implements TaskService {
 
         taskEntity.setProgress(0L);
 
-        taskEntity = taskRepository.save(taskEntity);
-
-        return taskMapper.mapModelFromEntity(taskEntity);
+        return taskMapper.mapModelFromEntity(taskRepository.save(taskEntity));
     }
 
     private void setCreateInfo(long creatorId, TaskEntity taskEntity){
