@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.example.taskmanage.service.TaskService;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -33,8 +34,25 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskModel addTask(TaskModel taskModel) {
 
-        TaskEntity taskEntity = taskRepository.save(taskMapper.mapEntityFromModel(taskModel));
+        TaskEntity taskEntity = taskMapper.mapEntityFromModel(taskModel);
+        setCreateInfo(0L, taskEntity);
+
+        taskEntity.setProgress(0L);
+
+        taskEntity = taskRepository.save(taskEntity);
 
         return taskMapper.mapModelFromEntity(taskEntity);
+    }
+
+    private void setCreateInfo(long creatorId, TaskEntity taskEntity){
+        taskEntity.setCreatorId(creatorId);
+        taskEntity.setCreateDate(new Date());
+
+        setModifiedInfo(creatorId, taskEntity);
+    }
+
+    private void setModifiedInfo(long modifiedId, TaskEntity taskEntity){
+        taskEntity.setModifiedId(modifiedId);
+        taskEntity.setModifiedDate(new Date());
     }
 }
