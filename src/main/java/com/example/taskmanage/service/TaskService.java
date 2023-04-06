@@ -9,4 +9,6 @@ public interface TaskService {
     Page<TaskModel> getAllTask(Pageable paging);
 
     TaskModel addTask(TaskModel taskModel);
+
+    TaskModel patchTask(long taskId, TaskModel taskModel);
 }

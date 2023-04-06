@@ -13,6 +13,8 @@ import com.example.taskmanage.service.TaskService;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -40,6 +42,33 @@ public class TaskServiceImpl implements TaskService {
         taskEntity.setProgress(0L);
 
         return taskMapper.mapModelFromEntity(taskRepository.save(taskEntity));
+    }
+
+    @Override
+    public TaskModel patchTask(long taskId, TaskModel taskModel) {
+
+
+        if(Objects.nonNull(taskModel.getProgress())){
+            updateProgress(taskId, taskModel.getProgress());
+        }
+
+        Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
+
+        if(taskEntity.isPresent())
+            return taskMapper.mapModelFromEntity(taskEntity.get());
+
+        return new TaskModel();
+    }
+
+    private void updateProgress(long taskId, long progress){
+
+        Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
+
+        if(taskEntity.isPresent()){
+            taskEntity.get().setProgress(progress);
+
+            taskRepository.save(taskEntity.get());
+        }
     }
 
     private void setCreateInfo(long creatorId, TaskEntity taskEntity){

@@ -46,5 +46,11 @@ public class TaskController {
         return taskService.addTask(taskModel);
     }
 
+    @PatchMapping("/patch/{id}")
+    public TaskModel patchTask(@RequestBody TaskModel taskModel, @PathVariable long id) {
+
+        return taskService.patchTask(id, taskModel);
+    }
+
 
 }
