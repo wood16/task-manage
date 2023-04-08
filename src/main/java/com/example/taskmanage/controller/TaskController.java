@@ -41,15 +41,15 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public TaskDto postTask(@RequestBody TaskDto taskModel) {
+    public ResponseEntity<TaskDto> postTask(@RequestBody TaskDto taskModel) {
 
-        return taskService.addTask(taskModel);
+        return ResponseEntity.ok(taskService.addTask(taskModel));
     }
 
     @PatchMapping("/patch/{id}")
-    public TaskDto patchTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
+    public ResponseEntity<TaskDto> patchTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
 
-        return taskService.patchTask(id, taskModel);
+        return ResponseEntity.ok(taskService.patchTask(id, taskModel));
     }
 
 

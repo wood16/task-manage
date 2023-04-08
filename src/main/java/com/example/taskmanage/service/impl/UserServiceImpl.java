@@ -10,6 +10,7 @@ import com.example.taskmanage.service.UserService;
 import com.example.taskmanage.utils.BaseResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -27,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public BaseResponseDto registerAccount(UserDto userDto) {
@@ -55,7 +59,7 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = new UserEntity();
 
         userEntity.setUsername(userDto.getUsername());
-        userEntity.setPassword(userDto.getPassword());
+        userEntity.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         Set<RoleEntity> roles = new HashSet<>();
         roles.add(roleRepository.findByName(userDto.getRole()));
