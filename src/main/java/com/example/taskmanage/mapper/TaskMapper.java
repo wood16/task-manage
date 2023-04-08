@@ -1,7 +1,7 @@
 package com.example.taskmanage.mapper;
 
+import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.entity.TaskEntity;
-import com.example.taskmanage.model.TaskModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 @Service
 public class TaskMapper {
 
-    public TaskEntity mapEntityFromModel(TaskModel from) {
+    public TaskEntity mapEntityFromModel(TaskDto from) {
 
         TaskEntity to = new TaskEntity();
 
@@ -24,9 +24,9 @@ public class TaskMapper {
         return to;
     }
 
-    public TaskModel mapModelFromEntity(TaskEntity from) {
+    public TaskDto mapModelFromEntity(TaskEntity from) {
 
-        TaskModel to = new TaskModel();
+        TaskDto to = new TaskDto();
 
         to.setId(from.getId());
         to.setName(from.getName());
@@ -41,7 +41,7 @@ public class TaskMapper {
         return to;
     }
 
-    public List<TaskModel> mapModelsFromEntities(List<TaskEntity> from){
+    public List<TaskDto> mapModelsFromEntities(List<TaskEntity> from) {
 
         return from.stream().map(this::mapModelFromEntity).collect(Collectors.toList());
     }

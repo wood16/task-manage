@@ -1,14 +1,14 @@
 package com.example.taskmanage.service;
 
-import com.example.taskmanage.model.TaskModel;
+import com.example.taskmanage.dto.TaskDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface TaskService {
 
-    Page<TaskModel> getAllTask(Pageable paging);
+    Page<TaskDto> getAllTask(Pageable paging);
 
-    TaskModel addTask(TaskModel taskModel);
+    TaskDto addTask(TaskDto taskModel);
 
-    TaskModel patchTask(long taskId, TaskModel taskModel);
+    TaskDto patchTask(long taskId, TaskDto taskModel);
 }

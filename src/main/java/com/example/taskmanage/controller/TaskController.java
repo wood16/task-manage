@@ -1,6 +1,6 @@
 package com.example.taskmanage.controller;
 
-import com.example.taskmanage.model.TaskModel;
+import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,7 +29,7 @@ public class TaskController {
 
         Pageable paging = PageRequest.of(page, pageSize);
 
-        Page<TaskModel> taskModels = taskService.getAllTask(paging);
+        Page<TaskDto> taskModels = taskService.getAllTask(paging);
 
         Map<String, Object> response = new HashMap<>();
         response.put("tasks", taskModels.getContent());
@@ -41,13 +41,13 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public TaskModel postTask(@RequestBody TaskModel taskModel) {
+    public TaskDto postTask(@RequestBody TaskDto taskModel) {
 
         return taskService.addTask(taskModel);
     }
 
     @PatchMapping("/patch/{id}")
-    public TaskModel patchTask(@RequestBody TaskModel taskModel, @PathVariable long id) {
+    public TaskDto patchTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
 
         return taskService.patchTask(id, taskModel);
     }
