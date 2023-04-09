@@ -76,7 +76,7 @@ public class JwtServiceImpl implements JwtService {
                 .claim("isEnable", userDetailsCustom.isEnabled())
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(now.plusSeconds(jwtConfig.getExpiration())))
-                .signWith(getKey(), SignatureAlgorithm.ES256)
+                .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
 
     }

@@ -1,6 +1,7 @@
 package com.example.taskmanage.config;
 
 import com.example.taskmanage.config.filter.CustomAuthenticationProvider;
+import com.example.taskmanage.config.filter.JwtUsernamePasswordAuthenticationFilter;
 import com.example.taskmanage.exception.CustomAccessDeniedHandler;
 import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
@@ -81,7 +82,7 @@ public class AppConfig {
                 .accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and()
                 .addFilterBefore(new JwtUsernamePasswordAuthenticationFilter(manager, jwtConfig, jwtService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig, jwtService), UsernamePasswordAuthenticationFilter.class)
+//                .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig, jwtService), UsernamePasswordAuthenticationFilter.class)
         ;
 
 
