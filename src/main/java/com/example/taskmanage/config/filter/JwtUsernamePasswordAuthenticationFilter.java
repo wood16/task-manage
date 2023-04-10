@@ -22,6 +22,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -69,10 +72,15 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
 
         String accessToken = jwtService.generateToken(userDetailsCustom);
 
-        String json = HelperUtils.JSON_WRITER.writeValueAsString(accessToken);
+        Map<String, String> responseObject = new HashMap<>();
+
+        responseObject.put("token", accessToken);
+        responseObject.put("message", "Login success!");
+
+        String result = HelperUtils.JSON_WRITER.writeValueAsString(responseObject);
 
         response.setContentType("application/json; charset=UTF-8");
-        response.getWriter().write(json);
+        response.getWriter().write(result);
         log.info("End success authentication: {}", accessToken);
     }
 

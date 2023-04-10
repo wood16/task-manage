@@ -14,10 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,7 +59,9 @@ public class UserServiceImpl implements UserService {
         userEntity.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         Set<RoleEntity> roles = new HashSet<>();
-        roles.add(roleRepository.findByName(userDto.getRole()));
+        Arrays.stream(userDto.getRoles()).forEach(item ->
+                roles.add(roleRepository.findByName(item))
+        );
 
         userEntity.setRoles(roles);
 
@@ -84,7 +83,7 @@ public class UserServiceImpl implements UserService {
 
 //        validate role
         List<String> roles = roleRepository.findAll().stream().map(RoleEntity::getName).collect(Collectors.toList());
-        if(!roles.contains(userDto.getRole())){
+        if(!roles.containsAll(Arrays.stream(userDto.getRoles()).collect(Collectors.toList()))){
             throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Invalid role");
         }
     }
