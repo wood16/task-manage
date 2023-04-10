@@ -67,6 +67,7 @@ public class JwtServiceImpl implements JwtService {
 
         return Jwts.builder()
                 .setSubject(userDetailsCustom.getUsername())
+                .claim("userId", userDetailsCustom.getUserId())
                 .claim("authorities",
                         userDetailsCustom.getAuthorities()
                                 .stream()

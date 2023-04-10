@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class UserDetailsCustom implements UserDetails {
 
+    private long userId;
     private String username;
     private String password;
     private List<GrantedAuthority> authorities;
@@ -49,5 +50,13 @@ public class UserDetailsCustom implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 }

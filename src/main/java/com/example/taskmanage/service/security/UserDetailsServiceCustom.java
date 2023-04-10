@@ -38,6 +38,7 @@ public class UserDetailsServiceCustom implements UserDetailsService {
         }
 
         return new UserDetailsCustom(
+                userEntity.getId(),
                 userEntity.getUsername(),
                 userEntity.getPassword(),
                 userEntity.getRoles()
