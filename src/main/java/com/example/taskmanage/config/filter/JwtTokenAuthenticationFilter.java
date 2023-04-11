@@ -1,7 +1,10 @@
 package com.example.taskmanage.config.filter;
 
+import com.example.taskmanage.dto.PrincipalDto;
+import com.example.taskmanage.entity.UserEntity;
 import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
+import com.example.taskmanage.repository.UserRepository;
 import com.example.taskmanage.utils.BaseResponseDto;
 import com.example.taskmanage.utils.HelperUtils;
 import io.jsonwebtoken.Claims;
@@ -11,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +33,9 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     private final JwtConfig jwtConfig;
 
     private final JwtService jwtService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -49,14 +56,16 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                 if(jwtService.isValidToken(accessToken)){
                     Claims claims = jwtService.extractClaims(accessToken);
 
+                    Long userId = claims.get("userId", Long.class);
+
                     String username = claims.getSubject();
 
                     List<String> authorities = claims.get("authorities", List.class);
 
-                    if(Objects.nonNull(username)){
+                    if(Objects.nonNull(userId)){
                         UsernamePasswordAuthenticationToken authenticationToken =
                                 new UsernamePasswordAuthenticationToken(
-                                        username,
+                                        new PrincipalDto(userId, username),
                                         null,
                                         authorities
                                                 .stream()

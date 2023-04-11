@@ -13,6 +13,9 @@ public class AdminController {
 
     @GetMapping("/index")
     public ResponseEntity<String> index(Principal principal){
+
+        System.out.println("LAM " + principal.getName());
+
         return ResponseEntity.ok("Wellcome to admin Page : " +  principal.getName());
     }
 }

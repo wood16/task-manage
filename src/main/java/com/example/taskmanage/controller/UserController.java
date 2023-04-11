@@ -1,5 +1,6 @@
 package com.example.taskmanage.controller;
 
+import com.example.taskmanage.dto.PrincipalDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,11 @@ public class UserController {
 
     @GetMapping("/index")
     public ResponseEntity<String> index(Authentication authentication) {
+
+        PrincipalDto principalDto = (PrincipalDto) authentication.getPrincipal();
+
+        System.out.println("LAM" + principalDto.getUserId());
+
         return ResponseEntity.ok("Wellcome to user Page : " + authentication.getName());
     }
 }
