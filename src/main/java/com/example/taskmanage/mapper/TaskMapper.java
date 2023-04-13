@@ -2,13 +2,21 @@ package com.example.taskmanage.mapper;
 
 import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.entity.TaskEntity;
+import com.example.taskmanage.entity.UserEntity;
+import com.example.taskmanage.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class TaskMapper {
+
+    @Autowired
+    private UserRepository userRepository;
 
     public TaskEntity mapEntityFromModel(TaskDto from) {
 
@@ -37,6 +45,12 @@ public class TaskMapper {
         to.setProgressType(from.getProgressType());
         to.setStatus(from.getStatus());
         to.setProgress(from.getProgress());
+        to.setCreateDate(from.getCreateDate());
+        to.setCreatorId(from.getCreatorId());
+        to.setCreatorName(getUserName(from.getCreatorId()));
+        to.setModifiedDate(from.getModifiedDate());
+        to.setModifiedId(from.getModifiedId());
+        to.setModifiedName(getUserName(from.getModifiedId()));
 
         return to;
     }
@@ -44,5 +58,15 @@ public class TaskMapper {
     public List<TaskDto> mapModelsFromEntities(List<TaskEntity> from) {
 
         return from.stream().map(this::mapModelFromEntity).collect(Collectors.toList());
+    }
+
+    private String getUserName(long userId) {
+
+        Optional<UserEntity> userEntity = userRepository.findById(userId);
+
+        if (userEntity.isPresent())
+            return userEntity.get().getUsername();
+
+        return "";
     }
 }

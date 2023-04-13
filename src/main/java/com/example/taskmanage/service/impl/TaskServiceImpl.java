@@ -34,22 +34,22 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto addTask(TaskDto taskDto) {
+    public TaskDto addTask(long userId, TaskDto taskDto) {
 
         TaskEntity taskEntity = taskMapper.mapEntityFromModel(taskDto);
-        setCreateInfo(0L, taskEntity);
+        setCreateInfo(userId, taskEntity);
 
+        taskEntity.setStatus("pending");
         taskEntity.setProgress(0L);
 
         return taskMapper.mapModelFromEntity(taskRepository.save(taskEntity));
     }
 
     @Override
-    public TaskDto patchTask(long taskId, TaskDto taskDto) {
-
+    public TaskDto patchTask(long userId, long taskId, TaskDto taskDto) {
 
         if (Objects.nonNull(taskDto.getProgress())) {
-            updateProgress(taskId, taskDto.getProgress());
+            updateProgress(userId, taskId, taskDto.getProgress());
         }
 
         Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
@@ -60,11 +60,12 @@ public class TaskServiceImpl implements TaskService {
         return new TaskDto();
     }
 
-    private void updateProgress(long taskId, long progress) {
+    private void updateProgress(long userId, long taskId, long progress) {
 
         Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
 
         if (taskEntity.isPresent()) {
+            setModifiedInfo(userId, taskEntity.get());
             taskEntity.get().setProgress(progress);
 
             taskRepository.save(taskEntity.get());

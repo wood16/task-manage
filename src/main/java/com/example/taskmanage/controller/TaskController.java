@@ -1,6 +1,7 @@
 package com.example.taskmanage.controller;
 
 import com.example.taskmanage.dto.TaskDto;
+import com.example.taskmanage.dto.UserContextDto;
 import com.example.taskmanage.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -43,14 +45,18 @@ public class TaskController {
     @PostMapping("/add")
     public ResponseEntity<TaskDto> postTask(@RequestBody TaskDto taskModel) {
 
-        return ResponseEntity.ok(taskService.addTask(taskModel));
+        return ResponseEntity.ok(taskService.addTask(getUserContext().getUserId(), taskModel));
     }
 
     @PatchMapping("/patch/{id}")
     public ResponseEntity<TaskDto> patchTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
 
-        return ResponseEntity.ok(taskService.patchTask(id, taskModel));
+        return ResponseEntity.ok(taskService.patchTask(getUserContext().getUserId(), id, taskModel));
     }
 
+    private UserContextDto getUserContext() {
+
+        return (UserContextDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
 }

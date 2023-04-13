@@ -20,4 +20,10 @@ public class TaskDto {
     private Long progress;
     private String progressType;
     private String status;
+    private Date createDate;
+    private Long creatorId;
+    private String creatorName;
+    private Date modifiedDate;
+    private Long modifiedId;
+    private String modifiedName;
 }

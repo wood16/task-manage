@@ -1,7 +1,6 @@
 package com.example.taskmanage.config.filter;
 
-import com.example.taskmanage.dto.PrincipalDto;
-import com.example.taskmanage.entity.UserEntity;
+import com.example.taskmanage.dto.UserContextDto;
 import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
 import com.example.taskmanage.repository.UserRepository;
@@ -65,7 +64,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                     if(Objects.nonNull(userId)){
                         UsernamePasswordAuthenticationToken authenticationToken =
                                 new UsernamePasswordAuthenticationToken(
-                                        new PrincipalDto(userId, username),
+                                        new UserContextDto(userId, username),
                                         null,
                                         authorities
                                                 .stream()
