@@ -54,6 +54,12 @@ public class TaskController {
         return ResponseEntity.ok(taskService.patchTask(getUserContext().getUserId(), id, taskModel));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskDto> getOne(@PathVariable long id) {
+
+        return ResponseEntity.ok(taskService.getTask(id));
+    }
+
     private UserContextDto getUserContext() {
 
         return (UserContextDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
