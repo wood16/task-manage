@@ -60,6 +60,14 @@ public class TaskServiceImpl implements TaskService {
             updateProgress(userId, taskId, taskDto.getProgress());
         }
 
+        if(Objects.nonNull(taskDto.getStartDate()) && Objects.nonNull(taskDto.getEndDate())){
+            updateDate(userId, taskId, taskDto.getStartDate(), taskDto.getEndDate());
+        }
+
+        if(Objects.nonNull(taskDto.getDescription())){
+            updateDescription(userId, taskId, taskDto.getDescription());
+        }
+
         Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
 
         if (taskEntity.isPresent())
@@ -86,6 +94,31 @@ public class TaskServiceImpl implements TaskService {
         if (taskEntity.isPresent()) {
             setModifiedInfo(userId, taskEntity.get());
             taskEntity.get().setProgress(progress);
+
+            taskRepository.save(taskEntity.get());
+        }
+    }
+
+    private void updateDate(long userId, long taskId, Date startDate, Date endDate){
+
+        Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
+
+        if (taskEntity.isPresent()) {
+            setModifiedInfo(userId, taskEntity.get());
+            taskEntity.get().setStartDate(startDate);
+            taskEntity.get().setEndDate(endDate);
+
+            taskRepository.save(taskEntity.get());
+        }
+    }
+
+    private void updateDescription(long userId, long taskId, String description){
+
+        Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
+
+        if (taskEntity.isPresent()) {
+            setModifiedInfo(userId, taskEntity.get());
+            taskEntity.get().setDescription(description);
 
             taskRepository.save(taskEntity.get());
         }
