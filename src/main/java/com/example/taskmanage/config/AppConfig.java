@@ -71,7 +71,7 @@ public class AppConfig {
                 .requestMatchers("/account/**").permitAll()
                 .requestMatchers("/guest/**").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/user/**").hasAnyAuthority("USER", "EMPLOYEE")
+                .requestMatchers("/user/**", "/task/**").hasAnyAuthority("USER", "EMPLOYEE")
                 .anyRequest().authenticated()
                 .and()
                 .authenticationManager(manager)

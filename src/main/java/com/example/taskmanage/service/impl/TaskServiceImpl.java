@@ -26,9 +26,17 @@ public class TaskServiceImpl implements TaskService {
     private TaskMapper taskMapper;
 
     @Override
-    public Page<TaskDto> getAllTask(Pageable paging) {
+    public Page<TaskDto> getAllTask(Pageable paging, String search) {
 
-        List<TaskDto> taskModels = taskMapper.mapModelsFromEntities(taskRepository.findAll(paging).getContent());
+        List<TaskDto> taskModels;
+
+        if(Objects.nonNull(search))
+            taskModels =
+                    taskMapper.mapModelsFromEntities(taskRepository.findByNameContaining(search, paging).getContent());
+        else
+            taskModels =
+                    taskMapper.mapModelsFromEntities(taskRepository.findAll(paging).getContent());
+
 
         return new PageImpl<>(taskModels);
     }

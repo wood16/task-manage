@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface TaskService {
 
-    Page<TaskDto> getAllTask(Pageable paging);
+    Page<TaskDto> getAllTask(Pageable paging, String search);
 
     TaskDto addTask(long userId, TaskDto taskModel);
 

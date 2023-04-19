@@ -24,14 +24,14 @@ public class TaskController {
 
     @GetMapping("/getAll")
     public ResponseEntity<Map<String, Object>> getAll(
-            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "1") int pageSize
     ) {
 
         Pageable paging = PageRequest.of(page, pageSize);
 
-        Page<TaskDto> taskModels = taskService.getAllTask(paging);
+        Page<TaskDto> taskModels = taskService.getAllTask(paging, search);
 
         Map<String, Object> response = new HashMap<>();
         response.put("tasks", taskModels.getContent());
