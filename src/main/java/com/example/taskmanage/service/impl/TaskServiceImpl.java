@@ -87,6 +87,12 @@ public class TaskServiceImpl implements TaskService {
         return new TaskDto();
     }
 
+    @Override
+    public List<TaskDto> getChildTasks(long taskId) {
+
+        return taskMapper.mapModelsFromEntities(taskRepository.findByParentId(taskId));
+    }
+
     private void updateProgress(long userId, long taskId, long progress) {
 
         Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);

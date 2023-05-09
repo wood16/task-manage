@@ -3,6 +3,7 @@ package com.example.taskmanage.mapper;
 import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.entity.UserEntity;
+import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class TaskMapper {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
     public TaskEntity mapEntityFromModel(TaskDto from) {
 
         TaskEntity to = new TaskEntity();
@@ -27,6 +31,7 @@ public class TaskMapper {
         to.setEndDate(from.getEndDate());
         to.setPriority(from.getPriority());
         to.setProgressType(from.getProgressType());
+        to.setParentId(from.getParentId());
 
         return to;
     }
@@ -50,6 +55,8 @@ public class TaskMapper {
         to.setModifiedDate(from.getModifiedDate());
         to.setModifiedId(from.getModifiedId());
         to.setModifiedName(getUserName(from.getModifiedId()));
+        to.setParentId(from.getParentId());
+        to.setTasks(mapModelsFromEntities(taskRepository.findByParentId(from.getId())));
 
         return to;
     }

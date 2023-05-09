@@ -25,4 +25,5 @@ public class TaskEntity {
     private Date createDate;
     private Long modifiedId;
     private Date modifiedDate;
+    private Long parentId;
 }
