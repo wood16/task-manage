@@ -30,7 +30,7 @@ public class TaskServiceImpl implements TaskService {
 
         List<TaskDto> taskModels;
 
-        if(Objects.nonNull(search))
+        if (Objects.nonNull(search))
             taskModels =
                     taskMapper.mapModelsFromEntities(taskRepository.findByNameContaining(search, paging).getContent());
         else
@@ -44,7 +44,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDto addTask(long userId, TaskDto taskDto) {
 
-        TaskEntity taskEntity = taskMapper.mapEntityFromModel(taskDto);
+        TaskEntity taskEntity = taskMapper.mapEntityFromModel(taskDto, new TaskEntity());
         setCreateInfo(userId, taskEntity);
 
         taskEntity.setStatus("pending");
@@ -60,11 +60,11 @@ public class TaskServiceImpl implements TaskService {
             updateProgress(userId, taskId, taskDto.getProgress());
         }
 
-        if(Objects.nonNull(taskDto.getStartDate()) && Objects.nonNull(taskDto.getEndDate())){
+        if (Objects.nonNull(taskDto.getStartDate()) && Objects.nonNull(taskDto.getEndDate())) {
             updateDate(userId, taskId, taskDto.getStartDate(), taskDto.getEndDate());
         }
 
-        if(Objects.nonNull(taskDto.getDescription())){
+        if (Objects.nonNull(taskDto.getDescription())) {
             updateDescription(userId, taskId, taskDto.getDescription());
         }
 
@@ -74,6 +74,23 @@ public class TaskServiceImpl implements TaskService {
             return taskMapper.mapModelFromEntity(taskEntity.get());
 
         return new TaskDto();
+    }
+
+    @Override
+    public TaskDto putTask(long userId, long taskId, TaskDto taskDto) {
+
+        Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
+        TaskEntity newTaskEntity = new TaskEntity();
+
+
+        if (taskEntity.isPresent()) {
+            newTaskEntity = taskMapper.mapEntityFromModel(taskDto, taskEntity.get());
+            setModifiedInfo(userId, newTaskEntity);
+
+            return taskMapper.mapModelFromEntity(taskRepository.save(newTaskEntity));
+        }
+
+        return taskMapper.mapModelFromEntity(newTaskEntity);
     }
 
     @Override
@@ -105,7 +122,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    private void updateDate(long userId, long taskId, Date startDate, Date endDate){
+    private void updateDate(long userId, long taskId, Date startDate, Date endDate) {
 
         Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
 
@@ -118,7 +135,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    private void updateDescription(long userId, long taskId, String description){
+    private void updateDescription(long userId, long taskId, String description) {
 
         Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
 

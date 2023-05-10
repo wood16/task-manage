@@ -48,6 +48,12 @@ public class TaskController {
         return ResponseEntity.ok(taskService.addTask(getUserContext().getUserId(), taskModel));
     }
 
+    @PutMapping("/put/{id}")
+    public ResponseEntity<TaskDto> putTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
+
+        return ResponseEntity.ok(taskService.putTask(getUserContext().getUserId(), id, taskModel));
+    }
+
     @PatchMapping("/patch/{id}")
     public ResponseEntity<TaskDto> patchTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
 

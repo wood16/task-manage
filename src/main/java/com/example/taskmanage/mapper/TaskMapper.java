@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,9 +22,10 @@ public class TaskMapper {
     @Autowired
     private TaskRepository taskRepository;
 
-    public TaskEntity mapEntityFromModel(TaskDto from) {
+    public TaskEntity mapEntityFromModel(TaskDto from, TaskEntity to) {
 
-        TaskEntity to = new TaskEntity();
+        if(Objects.isNull(to))
+            to = new TaskEntity();
 
         to.setName(from.getName());
         to.setDescription(from.getDescription());
