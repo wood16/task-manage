@@ -50,10 +50,10 @@ public class AppConfig {
         return new UserDetailsServiceCustom();
     }
 
-    @Autowired
-    public void configGlobal(final AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(customAuthenticationProvider);
-    }
+//    @Autowired
+//    public void configGlobal(final AuthenticationManagerBuilder auth) {
+//        auth.authenticationProvider(customAuthenticationProvider);
+//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -61,6 +61,7 @@ public class AppConfig {
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
 
         builder.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
+        builder.authenticationProvider(customAuthenticationProvider);
 
         AuthenticationManager manager = builder.build();
 
