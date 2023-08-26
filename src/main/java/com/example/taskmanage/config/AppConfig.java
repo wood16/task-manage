@@ -6,6 +6,7 @@ import com.example.taskmanage.config.filter.JwtUsernamePasswordAuthenticationFil
 import com.example.taskmanage.exception.CustomAccessDeniedHandler;
 import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
+import com.example.taskmanage.service.RefreshTokenService;
 import com.example.taskmanage.service.security.UserDetailsServiceCustom;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class AppConfig {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
 
     @Bean
     public JwtConfig jwtConfig(){
@@ -84,8 +88,12 @@ public class AppConfig {
                 ((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
                 .accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and()
-                .addFilterBefore(new JwtUsernamePasswordAuthenticationFilter(manager, jwtConfig, jwtService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig, jwtService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(
+                        new JwtUsernamePasswordAuthenticationFilter(manager, jwtConfig, jwtService, refreshTokenService),
+                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(
+                        new JwtTokenAuthenticationFilter(jwtConfig, jwtService),
+                        UsernamePasswordAuthenticationFilter.class)
         ;
 
 

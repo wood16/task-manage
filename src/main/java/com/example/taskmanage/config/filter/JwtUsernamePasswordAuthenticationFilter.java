@@ -1,8 +1,10 @@
 package com.example.taskmanage.config.filter;
 
 import com.example.taskmanage.dto.LoginRequest;
+import com.example.taskmanage.entity.RefreshToken;
 import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
+import com.example.taskmanage.service.RefreshTokenService;
 import com.example.taskmanage.service.security.UserDetailsCustom;
 import com.example.taskmanage.utils.BaseResponseDto;
 import com.example.taskmanage.utils.HelperUtils;
@@ -12,6 +14,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,14 +36,18 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
 
     private final ObjectMapper objectMapper;
 
+    private final RefreshTokenService refreshTokenService;
+
     public JwtUsernamePasswordAuthenticationFilter(AuthenticationManager manager,
                                                    JwtConfig jwtConfig,
-                                                   JwtService jwtService) {
+                                                   JwtService jwtService,
+                                                   RefreshTokenService refreshTokenService) {
 
         super(new AntPathRequestMatcher(jwtConfig.getUrl(), "POST"));
         setAuthenticationManager(manager);
         this.objectMapper = new ObjectMapper();
         this.jwtService = jwtService;
+        this.refreshTokenService = refreshTokenService;
     }
 
 
@@ -71,10 +78,12 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
         UserDetailsCustom userDetailsCustom = (UserDetailsCustom) authResult.getPrincipal();
 
         String accessToken = jwtService.generateToken(userDetailsCustom);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetailsCustom.getUsername());
 
         Map<String, String> responseObject = new HashMap<>();
 
         responseObject.put("token", accessToken);
+        responseObject.put("refresh_token", refreshToken.getToken());
         responseObject.put("message", "Login success!");
 
         String result = HelperUtils.JSON_WRITER.writeValueAsString(responseObject);
