@@ -99,7 +99,5 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json; charset=UTF-8");
         response.getWriter().write(json);
-
-        return;
     }
 }

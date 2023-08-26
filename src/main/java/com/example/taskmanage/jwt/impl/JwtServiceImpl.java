@@ -76,7 +76,7 @@ public class JwtServiceImpl implements JwtService {
                 .claim("roles", roles)
                 .claim("isEnable", userDetailsCustom.isEnabled())
                 .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plusSeconds(jwtConfig.getExpiration())))
+                .setExpiration(Date.from(now.plusSeconds(1)))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
 
@@ -97,10 +97,9 @@ public class JwtServiceImpl implements JwtService {
         return extractClaims(token, Claims::getSubject);
     }
 
-
     private <T> T extractClaims(String token, Function<Claims, T> claimsTFunction) {
 
-        final Claims claims = extractClaims(token);
+        final Claims claims = extractAllClaims(token);
 
         return claimsTFunction.apply(claims);
     }

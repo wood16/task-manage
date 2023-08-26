@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -108,6 +109,18 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDto> getChildTasks(long taskId) {
 
         return taskMapper.mapModelsFromEntities(taskRepository.findByParentId(taskId));
+    }
+
+    public String getTaskById(Long id){
+
+        return getTaskEntity(id, TaskEntity::getName);
+    }
+
+    private <T> T getTaskEntity(Long id, Function<TaskEntity, T> taskFunction){
+
+        Optional<TaskEntity> taskEntity = taskRepository.findById(id);
+
+        return taskFunction.apply(taskEntity.get());
     }
 
     private void updateProgress(long userId, long taskId, long progress) {
