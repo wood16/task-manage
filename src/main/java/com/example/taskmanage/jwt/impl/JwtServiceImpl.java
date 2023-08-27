@@ -4,6 +4,7 @@ package com.example.taskmanage.jwt.impl;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
+import com.example.taskmanage.service.UserService;
 import com.example.taskmanage.service.security.UserDetailsCustom;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -11,6 +12,7 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +36,9 @@ public class JwtServiceImpl implements JwtService {
     private final JwtConfig jwtConfig;
 
     private final UserDetailsService userDetailsService;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public Claims extractClaims(String token) {
@@ -76,7 +81,7 @@ public class JwtServiceImpl implements JwtService {
                 .claim("roles", roles)
                 .claim("isEnable", userDetailsCustom.isEnabled())
                 .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plusSeconds(1)))
+                .setExpiration(Date.from(now.plusSeconds(100)))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
 
@@ -90,6 +95,12 @@ public class JwtServiceImpl implements JwtService {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         return Objects.nonNull(userDetails);
+    }
+
+    @Override
+    public String generateTokenForRefreshToken(Long userId) {
+
+        return "";
     }
 
     private String extractUsername(String token) {

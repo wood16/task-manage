@@ -1,15 +1,18 @@
 package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.entity.RefreshToken;
+import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.repository.RefreshTokenRepository;
 import com.example.taskmanage.repository.UserRepository;
 import com.example.taskmanage.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -34,5 +37,20 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return refreshTokenRepository.save(refreshToken);
     }
 
+    @Override
+    public Optional<RefreshToken> findByToken(String token) {
+        return refreshTokenRepository.findByToken(token);
+    }
 
+    @Override
+    public RefreshToken verifyExpiration(RefreshToken refreshToken){
+
+        if(refreshToken.getExpiryDate().compareTo(Instant.now()) < 0){
+            refreshTokenRepository.delete(refreshToken);
+
+            throw new BaseException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), "Refresh token was expiration");
+        }
+
+        return refreshToken;
+    }
 }

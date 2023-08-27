@@ -76,6 +76,7 @@ public class AppConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/account/**").permitAll()
                 .requestMatchers("/guest/**").permitAll()
+                .requestMatchers("/refreshToken/**").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .requestMatchers("/user/**", "/task/**").hasAnyAuthority("USER", "EMPLOYEE")
                 .anyRequest().authenticated()
