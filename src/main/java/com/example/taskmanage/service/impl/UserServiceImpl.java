@@ -71,13 +71,11 @@ public class UserServiceImpl implements UserService {
 
         Optional<UserEntity> userEntity = userRepository.findById(userId);
 
-        if(userEntity.isPresent()){
-
-            return userMapper.mapFromEntry(userEntity.get());
+        if(userEntity.isEmpty()){
+            throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST), "User not found");
         }
 
-//        throw hay hon
-        return new UserDto();
+        return userMapper.mapFromEntry(userEntity.get());
     }
 
     private UserEntity insertUser(UserDto userDto) {

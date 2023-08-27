@@ -26,7 +26,7 @@ public class RefreshTokenController {
     private RefreshTokenService refreshTokenService;
 
     @PostMapping()
-    private ResponseEntity<Map<String, String>> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+    private ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
 
         return refreshTokenService.findByToken(refreshTokenRequest.getToken())
                 .map(refreshTokenService::verifyExpiration)
