@@ -66,6 +66,20 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public UserDto getUserById(Long userId) {
+
+        Optional<UserEntity> userEntity = userRepository.findById(userId);
+
+        if(userEntity.isPresent()){
+
+            return userMapper.mapFromEntry(userEntity.get());
+        }
+
+//        throw hay hon
+        return new UserDto();
+    }
+
     private UserEntity insertUser(UserDto userDto) {
 
         UserEntity userEntity = new UserEntity();

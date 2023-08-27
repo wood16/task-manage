@@ -1,6 +1,7 @@
 package com.example.taskmanage.jwt.impl;
 
 
+import com.example.taskmanage.dto.UserDto;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
@@ -21,10 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -100,7 +98,18 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String generateTokenForRefreshToken(Long userId) {
 
-        return "";
+        UserDto userDto = userService.getUserById(userId);
+
+        return Jwts.builder()
+                .setSubject(userDto.getUsername())
+                .claim("userId", userDto.getId())
+                .claim("authorities", Arrays.stream(userDto.getRoles()).toList())
+                .claim("roles",  Arrays.stream(userDto.getRoles()).toList())
+                .claim("isEnable", Boolean.TRUE)
+                .setIssuedAt(Date.from(Instant.now()))
+                .setExpiration(Date.from(Instant.now().plusSeconds(10)))
+                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     private String extractUsername(String token) {
