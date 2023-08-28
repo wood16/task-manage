@@ -78,12 +78,12 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
         UserDetailsCustom userDetailsCustom = (UserDetailsCustom) authResult.getPrincipal();
 
         String accessToken = jwtService.generateToken(userDetailsCustom);
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetailsCustom.getUsername());
+        String refreshToken = refreshTokenService.createRefreshToken(userDetailsCustom.getUsername());
 
         Map<String, String> responseObject = new HashMap<>();
 
         responseObject.put("token", accessToken);
-        responseObject.put("refresh_token", refreshToken.getToken());
+        responseObject.put("refresh_token", refreshToken);
         responseObject.put("message", "Login success!");
 
         String result = HelperUtils.JSON_WRITER.writeValueAsString(responseObject);

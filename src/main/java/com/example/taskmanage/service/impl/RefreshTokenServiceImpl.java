@@ -27,7 +27,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private UserRepository userRepository;
 
     @Override
-    public RefreshToken createRefreshToken(String username) {
+    public String createRefreshToken(String username) {
 
         UserEntity userEntity = userRepository.findByUsername(username);
 
@@ -39,7 +39,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .expiryDate(Instant.now().plusSeconds(2))
                 .build();
 
-        return refreshTokenRepository.save(refreshToken);
+        return refreshTokenRepository.save(refreshToken).getToken();
     }
 
     @Override
