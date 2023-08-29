@@ -69,13 +69,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(Long userId) {
 
-        Optional<UserEntity> userEntity = userRepository.findById(userId);
-
-        if(userEntity.isEmpty()){
-            throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST), "User not found");
-        }
-
-        return userMapper.mapFromEntry(userEntity.get());
+        return userRepository.findById(userId)
+                .map(item -> userMapper.mapFromEntry(item))
+                .orElseThrow(() -> new BaseException(String.valueOf(HttpStatus.BAD_REQUEST), "User not found"));
     }
 
     private UserEntity insertUser(UserDto userDto) {

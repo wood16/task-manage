@@ -29,4 +29,5 @@ public class TaskDto {
     private String modifiedName;
     private Long parentId;
     private List<TaskDto> tasks;
+    private TaskDto parentTask;
 }

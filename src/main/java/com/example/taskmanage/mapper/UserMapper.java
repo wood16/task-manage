@@ -25,7 +25,7 @@ public class UserMapper {
 
     public List<UserDto> mapFromEntries(List<UserEntity> from){
 
-        return from.stream().map(this::mapFromEntry).collect(Collectors.toList());
+        return from.stream().map(this::mapFromEntry).toList();
     }
 
     private String[] getRoles(Set<RoleEntity> roleEntitySet){

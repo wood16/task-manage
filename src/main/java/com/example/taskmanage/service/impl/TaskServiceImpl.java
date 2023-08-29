@@ -2,6 +2,7 @@ package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.entity.TaskEntity;
+import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.service.TaskService;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -69,12 +71,9 @@ public class TaskServiceImpl implements TaskService {
             updateDescription(userId, taskId, taskDto.getDescription());
         }
 
-        Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
-
-        if (taskEntity.isPresent())
-            return taskMapper.mapModelFromEntity(taskEntity.get());
-
-        return new TaskDto();
+        return taskRepository.findById(taskId)
+                .map(task -> taskMapper.mapModelFromEntity(task))
+                .orElse(new TaskDto());
     }
 
     @Override
@@ -97,12 +96,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDto getTask(long taskId) {
 
-        Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
-
-        if (taskEntity.isPresent())
-            return taskMapper.mapModelFromEntity(taskEntity.get());
-
-        return new TaskDto();
+        return taskRepository.findById(taskId)
+                .map(task -> taskMapper.mapModelFromEntity(task))
+                .orElseThrow(() ->
+                        new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Task not found"));
     }
 
     @Override

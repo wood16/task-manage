@@ -79,7 +79,7 @@ public class JwtServiceImpl implements JwtService {
                 .claim("roles", roles)
                 .claim("isEnable", userDetailsCustom.isEnabled())
                 .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plusSeconds(100)))
+                .setExpiration(Date.from(now.plusSeconds(jwtConfig.getExpiration())))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
 
@@ -107,7 +107,7 @@ public class JwtServiceImpl implements JwtService {
                 .claim("roles",  Arrays.stream(userDto.getRoles()).toList())
                 .claim("isEnable", Boolean.TRUE)
                 .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plusSeconds(10)))
+                .setExpiration(Date.from(Instant.now().plusSeconds(1800)))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
