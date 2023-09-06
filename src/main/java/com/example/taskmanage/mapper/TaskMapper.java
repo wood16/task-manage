@@ -3,19 +3,12 @@ package com.example.taskmanage.mapper;
 import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.entity.UserEntity;
-import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class TaskMapper {
@@ -27,9 +20,6 @@ public class TaskMapper {
     private TaskRepository taskRepository;
 
     public TaskEntity mapEntityFromModel(TaskDto from, TaskEntity to) {
-
-        if(Objects.isNull(to))
-            to = new TaskEntity();
 
         to.setName(from.getName());
         to.setDescription(from.getDescription());

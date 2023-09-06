@@ -25,5 +25,7 @@ public class TaskEntity {
     private Date createDate;
     private Long modifiedId;
     private Date modifiedDate;
+
+//    TODO create oneToOne parent
     private Long parentId;
 }

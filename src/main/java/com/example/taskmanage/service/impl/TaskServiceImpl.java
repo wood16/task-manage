@@ -6,6 +6,7 @@ import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.service.TaskService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,6 +28,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskMapper taskMapper;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public Page<TaskDto> getAllTask(Pageable paging, String search) {
@@ -97,9 +101,15 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto getTask(long taskId) {
 
         return taskRepository.findById(taskId)
-                .map(task -> taskMapper.mapModelFromEntity(task))
+                .map(task -> modelMapper.map(task, TaskDto.class))
                 .orElseThrow(() ->
                         new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Task not found"));
+
+
+//        return taskRepository.findById(taskId)
+//                .map(task -> taskMapper.mapModelFromEntity(task))
+//                .orElseThrow(() ->
+//                        new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Task not found"));
     }
 
     @Override
