@@ -14,10 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -100,22 +97,21 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDto getTask(long taskId) {
 
-        return taskRepository.findById(taskId)
-                .map(task -> modelMapper.map(task, TaskDto.class))
-                .orElseThrow(() ->
-                        new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Task not found"));
-
-
 //        return taskRepository.findById(taskId)
-//                .map(task -> taskMapper.mapModelFromEntity(task))
+//                .map(task -> modelMapper.map(task, TaskDto.class))
 //                .orElseThrow(() ->
 //                        new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Task not found"));
+
+        return taskRepository.findById(taskId)
+                .map(task -> taskMapper.mapModelFromEntity(task))
+                .orElseThrow(() ->
+                        new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Task not found"));
     }
 
     @Override
     public List<TaskDto> getChildTasks(long taskId) {
 
-        return taskMapper.mapModelsFromEntities(taskRepository.findByParentId(taskId));
+        return taskMapper.mapModelsFromEntities(taskRepository.findByParentTask_Id(taskId));
     }
 
     public String getTaskById(Long id){

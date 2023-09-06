@@ -26,6 +26,7 @@ public class TaskEntity {
     private Long modifiedId;
     private Date modifiedDate;
 
-//    TODO create oneToOne parent
-    private Long parentId;
+    @OneToOne
+    @JoinColumn(name = "parentId", referencedColumnName = "id")
+    private TaskEntity parentTask;
 }

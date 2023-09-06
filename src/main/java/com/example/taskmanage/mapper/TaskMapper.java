@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskMapper {
@@ -27,7 +28,7 @@ public class TaskMapper {
         to.setEndDate(from.getEndDate());
         to.setPriority(from.getPriority());
         to.setProgressType(from.getProgressType());
-        to.setParentId(from.getParentId());
+        to.setParentTask(taskRepository.findById(from.getParentId()).orElse(null));
 
         return to;
     }
@@ -51,7 +52,7 @@ public class TaskMapper {
         to.setModifiedDate(from.getModifiedDate());
         to.setModifiedId(from.getModifiedId());
         to.setModifiedName(getUserName(from.getModifiedId()));
-        to.setTasks(mapModelsFromEntities(taskRepository.findByParentId(from.getId())));
+        to.setTasks(mapModelsFromEntities(taskRepository.findByParentTask_Id(from.getId())));
 //        to.setParentTask(
 //                taskRepository.findById(from.getParentId()).map(this::mapModelFromEntity).orElse(new TaskDto()));
 

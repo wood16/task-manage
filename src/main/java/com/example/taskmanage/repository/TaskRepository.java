@@ -15,5 +15,5 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
 
     Page<TaskEntity> findByNameContaining(String name, Pageable pageable);
 
-    List<TaskEntity> findByParentId(Long parentId);
+    List<TaskEntity> findByParentTask_Id(Long id);
 }
