@@ -53,8 +53,7 @@ public class TaskMapper {
         to.setModifiedId(from.getModifiedId());
         to.setModifiedName(getUserName(from.getModifiedId()));
         to.setTasks(mapModelsFromEntities(taskRepository.findByParentTask_Id(from.getId())));
-//        to.setParentTask(
-//                taskRepository.findById(from.getParentId()).map(this::mapModelFromEntity).orElse(new TaskDto()));
+        Optional.ofNullable(from.getParentTask()).ifPresent(entity -> to.setParentTask(mapModelFromEntity(entity)));
 
         return to;
     }

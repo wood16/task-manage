@@ -3,6 +3,7 @@ package com.example.taskmanage.service.impl;
 import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
+import com.example.taskmanage.mapper.CommonMapper;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.service.TaskService;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -29,17 +31,28 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private CommonMapper commonMapper;
+
     @Override
     public Page<TaskDto> getAllTask(Pageable paging, String search) {
 
         List<TaskDto> taskModels;
 
-        if (Objects.nonNull(search))
-            taskModels =
-                    taskMapper.mapModelsFromEntities(taskRepository.findByNameContaining(search, paging).getContent());
-        else
-            taskModels =
-                    taskMapper.mapModelsFromEntities(taskRepository.findAll(paging).getContent());
+        if (Objects.nonNull(search)) {
+//            taskModels =
+//                    taskMapper.mapModelsFromEntities(taskRepository.findByNameContaining(search, paging).getContent());
+
+            taskModels = commonMapper.mapList(
+                    taskRepository.findByNameContaining(search, paging).getContent(), TaskDto.class);
+        }
+        else {
+//            taskModels =
+//                    taskMapper.mapModelsFromEntities(taskRepository.findAll(paging).getContent());
+
+            taskModels = commonMapper.mapList(
+                    taskRepository.findAll(paging).getContent(), TaskDto.class);
+        }
 
 
         return new PageImpl<>(taskModels);
@@ -97,15 +110,15 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDto getTask(long taskId) {
 
-//        return taskRepository.findById(taskId)
-//                .map(task -> modelMapper.map(task, TaskDto.class))
-//                .orElseThrow(() ->
-//                        new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Task not found"));
-
         return taskRepository.findById(taskId)
-                .map(task -> taskMapper.mapModelFromEntity(task))
+                .map(task -> modelMapper.map(task, TaskDto.class))
                 .orElseThrow(() ->
                         new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Task not found"));
+//
+//        return taskRepository.findById(taskId)
+//                .map(task -> taskMapper.mapModelFromEntity(task))
+//                .orElseThrow(() ->
+//                        new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Task not found"));
     }
 
     @Override
