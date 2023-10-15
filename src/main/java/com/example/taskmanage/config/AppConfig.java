@@ -22,6 +22,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -40,7 +44,7 @@ public class AppConfig {
     private RefreshTokenService refreshTokenService;
 
     @Bean
-    public JwtConfig jwtConfig(){
+    public JwtConfig jwtConfig() {
         return new JwtConfig();
     }
 
@@ -60,6 +64,19 @@ public class AppConfig {
 //    }
 
     @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
@@ -70,7 +87,7 @@ public class AppConfig {
         AuthenticationManager manager = builder.build();
 
         http
-                .cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()).and()
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf().disable()
                 .formLogin().disable()
                 .authorizeHttpRequests()
@@ -86,7 +103,7 @@ public class AppConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling().authenticationEntryPoint(
-                ((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
+                        ((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
                 .accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and()
                 .addFilterBefore(

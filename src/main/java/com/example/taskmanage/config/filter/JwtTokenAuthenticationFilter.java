@@ -45,14 +45,14 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
         log.info("Start do filter once per request, {}", request.getRequestURI());
 
-        if(Objects.nonNull(accessToken) &&
-                accessToken.startsWith(jwtConfig.getPrefix() + " ")){
+        if (Objects.nonNull(accessToken) &&
+                accessToken.startsWith(jwtConfig.getPrefix() + " ")) {
 
             accessToken = accessToken.substring((jwtConfig.getPrefix() + " ").length());
 
             try {
 
-                if(jwtService.isValidToken(accessToken)){
+                if (jwtService.isValidToken(accessToken)) {
                     Claims claims = jwtService.extractClaims(accessToken);
 
                     Long userId = claims.get("userId", Long.class);
@@ -61,7 +61,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
                     List<String> authorities = claims.get("authorities", List.class);
 
-                    if(Objects.nonNull(userId)){
+                    if (Objects.nonNull(userId)) {
                         UsernamePasswordAuthenticationToken authenticationToken =
                                 new UsernamePasswordAuthenticationToken(
                                         new UserContextDto(userId, username),
@@ -74,7 +74,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.error("Error on filter once per request, path {}, error{}", request.getRequestURI(), e.getMessage());
 
                 BaseResponseDto responseDto = new BaseResponseDto();

@@ -28,7 +28,7 @@ public class TaskMapper {
         to.setEndDate(from.getEndDate());
         to.setPriority(from.getPriority());
         to.setProgressType(from.getProgressType());
-        to.setParentTask(taskRepository.findById(from.getParentId()).orElse(null));
+//        to.setParentTask(taskRepository.findById(from.getParentId()).orElse(null));
 
         return to;
     }
