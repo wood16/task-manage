@@ -51,8 +51,7 @@ public class TaskServiceImpl implements TaskService {
 
             taskModels = commonMapper.mapList(
                     taskElaRepository.findByName(search, paging).getContent(), TaskDto.class);
-        }
-        else {
+        } else {
 //            taskModels =
 //                    taskMapper.mapModelsFromEntities(taskRepository.findAll(paging).getContent());
 
@@ -73,11 +72,7 @@ public class TaskServiceImpl implements TaskService {
         taskEntity.setStatus("pending");
         taskEntity.setProgress(0L);
 
-        TaskEntity saved = taskRepository.save(taskEntity);
-
-        taskElaRepository.save(saved);
-
-        return taskMapper.mapModelFromEntity(saved);
+        return taskMapper.mapModelFromEntity(saveEntity(taskEntity));
     }
 
     @Override
@@ -110,10 +105,7 @@ public class TaskServiceImpl implements TaskService {
             newTaskEntity = taskMapper.mapEntityFromModel(taskDto, taskEntity.get());
             setModifiedInfo(userId, newTaskEntity);
 
-            TaskEntity saved = taskRepository.save(newTaskEntity);
-            taskElaRepository.save(saved);
-
-            return taskMapper.mapModelFromEntity(saved);
+            return taskMapper.mapModelFromEntity(saveEntity(newTaskEntity));
         }
 
         return taskMapper.mapModelFromEntity(newTaskEntity);
@@ -142,16 +134,31 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteTaskById(long taskId) {
 
+        deleteEntity(taskId);
+    }
+
+    public TaskEntity saveEntity(TaskEntity taskEntity) {
+
+//        save and index task
+        TaskEntity saved = taskRepository.save(taskEntity);
+        taskElaRepository.save(saved);
+
+        return saved;
+    }
+
+    public void deleteEntity(long taskId) {
+
+//        delete and index task
         taskElaRepository.deleteById(taskId);
         taskRepository.deleteById(taskId);
     }
 
-    public String getTaskById(Long id){
+    public String getTaskById(Long id) {
 
         return getTaskEntity(id, TaskEntity::getName);
     }
 
-    private <T> T getTaskEntity(Long id, Function<TaskEntity, T> taskFunction){
+    private <T> T getTaskEntity(Long id, Function<TaskEntity, T> taskFunction) {
 
         Optional<TaskEntity> taskEntity = taskRepository.findById(id);
 
