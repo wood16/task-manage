@@ -1,6 +1,7 @@
 package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.dto.TaskDto;
+import com.example.taskmanage.elarepository.TaskElaRepository;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.mapper.CommonMapper;
@@ -15,9 +16,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -34,6 +37,9 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private CommonMapper commonMapper;
 
+    @Autowired
+    private TaskElaRepository taskElaRepository;
+
     @Override
     public Page<TaskDto> getAllTask(Pageable paging, String search) {
 
@@ -43,15 +49,19 @@ public class TaskServiceImpl implements TaskService {
 //            taskModels =
 //                    taskMapper.mapModelsFromEntities(taskRepository.findByNameContaining(search, paging).getContent());
 
+            taskElaRepository.findByName(search);
+
             taskModels = commonMapper.mapList(
-                    taskRepository.findByNameContaining(search, paging).getContent(), TaskDto.class);
+                    taskElaRepository.findByName(search, paging).getContent(), TaskDto.class);
         }
         else {
 //            taskModels =
 //                    taskMapper.mapModelsFromEntities(taskRepository.findAll(paging).getContent());
 
+            taskElaRepository.findAll();
+
             taskModels = commonMapper.mapList(
-                    taskRepository.findAll(paging).getContent(), TaskDto.class);
+                    taskElaRepository.findAll(paging).getContent(), TaskDto.class);
         }
 
 
@@ -67,7 +77,11 @@ public class TaskServiceImpl implements TaskService {
         taskEntity.setStatus("pending");
         taskEntity.setProgress(0L);
 
-        return taskMapper.mapModelFromEntity(taskRepository.save(taskEntity));
+        TaskEntity saved = taskRepository.save(taskEntity);
+
+        taskElaRepository.save(saved);
+
+        return taskMapper.mapModelFromEntity(saved);
     }
 
     @Override
@@ -96,12 +110,14 @@ public class TaskServiceImpl implements TaskService {
         Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
         TaskEntity newTaskEntity = new TaskEntity();
 
-
         if (taskEntity.isPresent()) {
             newTaskEntity = taskMapper.mapEntityFromModel(taskDto, taskEntity.get());
             setModifiedInfo(userId, newTaskEntity);
 
-            return taskMapper.mapModelFromEntity(taskRepository.save(newTaskEntity));
+            TaskEntity saved = taskRepository.save(newTaskEntity);
+            taskElaRepository.save(saved);
+
+            return taskMapper.mapModelFromEntity(saved);
         }
 
         return taskMapper.mapModelFromEntity(newTaskEntity);

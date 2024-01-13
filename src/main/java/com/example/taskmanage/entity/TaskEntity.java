@@ -2,13 +2,17 @@ package com.example.taskmanage.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "tbl_task")
 @Data
+@Document(indexName = "tbl_task")
 public class TaskEntity {
+
+//    @table va @document phai co cung 'name' = 'indexName' de co the index
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
