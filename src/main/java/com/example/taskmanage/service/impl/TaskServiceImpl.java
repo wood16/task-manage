@@ -1,7 +1,7 @@
 package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.dto.TaskDto;
-import com.example.taskmanage.elarepository.TaskElaRepository;
+import com.example.taskmanage.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.mapper.CommonMapper;
@@ -38,7 +38,7 @@ public class TaskServiceImpl implements TaskService {
     private CommonMapper commonMapper;
 
     @Autowired
-    private TaskElaRepository taskElaRepository;
+    private TaskElasticRepository taskElaRepository;
 
     @Override
     public Page<TaskDto> getAllTask(Pageable paging, String search) {
@@ -49,16 +49,12 @@ public class TaskServiceImpl implements TaskService {
 //            taskModels =
 //                    taskMapper.mapModelsFromEntities(taskRepository.findByNameContaining(search, paging).getContent());
 
-            taskElaRepository.findByName(search);
-
             taskModels = commonMapper.mapList(
                     taskElaRepository.findByName(search, paging).getContent(), TaskDto.class);
         }
         else {
 //            taskModels =
 //                    taskMapper.mapModelsFromEntities(taskRepository.findAll(paging).getContent());
-
-            taskElaRepository.findAll();
 
             taskModels = commonMapper.mapList(
                     taskElaRepository.findAll(paging).getContent(), TaskDto.class);
@@ -141,6 +137,13 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDto> getChildTasks(long taskId) {
 
         return taskMapper.mapModelsFromEntities(taskRepository.findByParentTask_Id(taskId));
+    }
+
+    @Override
+    public void deleteTaskById(long taskId) {
+
+        taskElaRepository.deleteById(taskId);
+        taskRepository.deleteById(taskId);
     }
 
     public String getTaskById(Long id){

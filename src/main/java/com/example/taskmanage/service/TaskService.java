@@ -19,4 +19,6 @@ public interface TaskService {
     TaskDto getTask(long taskId);
 
     List<TaskDto> getChildTasks(long taskId);
+
+    void deleteTaskById(long taskId);
 }

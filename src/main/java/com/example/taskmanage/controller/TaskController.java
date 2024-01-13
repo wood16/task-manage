@@ -66,6 +66,12 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTask(id));
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable long id){
+
+        taskService.deleteTaskById(id);
+    }
+
     private UserContextDto getUserContext() {
 
         return (UserContextDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

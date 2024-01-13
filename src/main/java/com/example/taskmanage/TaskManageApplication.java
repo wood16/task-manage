@@ -6,8 +6,8 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableElasticsearchRepositories(basePackages = "com.example.taskmanage.elarepository")
-@EnableJpaRepositories(basePackages = "com.example.taskmanage.repository")
+//@EnableElasticsearchRepositories(basePackages = "com.example.taskmanage.elarepository")
+//@EnableJpaRepositories(basePackages = "com.example.taskmanage.repository")
 public class TaskManageApplication {
 
     public static void main(String[] args) {
