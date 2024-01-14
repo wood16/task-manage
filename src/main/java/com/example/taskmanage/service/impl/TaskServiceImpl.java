@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -92,23 +91,21 @@ public class TaskServiceImpl implements TaskService {
 
         return taskRepository.findById(taskId)
                 .map(task -> taskMapper.mapModelFromEntity(task))
-                .orElse(new TaskDto());
+                .orElseGet(TaskDto::new);
     }
 
     @Override
     public TaskDto putTask(long userId, long taskId, TaskDto taskDto) {
 
-        Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
-        TaskEntity newTaskEntity = new TaskEntity();
+        return taskRepository.findById(taskId)
+                .map(entity -> {
+                    TaskEntity newTaskEntity = taskMapper.mapEntityFromModel(taskDto, entity);
 
-        if (taskEntity.isPresent()) {
-            newTaskEntity = taskMapper.mapEntityFromModel(taskDto, taskEntity.get());
-            setModifiedInfo(userId, newTaskEntity);
+                    setModifiedInfo(userId, newTaskEntity);
 
-            return taskMapper.mapModelFromEntity(saveEntity(newTaskEntity));
-        }
-
-        return taskMapper.mapModelFromEntity(newTaskEntity);
+                    return taskMapper.mapModelFromEntity(saveEntity(newTaskEntity));
+                })
+                .orElseGet(TaskDto::new);
     }
 
     @Override
@@ -160,46 +157,43 @@ public class TaskServiceImpl implements TaskService {
 
     private <T> T getTaskEntity(Long id, Function<TaskEntity, T> taskFunction) {
 
-        Optional<TaskEntity> taskEntity = taskRepository.findById(id);
-
-        return taskFunction.apply(taskEntity.get());
+        return taskRepository.findById(id)
+                .map(taskFunction)
+                .orElse(null);
     }
 
     private void updateProgress(long userId, long taskId, long progress) {
 
-        Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
+        taskRepository.findById(taskId)
+                .ifPresent(entity -> {
+                    setModifiedInfo(userId, entity);
+                    entity.setProgress(progress);
 
-        if (taskEntity.isPresent()) {
-            setModifiedInfo(userId, taskEntity.get());
-            taskEntity.get().setProgress(progress);
-
-            taskRepository.save(taskEntity.get());
-        }
+                    taskRepository.save(entity);
+                });
     }
 
     private void updateDate(long userId, long taskId, Date startDate, Date endDate) {
 
-        Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
+        taskRepository.findById(taskId)
+                .ifPresent(entity -> {
+                    setModifiedInfo(userId, entity);
+                    entity.setStartDate(startDate);
+                    entity.setEndDate(endDate);
 
-        if (taskEntity.isPresent()) {
-            setModifiedInfo(userId, taskEntity.get());
-            taskEntity.get().setStartDate(startDate);
-            taskEntity.get().setEndDate(endDate);
-
-            taskRepository.save(taskEntity.get());
-        }
+                    taskRepository.save(entity);
+                });
     }
 
     private void updateDescription(long userId, long taskId, String description) {
 
-        Optional<TaskEntity> taskEntity = taskRepository.findById(taskId);
+        taskRepository.findById(taskId)
+                .ifPresent(entity -> {
+                    setModifiedInfo(userId, entity);
+                    entity.setDescription(description);
 
-        if (taskEntity.isPresent()) {
-            setModifiedInfo(userId, taskEntity.get());
-            taskEntity.get().setDescription(description);
-
-            taskRepository.save(taskEntity.get());
-        }
+                    taskRepository.save(entity);
+                });
     }
 
     private void setCreateInfo(long creatorId, TaskEntity taskEntity) {
