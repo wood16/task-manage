@@ -2,6 +2,7 @@ package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.elasticrepository.TaskElasticRepository;
+import com.example.taskmanage.elasticsearch.TaskElasticSearch;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.mapper.CommonMapper;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -39,6 +41,9 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskElasticRepository taskElaRepository;
 
+    @Autowired
+    private TaskElasticSearch taskElasticSearch;
+
     @Override
     public Page<TaskDto> getAllTask(Pageable paging, String search) {
 
@@ -57,6 +62,8 @@ public class TaskServiceImpl implements TaskService {
             taskModels = commonMapper.mapList(
                     taskElaRepository.findAll(paging).getContent(), TaskDto.class);
         }
+
+        taskElasticSearch.reindexAllTask();
 
 
         return new PageImpl<>(taskModels);
