@@ -63,8 +63,7 @@ public class TaskServiceImpl implements TaskService {
                     taskElaRepository.findAll(paging).getContent(), TaskDto.class);
         }
 
-        taskElasticSearch.reindexAllTask();
-
+        taskElasticSearch.searchByName("Task", paging);
 
         return new PageImpl<>(taskModels);
     }
