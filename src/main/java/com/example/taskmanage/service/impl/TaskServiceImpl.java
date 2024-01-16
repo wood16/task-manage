@@ -54,7 +54,7 @@ public class TaskServiceImpl implements TaskService {
 //                    taskMapper.mapModelsFromEntities(taskRepository.findByNameContaining(search, paging).getContent());
 
             taskModels = commonMapper.mapList(
-                    taskElaRepository.findByName(search, paging).getContent(), TaskDto.class);
+                    taskElasticSearch.searchByName(search, paging).getContent(), TaskDto.class);
         } else {
 //            taskModels =
 //                    taskMapper.mapModelsFromEntities(taskRepository.findAll(paging).getContent());
