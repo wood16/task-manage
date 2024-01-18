@@ -64,6 +64,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         taskElasticSearch.searchByName("Task", paging);
+        taskElasticSearch.searchByStartDate(new Date(), paging);
 
         return new PageImpl<>(taskModels);
     }

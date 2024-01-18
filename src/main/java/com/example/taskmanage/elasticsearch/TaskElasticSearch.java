@@ -1,6 +1,5 @@
 package com.example.taskmanage.elasticsearch;
 
-import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.repository.TaskRepository;
@@ -16,9 +15,9 @@ import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TaskElasticSearch {
@@ -43,6 +42,29 @@ public class TaskElasticSearch {
                         .match(m -> m
                                 .field("name")
                                 .query(searchTerm)
+                        )
+                )
+                .withPageable(pageable)
+                .build();
+
+        SearchHits<TaskEntity> hits = elasticsearchOperations.search(search, TaskEntity.class);
+
+        return new PageImpl<>(
+                hits.getSearchHits().stream().map(SearchHit::getContent).toList(),
+                pageable,
+                hits.getTotalHits());
+    }
+
+    public Page<TaskEntity> searchByStartDate(Date startDate, Pageable pageable){
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+        Query search = NativeQuery.builder()
+                .withQuery(q -> q
+                        .range(m -> m
+                                .field("startDate")
+                                .from("1680557640000")
+                                .to(String.valueOf(startDate.getTime()))
                         )
                 )
                 .withPageable(pageable)
