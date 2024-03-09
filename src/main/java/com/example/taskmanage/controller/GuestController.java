@@ -11,6 +11,7 @@ public class GuestController {
 
     @GetMapping("/index")
     public ResponseEntity<String> index() {
+
         return ResponseEntity.ok("Wellcome to my Page ");
     }
 }

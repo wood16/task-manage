@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -97,7 +96,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return taskRepository.findById(taskId)
-                .map(task -> taskMapper.mapModelFromEntity(task))
+                .map(task -> modelMapper.map(task, TaskDto.class))
                 .orElseGet(TaskDto::new);
     }
 
@@ -110,7 +109,7 @@ public class TaskServiceImpl implements TaskService {
 
                     setModifiedInfo(userId, newTaskEntity);
 
-                    return taskMapper.mapModelFromEntity(saveEntity(newTaskEntity));
+                    return modelMapper.map(saveEntity(newTaskEntity), TaskDto.class);
                 })
                 .orElseThrow(() ->
                         new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found"));

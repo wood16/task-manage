@@ -55,11 +55,15 @@ public class TaskController {
     @PutMapping("/put/{id}")
     public ResponseEntity<TaskDto> putTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
 
+        taskValidator.validateExist(id);
+
         return ResponseEntity.ok(taskService.putTask(getUserContext().getUserId(), id, taskModel));
     }
 
     @PatchMapping("/patch/{id}")
     public ResponseEntity<TaskDto> patchTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
+
+        taskValidator.validateExist(id);
 
         return ResponseEntity.ok(taskService.patchTask(getUserContext().getUserId(), id, taskModel));
     }
@@ -74,6 +78,8 @@ public class TaskController {
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable long id){
+
+        taskValidator.validateExist(id);
 
         taskService.deleteTaskById(id);
     }

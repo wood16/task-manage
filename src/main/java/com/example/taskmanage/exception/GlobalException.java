@@ -18,6 +18,5 @@ public class GlobalException extends ResponseEntityExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(responseDto, HttpStatus.valueOf(responseDto.getCode()));
-
     }
 }
