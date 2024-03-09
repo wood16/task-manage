@@ -25,6 +25,8 @@ public class TaskValidator {
 
     public void validateForUpdate(long taskId, TaskDto taskDto) {
 
+        validateExist(taskId);
+
         Optional<TaskEntity> optionalTask = taskRepository.findById(taskId);
 
         validateDate(optionalTask, taskDto);
