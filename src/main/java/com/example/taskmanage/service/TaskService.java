@@ -14,6 +14,8 @@ public interface TaskService {
 
     TaskDto patchTask(long userId, long taskId, TaskDto taskModel);
 
+    TaskDto patchTaskUpdate(long userId, long taskId, TaskDto taskDto);
+
     TaskDto putTask(long userId, long taskId, TaskDto taskModel);
 
     TaskDto getTask(long taskId);

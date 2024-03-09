@@ -65,7 +65,7 @@ public class TaskController {
 
         taskValidator.validateExist(id);
 
-        return ResponseEntity.ok(taskService.patchTask(getUserContext().getUserId(), id, taskModel));
+        return ResponseEntity.ok(taskService.patchTaskUpdate(getUserContext().getUserId(), id, taskModel));
     }
 
     @GetMapping("/{id}")

@@ -101,6 +101,37 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public TaskDto patchTaskUpdate(long userId,
+                                   long taskId,
+                                   TaskDto taskDto) {
+
+        return modelMapper.map(
+                taskRepository.findById(taskId)
+                        .map(taskEntity -> {
+
+                            taskEntity.setName(
+                                    Objects.requireNonNullElse(taskDto.getName(), taskEntity.getName()));
+                            taskEntity.setDescription(
+                                    Objects.requireNonNullElse(taskDto.getDescription(), taskEntity.getDescription()));
+                            taskEntity.setStartDate(
+                                    Objects.requireNonNullElse(taskDto.getStartDate(), taskEntity.getStartDate()));
+                            taskEntity.setEndDate(
+                                    Objects.requireNonNullElse(taskDto.getEndDate(), taskEntity.getEndDate()));
+                            taskEntity.setProgress(
+                                    Objects.requireNonNullElse(taskDto.getProgress(), taskEntity.getProgress()));
+
+                            setModifiedInfo(userId, taskEntity);
+
+                            return saveEntity(taskEntity);
+                        })
+                        .orElseThrow(
+                                () -> new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found!")
+                        ),
+                TaskDto.class
+        );
+    }
+
+    @Override
     public TaskDto putTask(long userId, long taskId, TaskDto taskDto) {
 
         return taskRepository.findById(taskId)
