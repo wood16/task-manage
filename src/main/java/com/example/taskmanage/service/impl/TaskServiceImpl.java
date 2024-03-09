@@ -11,9 +11,7 @@ import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.service.TaskService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +42,16 @@ public class TaskServiceImpl implements TaskService {
     private TaskElasticSearch taskElasticSearch;
 
     @Override
-    public Page<TaskDto> getAllTask(Pageable paging, String search) {
+    public Page<TaskDto> getAllTask(String filter,
+                                    int page,
+                                    int pageSize,
+                                    String search,
+                                    String sortBy,
+                                    Sort.Direction sortOrder) {
+
+        Sort sort = Objects.isNull(sortBy) ? Sort.unsorted() : Sort.by(sortOrder, sortBy);
+
+        Pageable paging = PageRequest.of(page, pageSize, sort);
 
         List<TaskDto> taskModels;
 

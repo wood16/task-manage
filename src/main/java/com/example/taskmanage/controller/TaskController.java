@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,14 +29,15 @@ public class TaskController {
 
     @GetMapping("/getAll")
     public ResponseEntity<Map<String, Object>> getAll(
-            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String filter,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "1") int pageSize
+            @RequestParam(defaultValue = "1") int pageSize,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false, defaultValue = "ASC") Sort.Direction sortOrder
     ) {
 
-        Pageable paging = PageRequest.of(page, pageSize);
-
-        Page<TaskDto> taskModels = taskService.getAllTask(paging, search);
+        Page<TaskDto> taskModels = taskService.getAllTask(filter, page, pageSize, search, sortBy, sortOrder);
 
         Map<String, Object> response = new HashMap<>();
         response.put("tasks", taskModels.getContent());
@@ -79,7 +81,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable long id){
+    public void deleteById(@PathVariable long id) {
 
         taskValidator.validateExist(id);
 

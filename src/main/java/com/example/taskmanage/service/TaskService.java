@@ -3,12 +3,18 @@ package com.example.taskmanage.service;
 import com.example.taskmanage.dto.TaskDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
 public interface TaskService {
 
-    Page<TaskDto> getAllTask(Pageable paging, String search);
+    Page<TaskDto> getAllTask(String filter,
+                             int page,
+                             int pageSize,
+                             String search,
+                             String sortBy,
+                             Sort.Direction sortOrder);
 
     TaskDto addTask(long userId, TaskDto taskModel);
 
