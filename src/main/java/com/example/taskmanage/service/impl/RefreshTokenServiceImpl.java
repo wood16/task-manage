@@ -53,7 +53,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         if(refreshToken.getExpiryDate().compareTo(Instant.now()) < 0){
             refreshTokenRepository.delete(refreshToken);
 
-            throw new BaseException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), "Refresh token was expiration");
+            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "Refresh token was expiration");
         }
 
         return refreshToken;

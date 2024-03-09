@@ -2,7 +2,6 @@ package com.example.taskmanage.exception;
 
 import com.example.taskmanage.utils.BaseResponseDto;
 import com.example.taskmanage.utils.HelperUtils;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -16,12 +15,12 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
-                       AccessDeniedException accessDeniedException) throws IOException, ServletException {
+                       AccessDeniedException accessDeniedException) throws IOException {
 
         BaseResponseDto responseDto = new BaseResponseDto();
 
         responseDto.setMessage("You don't have permission to access this resource");
-        responseDto.setCode(String.valueOf(HttpStatus.FORBIDDEN.value()));
+        responseDto.setCode(HttpStatus.FORBIDDEN.value());
 
         String json = HelperUtils.JSON_WRITER.writeValueAsString(responseDto);
 

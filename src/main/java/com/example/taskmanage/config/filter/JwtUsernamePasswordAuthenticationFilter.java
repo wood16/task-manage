@@ -100,7 +100,7 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
 
         BaseResponseDto responseDto = new BaseResponseDto();
 
-        responseDto.setCode(String.valueOf(HttpStatus.UNAUTHORIZED.value()));
+        responseDto.setCode(HttpStatus.UNAUTHORIZED.value());
         responseDto.setMessage(failed.getLocalizedMessage());
 
         String json = HelperUtils.JSON_WRITER.writeValueAsString(responseDto);

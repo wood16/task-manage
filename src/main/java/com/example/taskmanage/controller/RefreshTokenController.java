@@ -43,6 +43,6 @@ public class RefreshTokenController {
                     return new ResponseEntity(responseObject, HttpStatus.OK);
                 })
                 .orElseThrow(() ->
-                        new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Token not found"));
+                        new BaseException(HttpStatus.BAD_REQUEST.value(), "Token not found"));
     }
 }

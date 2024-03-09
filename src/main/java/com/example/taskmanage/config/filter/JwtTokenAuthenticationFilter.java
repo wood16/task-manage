@@ -78,7 +78,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                 log.error("Error on filter once per request, path {}, error{}", request.getRequestURI(), e.getMessage());
 
                 BaseResponseDto responseDto = new BaseResponseDto();
-                responseDto.setCode(String.valueOf(HttpStatus.UNAUTHORIZED.value()));
+                responseDto.setCode(HttpStatus.UNAUTHORIZED.value());
                 responseDto.setMessage(e.getLocalizedMessage());
 
                 String json = HelperUtils.JSON_WRITER.writeValueAsString(responseDto);

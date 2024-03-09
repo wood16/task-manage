@@ -34,7 +34,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         try {
             userEntity = userRepository.findByUsername(username);
         } catch (Exception e) {
-            throw new BaseException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), "User's not found");
+            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "User's not found");
         }
 
         final List<GrantedAuthority> authorities = getAuthorities(userEntity.getRoles().stream().toList());
@@ -52,14 +52,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         Set<String> permissions = new HashSet<>();
 
         if (Objects.nonNull(roles)) {
-            roles.forEach(role -> {
-                permissions.add(role.getName());
-            });
+            roles.forEach(role ->
+                    permissions.add(role.getName())
+            );
         }
 
-        permissions.forEach(p -> {
-            result.add(new SimpleGrantedAuthority(p));
-        });
+        permissions.forEach(p ->
+                result.add(new SimpleGrantedAuthority(p))
+        );
 
         return result;
     }

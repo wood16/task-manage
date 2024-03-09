@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -43,11 +42,11 @@ public class UserServiceImpl implements UserService {
         try {
 
             userRepository.save(userEntity);
-            responseDto.setCode(String.valueOf(HttpStatus.OK.value()));
+            responseDto.setCode(HttpStatus.OK.value());
             responseDto.setMessage("Create account success");
         } catch (Exception e) {
 
-            responseDto.setCode(String.valueOf(HttpStatus.SERVICE_UNAVAILABLE.value()));
+            responseDto.setCode(HttpStatus.SERVICE_UNAVAILABLE.value());
             responseDto.setMessage("Service unavailable");
         }
 
@@ -57,10 +56,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAllUser(String search) {
 
-        if(Objects.nonNull(search)){
+        if (Objects.nonNull(search)) {
             return userMapper.mapFromEntries(userRepository.findByUsernameContaining(search));
-        }
-        else {
+        } else {
             return userMapper.mapFromEntries(userRepository.findAll());
         }
 
@@ -71,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findById(userId)
                 .map(item -> userMapper.mapFromEntry(item))
-                .orElseThrow(() -> new BaseException(String.valueOf(HttpStatus.BAD_REQUEST), "User not found"));
+                .orElseThrow(() -> new BaseException(HttpStatus.BAD_REQUEST.value(), "User not found"));
     }
 
     private UserEntity insertUser(UserDto userDto) {
@@ -95,19 +93,19 @@ public class UserServiceImpl implements UserService {
 
 //        validate null data
         if (Objects.isNull(userDto)) {
-            throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Data must not empty");
+            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Data must not empty");
         }
 
 //        validate duplicate name
         UserEntity userEntity = userRepository.findByUsername(userDto.getUsername());
         if (Objects.nonNull(userEntity)) {
-            throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Username had existed");
+            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Username had existed");
         }
 
 //        validate role
-        List<String> roles = roleRepository.findAll().stream().map(RoleEntity::getName).collect(Collectors.toList());
-        if (!roles.containsAll(Arrays.stream(userDto.getRoles()).collect(Collectors.toList()))) {
-            throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Invalid role");
+        List<String> roles = roleRepository.findAll().stream().map(RoleEntity::getName).toList();
+        if (!roles.containsAll(Arrays.stream(userDto.getRoles()).toList())) {
+            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Invalid role");
         }
     }
 }

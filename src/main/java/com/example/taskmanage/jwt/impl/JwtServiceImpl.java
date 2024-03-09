@@ -135,19 +135,19 @@ public class JwtServiceImpl implements JwtService {
                     .getBody();
         } catch (ExpiredJwtException e) {
 
-            throw new BaseException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), "Token expiration");
+            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "Token expiration");
         } catch (UnsupportedJwtException e) {
 
-            throw new BaseException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), "Token's not supported");
+            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "Token's not supported");
         } catch (MalformedJwtException e) {
 
-            throw new BaseException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), "Invalid format 3 part of token");
+            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "Invalid format 3 part of token");
         } catch (SignatureException e) {
 
-            throw new BaseException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), "Invalid format token");
+            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "Invalid format token");
         } catch (Exception e) {
 
-            throw new BaseException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getLocalizedMessage());
+            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), e.getLocalizedMessage());
         }
 
         return claims;

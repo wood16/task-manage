@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BaseResponseDto {
 
-    private String code;
+    private int code;
     private String message;
 }

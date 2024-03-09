@@ -112,7 +112,8 @@ public class TaskServiceImpl implements TaskService {
 
                     return taskMapper.mapModelFromEntity(saveEntity(newTaskEntity));
                 })
-                .orElseGet(TaskDto::new);
+                .orElseThrow(() ->
+                        new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found"));
     }
 
     @Override
@@ -121,7 +122,7 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findById(taskId)
                 .map(task -> modelMapper.map(task, TaskDto.class))
                 .orElseThrow(() ->
-                        new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Task not found"));
+                        new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found"));
 //
 //        return taskRepository.findById(taskId)
 //                .map(task -> taskMapper.mapModelFromEntity(task))

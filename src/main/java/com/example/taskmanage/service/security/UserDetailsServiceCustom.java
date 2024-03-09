@@ -24,7 +24,7 @@ public class UserDetailsServiceCustom implements UserDetailsService {
         UserDetailsCustom userDetailsCustom = getUserDetail(username);
 
         if (Objects.isNull(userDetailsCustom)) {
-            throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Invalid username or password!");
+            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Invalid username or password!");
         }
 
         return userDetailsCustom;
@@ -34,7 +34,7 @@ public class UserDetailsServiceCustom implements UserDetailsService {
         UserEntity userEntity = userRepository.findByUsername(username);
 
         if (Objects.isNull(userEntity)) {
-            throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Invalid username or password!");
+            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Invalid username or password!");
         }
 
         return new UserDetailsCustom(

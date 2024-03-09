@@ -27,7 +27,7 @@ public class TaskValidator {
             return;
         }
 
-        throw new BaseException(String.valueOf(HttpStatus.NOT_FOUND.value()), "Task not found!");
+        throw new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found!");
     }
 
 }
