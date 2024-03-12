@@ -38,10 +38,27 @@ public class TaskElasticSearch {
 
 
         Query search = NativeQuery.builder()
-                .withQuery(q -> q
-                        .match(m -> m
-                                .field("name")
-                                .query(searchTerm)
+                .withQuery(p -> p
+                        .bool(b -> b
+                                .should(s -> s
+                                        .bool(b1 -> b1
+                                                .must(w -> w
+                                                        .wildcard(s1 -> s1
+                                                                .field("name")
+                                                                .wildcard(searchTerm.concat("*"))
+                                                        )
+                                                )
+                                        )
+                                ).should(s -> s
+                                        .bool(b1 -> b1
+                                                .must(a1 -> a1
+                                                        .matchPhrase(m -> m
+                                                                .field("name")
+                                                                .query("Task 05")
+                                                        )
+                                                )
+                                        )
+                                )
                         )
                 )
                 .withPageable(pageable)
@@ -55,7 +72,7 @@ public class TaskElasticSearch {
                 hits.getTotalHits());
     }
 
-    public Page<TaskEntity> searchByStartDate(Date startDate, Pageable pageable){
+    public Page<TaskEntity> searchByStartDate(Date startDate, Pageable pageable) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
