@@ -6,8 +6,6 @@ import com.example.taskmanage.service.TaskService;
 import com.example.taskmanage.validator.TaskValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,6 +84,15 @@ public class TaskController {
         taskValidator.validateExist(id);
 
         taskService.deleteTaskById(id);
+    }
+
+    @GetMapping("/childTasks/{id}")
+    public Page<TaskDto> getChildTasks(@PathVariable long id,
+                                       @RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "1") int pageSize,
+                                       @RequestParam(required = false) String search) {
+
+        return taskService.getChildTasks(id, page, pageSize, search);
     }
 
     private UserContextDto getUserContext() {

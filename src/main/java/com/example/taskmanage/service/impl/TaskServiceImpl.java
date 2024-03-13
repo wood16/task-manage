@@ -72,6 +72,8 @@ public class TaskServiceImpl implements TaskService {
         taskElasticSearch.searchByName("Task", paging);
         taskElasticSearch.searchByStartDate(new Date(), paging);
 
+        taskElasticSearch.getChildTasks(4, paging, "021");
+
         return new PageImpl<>(taskModels);
     }
 
@@ -168,9 +170,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDto> getChildTasks(long taskId) {
+    public Page<TaskDto> getChildTasks(long taskId,
+                                       int page,
+                                       int pageSize,
+                                       String search) {
 
-        return taskMapper.mapModelsFromEntities(taskRepository.findByParentTask_Id(taskId));
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        return taskElasticSearch.getChildTasks(taskId, pageable, search);
+
+//        return new PageImpl<>(taskMapper.mapModelsFromEntities(taskRepository.findByParentTask_Id(taskId)));
     }
 
     @Override

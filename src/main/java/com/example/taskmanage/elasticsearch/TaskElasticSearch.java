@@ -1,7 +1,9 @@
 package com.example.taskmanage.elasticsearch;
 
+import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.entity.TaskEntity;
+import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,9 @@ public class TaskElasticSearch {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private TaskMapper taskMapper;
 
 
     public Page<TaskEntity> searchByName(String searchTerm, Pageable pageable) {
@@ -91,6 +96,38 @@ public class TaskElasticSearch {
 
         return new PageImpl<>(
                 hits.getSearchHits().stream().map(SearchHit::getContent).toList(),
+                pageable,
+                hits.getTotalHits());
+    }
+
+    public Page<TaskDto> getChildTasks(long id,
+                                       Pageable pageable,
+                                       String search) {
+
+        Query searchChildTask = NativeQuery.builder()
+                .withQuery(q -> q
+                        .bool(b1 -> b1
+                                .must(m1 -> m1
+                                        .wildcard(w1 -> w1
+                                                .field("name")
+                                                .wildcard(search.concat("*"))
+                                        )
+                                )
+                                .filter(f1 -> f1
+                                        .term(t1 -> t1
+                                                .field("parentTask.id")
+                                                .value(id)
+                                        )
+                                )
+                        )
+                )
+                .withPageable(pageable)
+                .build();
+
+        SearchHits<TaskEntity> hits = elasticsearchOperations.search(searchChildTask, TaskEntity.class);
+
+        return new PageImpl<>(
+                hits.stream().map(hit -> taskMapper.mapModelFromEntity(hit.getContent())).toList(),
                 pageable,
                 hits.getTotalHits());
     }
