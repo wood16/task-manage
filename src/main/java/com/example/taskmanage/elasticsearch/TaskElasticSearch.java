@@ -3,8 +3,8 @@ package com.example.taskmanage.elasticsearch;
 import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.entity.TaskEntity;
-import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -34,7 +34,7 @@ public class TaskElasticSearch {
     private TaskRepository taskRepository;
 
     @Autowired
-    private TaskMapper taskMapper;
+    private ModelMapper modelMapper;
 
 
     public Page<TaskEntity> searchByName(String searchTerm, Pageable pageable) {
@@ -104,8 +104,9 @@ public class TaskElasticSearch {
                                        Pageable pageable,
                                        String search) {
 
-        Query searchChildTask = NativeQuery.builder()
-                .withQuery(q -> q
+
+        co.elastic.clients.elasticsearch._types.query_dsl.Query searchQuery =
+                new co.elastic.clients.elasticsearch._types.query_dsl.Query.Builder()
                         .bool(b1 -> b1
                                 .must(m1 -> m1
                                         .wildcard(w1 -> w1
@@ -113,13 +114,27 @@ public class TaskElasticSearch {
                                                 .wildcard(search.concat("*"))
                                         )
                                 )
-                                .filter(f1 -> f1
-                                        .term(t1 -> t1
-                                                .field("parentTask.id")
-                                                .value(id)
-                                        )
-                                )
                         )
+                        .build();
+
+        Query searchChildTask = NativeQuery.builder()
+                .withQuery(q -> q
+                                .bool(b1 -> b1
+                                                .must(searchQuery)
+//                                .must(m1 -> m1
+//                                        .wildcard(w1 -> w1
+//                                                .field("name")
+//                                                .wildcard(
+//                                                        Objects.nonNull(search) ? search.concat("*") : "")
+//                                        )
+//                                )
+                                                .filter(f1 -> f1
+                                                        .term(t1 -> t1
+                                                                .field("parentTask.id")
+                                                                .value(id)
+                                                        )
+                                                )
+                                )
                 )
                 .withPageable(pageable)
                 .build();
@@ -127,7 +142,7 @@ public class TaskElasticSearch {
         SearchHits<TaskEntity> hits = elasticsearchOperations.search(searchChildTask, TaskEntity.class);
 
         return new PageImpl<>(
-                hits.stream().map(hit -> taskMapper.mapModelFromEntity(hit.getContent())).toList(),
+                hits.stream().map(hit -> modelMapper.map(hit.getContent(), TaskDto.class)).toList(),
                 pageable,
                 hits.getTotalHits());
     }
