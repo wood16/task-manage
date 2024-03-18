@@ -26,7 +26,7 @@ public interface TaskService {
 
     TaskDto getTask(long taskId);
 
-    Page<TaskDto> getChildTasks(long taskId, int page, int pageSize, String search);
+    Page<TaskDto> getChildTasks(long taskId, int page, int pageSize, String search, String sortBy, Sort.Direction sortOrder);
 
     void deleteTaskById(long taskId);
 }

@@ -173,9 +173,13 @@ public class TaskServiceImpl implements TaskService {
     public Page<TaskDto> getChildTasks(long taskId,
                                        int page,
                                        int pageSize,
-                                       String search) {
+                                       String search,
+                                       String sortBy,
+                                       Sort.Direction sortOrder) {
 
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Sort sort = Objects.nonNull(sortBy) ? Sort.by(sortOrder, sortBy) : Sort.unsorted();
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         return taskElasticSearch.getChildTasks(taskId, pageable, search);
 

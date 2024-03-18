@@ -90,9 +90,11 @@ public class TaskController {
     public Page<TaskDto> getChildTasks(@PathVariable long id,
                                        @RequestParam(defaultValue = "0") int page,
                                        @RequestParam(defaultValue = "1") int pageSize,
-                                       @RequestParam(required = false) String search) {
+                                       @RequestParam(required = false) String search,
+                                       @RequestParam(required = false) String sortBy,
+                                       @RequestParam(required = false, defaultValue = "ASC") Sort.Direction sortOrder) {
 
-        return taskService.getChildTasks(id, page, pageSize, search);
+        return taskService.getChildTasks(id, page, pageSize, search, sortBy, sortOrder);
     }
 
     private UserContextDto getUserContext() {
