@@ -162,11 +162,6 @@ public class TaskServiceImpl implements TaskService {
                 .map(task -> modelMapper.map(task, TaskDto.class))
                 .orElseThrow(() ->
                         new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found"));
-//
-//        return taskRepository.findById(taskId)
-//                .map(task -> taskMapper.mapModelFromEntity(task))
-//                .orElseThrow(() ->
-//                        new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Task not found"));
     }
 
     @Override
@@ -177,7 +172,7 @@ public class TaskServiceImpl implements TaskService {
                                        String sortBy,
                                        Sort.Direction sortOrder) {
 
-        Sort sort = Objects.nonNull(sortBy) ? Sort.by(sortOrder, sortBy) : Sort.unsorted();
+        Sort sort = Objects.isNull(sortBy) ? Sort.unsorted() : Sort.by(sortOrder, sortBy);
 
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 

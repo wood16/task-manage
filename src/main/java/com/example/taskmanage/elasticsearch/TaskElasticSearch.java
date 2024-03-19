@@ -117,8 +117,6 @@ public class TaskElasticSearch {
                         )
                         .build();
 
-
-
         Query searchChildTask = NativeQuery.builder()
                 .withQuery(q -> q
                                 .bool(b1 -> b1
@@ -136,8 +134,10 @@ public class TaskElasticSearch {
                                                                 .value(id)
                                                         )
                                                 )
+
                                 )
                 )
+                .withSort()
                 .withPageable(pageable)
                 .build();
 
