@@ -28,6 +28,7 @@ public class TaskMapper {
         to.setEndDate(from.getEndDate());
         to.setPriority(from.getPriority());
         to.setProgressType(from.getProgressType());
+        to.setAssigneeId(from.getAssigneeId());
 //        to.setParentTask(taskRepository.findById(from.getParentId()).orElse(null));
 
         return to;
@@ -54,6 +55,7 @@ public class TaskMapper {
         to.setModifiedName(getUserName(from.getModifiedId()));
         to.setTasks(mapModelsFromEntities(taskRepository.findByParentTask_Id(from.getId())));
         Optional.ofNullable(from.getParentTask()).ifPresent(entity -> to.setParentTask(mapModelFromEntity(entity)));
+        to.setAssigneeId(from.getAssigneeId());
 
         return to;
     }

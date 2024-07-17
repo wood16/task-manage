@@ -30,4 +30,6 @@ public class TaskDto {
     private Long parentId;
     private List<TaskDto> tasks;
     private TaskDto parentTask;
+    private Long assigneeId;
+    private String assigneeName;
 }

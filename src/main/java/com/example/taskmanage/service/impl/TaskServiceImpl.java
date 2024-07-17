@@ -128,6 +128,8 @@ public class TaskServiceImpl implements TaskService {
                                     Objects.requireNonNullElse(taskDto.getEndDate(), taskEntity.getEndDate()));
                             taskEntity.setProgress(
                                     Objects.requireNonNullElse(taskDto.getProgress(), taskEntity.getProgress()));
+                            taskEntity.setProgress(
+                                    Objects.requireNonNullElse(taskDto.getAssigneeId(), taskEntity.getAssigneeId()));
 
                             setModifiedInfo(userId, taskEntity);
 
