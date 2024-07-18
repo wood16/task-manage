@@ -10,5 +10,7 @@ public interface UserService {
 
     List<UserDto> getAllUser(String search);
 
+    List<UserDto> getAllUserRole(String search, String role);
+
     UserDto getUserById(Long userId);
 }

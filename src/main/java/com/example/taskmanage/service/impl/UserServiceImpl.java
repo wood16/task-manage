@@ -65,6 +65,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDto> getAllUserRole(String search, String role) {
+
+        return userMapper.mapFromEntries(userRepository.findAllUserWithoutRole(
+                Objects.requireNonNullElse(role, "ADMIN"),
+                Objects.requireNonNullElse(search, "")
+        ));
+    }
+
+
+    @Override
     public UserDto getUserById(Long userId) {
 
         return userRepository.findById(userId)

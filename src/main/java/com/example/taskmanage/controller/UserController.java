@@ -37,6 +37,14 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUser(search));
     }
 
+    @GetMapping("/getAll/user")
+    public ResponseEntity<List<UserDto>> getAllUserRole(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String role) {
+
+        return ResponseEntity.ok(userService.getAllUserRole(search, role));
+    }
+
     private UserContextDto getUserContext() {
 
         return (UserContextDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
