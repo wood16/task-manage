@@ -20,15 +20,16 @@ public class TaskValidator {
 
     public void validateForAdd(TaskDto taskDto) {
 
+        validateRequireField(taskDto);
         validateDate(Optional.empty(), taskDto);
     }
 
     public void validateForUpdate(long taskId, TaskDto taskDto) {
 
         validateExist(taskId);
+        validateRequireField(taskDto);
 
         Optional<TaskEntity> optionalTask = taskRepository.findById(taskId);
-
         validateDate(optionalTask, taskDto);
     }
 
@@ -68,6 +69,17 @@ public class TaskValidator {
         if (startDate.after(endDate)) {
 
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Start date need before end date!");
+        }
+    }
+
+    private void validateRequireField(TaskDto taskDto){
+
+        if(Objects.isNull(taskDto.getName())){
+            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Name of task is required!");
+        }
+
+        if(Objects.isNull(taskDto.getAssigneeId())){
+            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Assignee of task is required!");
         }
     }
 
