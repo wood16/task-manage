@@ -38,33 +38,34 @@ public class TaskElasticSearch {
 
 
     public Page<TaskEntity> searchByName(String searchTerm, Pageable pageable) {
+        //text field can not sort
 
         Query query = new StringQuery("{ \"match\": { \"name\": { \"query\": \"Jack\" } } } ");
 
-
         Query search = NativeQuery.builder()
                 .withQuery(p -> p
-                        .bool(b -> b
-                                .should(s -> s
-                                        .bool(b1 -> b1
-                                                .must(w -> w
-                                                        .wildcard(s1 -> s1
-                                                                .field("name")
-                                                                .wildcard(searchTerm.concat("*"))
+                                .bool(b -> b
+                                                .should(s -> s
+                                                        .bool(b1 -> b1
+                                                                .must(w -> w
+                                                                        .wildcard(s1 -> s1
+                                                                                .field(TaskKeys.NAME)
+                                                                                .wildcard("*".concat(searchTerm).concat("*"))
+                                                                        )
+                                                                )
                                                         )
                                                 )
-                                        )
-                                ).should(s -> s
-                                        .bool(b1 -> b1
-                                                .must(a1 -> a1
-                                                        .matchPhrase(m -> m
-                                                                .field("name")
-                                                                .query("Task 05")
-                                                        )
-                                                )
-                                        )
+//                                .should(s -> s
+//                                        .bool(b1 -> b1
+//                                                .must(a1 -> a1
+//                                                        .matchPhrase(m -> m
+//                                                                .field("name")
+//                                                                .query("Task 05")
+//                                                        )
+//                                                )
+//                                        )
+//                                )
                                 )
-                        )
                 )
                 .withPageable(pageable)
                 .build();

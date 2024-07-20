@@ -3,6 +3,7 @@ package com.example.taskmanage.service.impl;
 import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.elasticsearch.TaskElasticSearch;
+import com.example.taskmanage.elasticsearch.TaskKeys;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.mapper.CommonMapper;
@@ -49,7 +50,8 @@ public class TaskServiceImpl implements TaskService {
                                     String sortBy,
                                     Sort.Direction sortOrder) {
 
-        Sort sort = Objects.isNull(sortBy) ? Sort.unsorted() : Sort.by(sortOrder, sortBy);
+        Sort sort = Objects.isNull(sortBy) ?
+                Sort.by(Sort.Direction.DESC, TaskKeys.MODIFIED_DATE) : Sort.by(sortOrder, sortBy);
 
         Pageable paging = PageRequest.of(page, pageSize, sort);
 
@@ -69,7 +71,7 @@ public class TaskServiceImpl implements TaskService {
                     taskElaRepository.findAll(paging).getContent(), TaskDto.class);
         }
 
-        taskElasticSearch.searchByName("Task", paging);
+//        taskElasticSearch.searchByName("Task", paging);
         taskElasticSearch.searchByStartDate(new Date(), paging);
 
         taskElasticSearch.getChildTasks(4, paging, "021");
@@ -193,6 +195,7 @@ public class TaskServiceImpl implements TaskService {
 
 //        save and index task
         TaskEntity saved = taskRepository.save(taskEntity);
+
         taskElaRepository.save(saved);
 
         return saved;
