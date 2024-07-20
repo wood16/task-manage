@@ -120,18 +120,28 @@ public class TaskServiceImpl implements TaskService {
                 taskRepository.findById(taskId)
                         .map(taskEntity -> {
 
-                            taskEntity.setName(
-                                    Objects.requireNonNullElse(taskDto.getName(), taskEntity.getName()));
-                            taskEntity.setDescription(
-                                    Objects.requireNonNullElse(taskDto.getDescription(), taskEntity.getDescription()));
-                            taskEntity.setStartDate(
-                                    Objects.requireNonNullElse(taskDto.getStartDate(), taskEntity.getStartDate()));
-                            taskEntity.setEndDate(
-                                    Objects.requireNonNullElse(taskDto.getEndDate(), taskEntity.getEndDate()));
-                            taskEntity.setProgress(
-                                    Objects.requireNonNullElse(taskDto.getProgress(), taskEntity.getProgress()));
-                            taskEntity.setProgress(
-                                    Objects.requireNonNullElse(taskDto.getAssigneeId(), taskEntity.getAssigneeId()));
+                            if(Objects.nonNull(taskDto.getName())){
+                                taskEntity.setName(taskDto.getName());
+                            }
+                            if(Objects.nonNull(taskDto.getDescription())){
+                                taskEntity.setDescription(taskDto.getDescription());
+                            }
+                            if(Objects.nonNull(taskDto.getStartDate())){
+                                taskEntity.setStartDate(taskDto.getStartDate());
+                            }
+                            if(Objects.nonNull(taskDto.getEndDate())){
+                                taskEntity.setEndDate(taskDto.getEndDate());
+                            }
+                            if(Objects.nonNull(taskDto.getProgress())){
+                                taskEntity.setProgress(taskDto.getProgress());
+                            }
+                            if(Objects.nonNull(taskDto.getAssigneeId())){
+                                taskEntity.setAssigneeId(taskDto.getAssigneeId());
+                            }
+                            if(Objects.nonNull(taskDto.getStatus())){
+                                taskEntity.setStatus(taskDto.getStatus());
+                                taskEntity.setStartDate(new Date());
+                            }
 
                             setModifiedInfo(userId, taskEntity);
 

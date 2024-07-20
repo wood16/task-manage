@@ -33,6 +33,14 @@ public class TaskValidator {
         validateDate(optionalTask, taskDto);
     }
 
+    public void validateForPatch(long taskId, TaskDto taskDto) {
+
+        validateExist(taskId);
+
+        Optional<TaskEntity> optionalTask = taskRepository.findById(taskId);
+        validateDate(optionalTask, taskDto);
+    }
+
     public void validateExist(long taskId) {
 
         if (taskRepository.findById(taskId).isPresent()) {
@@ -81,6 +89,10 @@ public class TaskValidator {
         if(Objects.isNull(taskDto.getAssigneeId())){
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Assignee of task is required!");
         }
+    }
+
+    private void validateTaskRecurTask(long id, TaskDto taskDto){
+
     }
 
 }

@@ -65,7 +65,7 @@ public class TaskController {
     @PatchMapping("/patch/{id}")
     public ResponseEntity<TaskDto> patchTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
 
-        taskValidator.validateForUpdate(id, taskModel);
+        taskValidator.validateForPatch(id, taskModel);
 
         return ResponseEntity.ok(taskService.patchTaskUpdate(getUserContext().getUserId(), id, taskModel));
     }
