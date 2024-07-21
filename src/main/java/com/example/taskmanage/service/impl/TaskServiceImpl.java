@@ -9,6 +9,7 @@ import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.mapper.CommonMapper;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
+import com.example.taskmanage.service.ProgressHistoryService;
 import com.example.taskmanage.service.TaskService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskElasticSearch taskElasticSearch;
+
+    @Autowired
+    private ProgressHistoryService progressHistoryService;
 
     @Override
     public Page<TaskDto> getAllTask(String filter,
@@ -133,7 +137,8 @@ public class TaskServiceImpl implements TaskService {
                                 taskEntity.setEndDate(taskDto.getEndDate());
                             }
                             if(Objects.nonNull(taskDto.getProgress())){
-                                taskEntity.setProgress(taskDto.getProgress());
+
+                                updateProgress(userId, taskEntity, taskDto.getProgress(), "");
                             }
                             if(Objects.nonNull(taskDto.getAssigneeId())){
                                 taskEntity.setAssigneeId(taskDto.getAssigneeId());
@@ -262,6 +267,16 @@ public class TaskServiceImpl implements TaskService {
 
                     taskRepository.save(entity);
                 });
+    }
+
+    private void updateProgress(long userId,
+                                TaskEntity taskEntity,
+                                long progress,
+                                String description){
+
+        taskEntity.setProgress(progress);
+
+        progressHistoryService.addProgressHistory(userId, taskEntity.getId(), progress, description);
     }
 
     private void setCreateInfo(long creatorId, TaskEntity taskEntity) {
