@@ -145,7 +145,9 @@ public class TaskServiceImpl implements TaskService {
                             }
                             if(Objects.nonNull(taskDto.getStatus())){
                                 taskEntity.setStatus(taskDto.getStatus());
-                                taskEntity.setStartDate(new Date());
+                            }
+                            if(Objects.nonNull(taskDto.getPriority())){
+                                taskEntity.setPriority(taskDto.getPriority());
                             }
 
                             setModifiedInfo(userId, taskEntity);
