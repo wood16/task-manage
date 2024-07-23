@@ -65,14 +65,14 @@ public class TaskServiceImpl implements TaskService {
 //            taskModels =
 //                    taskMapper.mapModelsFromEntities(taskRepository.findByNameContaining(search, paging).getContent());
 
-            taskModels = commonMapper.mapList(
-                    taskElasticSearch.searchByName(search, paging).getContent(), TaskDto.class);
+            taskModels = taskMapper.mapModelsFromEntities(
+                    taskElasticSearch.searchByName(search, paging).getContent());
         } else {
 //            taskModels =
 //                    taskMapper.mapModelsFromEntities(taskRepository.findAll(paging).getContent());
 
-            taskModels = commonMapper.mapList(
-                    taskElaRepository.findAll(paging).getContent(), TaskDto.class);
+            taskModels = taskMapper.mapModelsFromEntities(
+                    taskElaRepository.findAll(paging).getContent());
         }
 
 //        taskElasticSearch.searchByName("Task", paging);
@@ -180,7 +180,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto getTask(long taskId) {
 
         return taskRepository.findById(taskId)
-                .map(task -> modelMapper.map(task, TaskDto.class))
+                .map(task -> taskMapper.mapModelFromEntity(task))
                 .orElseThrow(() ->
                         new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found"));
     }

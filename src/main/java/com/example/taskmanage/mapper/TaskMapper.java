@@ -5,10 +5,13 @@ import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.entity.UserEntity;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.repository.UserRepository;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -29,7 +32,7 @@ public class TaskMapper {
         to.setPriority(from.getPriority());
         to.setProgressType(from.getProgressType());
         to.setAssigneeId(from.getAssigneeId());
-//        to.setParentTask(taskRepository.findById(from.getParentId()).orElse(null));
+        to.setParentTask(taskRepository.findById(from.getParentId()).orElse(null));
 
         return to;
     }
@@ -53,9 +56,14 @@ public class TaskMapper {
         to.setModifiedDate(from.getModifiedDate());
         to.setModifiedId(from.getModifiedId());
         to.setModifiedName(getUserName(from.getModifiedId()));
-        to.setTasks(mapModelsFromEntities(taskRepository.findByParentTask_Id(from.getId())));
-        Optional.ofNullable(from.getParentTask()).ifPresent(entity -> to.setParentTask(mapModelFromEntity(entity)));
+//        to.setTasks(mapModelsFromEntities(taskRepository.findByParentTask_Id(from.getId())));
+        Optional.ofNullable(from.getParentTask()).ifPresent(entity -> {
+            to.setParentTask(mapModelFromEntity(entity));
+            to.setParentId(entity.getId());
+        });
         to.setAssigneeId(from.getAssigneeId());
+        to.setAssigneeName(
+                getUserName(Objects.requireNonNullElse(from.getAssigneeId(), 0L)));
 
         return to;
     }
