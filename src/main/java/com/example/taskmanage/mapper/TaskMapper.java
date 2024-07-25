@@ -1,5 +1,6 @@
 package com.example.taskmanage.mapper;
 
+import com.example.taskmanage.dto.ProgressHistoryDto;
 import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.entity.UserEntity;
@@ -7,10 +8,10 @@ import com.example.taskmanage.repository.ProgressHistoryRepository;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.repository.UserRepository;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -76,7 +77,8 @@ public class TaskMapper {
                 getUserName(Objects.requireNonNullElse(from.getAssigneeId(), 0L)));
 
         to.setProgressHistories(
-                progressHistoryMapper.mapFromEntities(progressHistoryRepository.findByTaskId(from.getId())));
+                progressHistoryMapper.mapFromEntities(progressHistoryRepository.findByTaskId(from.getId()))
+                        .stream().sorted(Comparator.comparing(ProgressHistoryDto::getCreateDate).reversed()).toList());
 
         return to;
     }

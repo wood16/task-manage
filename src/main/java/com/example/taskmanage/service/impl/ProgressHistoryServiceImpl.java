@@ -18,14 +18,16 @@ public class ProgressHistoryServiceImpl implements ProgressHistoryService {
     @Override
     public void addProgressHistory(long userId,
                                    long taskId,
-                                   long progress,
+                                   long fromProgress,
+                                   long toProgress,
                                    String description) {
 
         ProgressHistoryEntity entity = new ProgressHistoryEntity();
 
         entity.setTaskId(taskId);
         entity.setCreatorId(userId);
-        entity.setProgress(progress);
+        entity.setFromProgress(fromProgress);
+        entity.setToProgress(toProgress);
         entity.setDescription(description);
         entity.setCreateDate(new Date());
 

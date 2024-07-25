@@ -14,7 +14,8 @@ public class ProgressHistoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long taskId;
-    private Long progress;
+    private Long fromProgress;
+    private Long toProgress;
     private String description;
     private Long creatorId;
     private Date createDate;

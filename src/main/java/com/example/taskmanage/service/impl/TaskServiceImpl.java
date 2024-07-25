@@ -275,9 +275,12 @@ public class TaskServiceImpl implements TaskService {
                                 long progress,
                                 String description) {
 
+        long fromProgress = taskEntity.getProgress();
+
         taskEntity.setProgress(progress);
 
-        progressHistoryService.addProgressHistory(userId, taskEntity.getId(), progress, description);
+        progressHistoryService.addProgressHistory(
+                userId, taskEntity.getId(), fromProgress, progress, description);
     }
 
     private void setCreateInfo(long creatorId, TaskEntity taskEntity) {
