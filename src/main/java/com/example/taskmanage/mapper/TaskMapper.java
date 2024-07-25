@@ -3,6 +3,7 @@ package com.example.taskmanage.mapper;
 import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.entity.UserEntity;
+import com.example.taskmanage.repository.ProgressHistoryRepository;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -18,10 +19,19 @@ import java.util.Optional;
 public class TaskMapper {
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private ProgressHistoryRepository progressHistoryRepository;
+
+    @Autowired
+    private ProgressHistoryMapper progressHistoryMapper;
 
     public TaskEntity mapEntityFromModel(TaskDto from, TaskEntity to) {
 
@@ -58,12 +68,15 @@ public class TaskMapper {
         to.setModifiedName(getUserName(from.getModifiedId()));
 //        to.setTasks(mapModelsFromEntities(taskRepository.findByParentTask_Id(from.getId())));
         Optional.ofNullable(from.getParentTask()).ifPresent(entity -> {
-            to.setParentTask(mapModelFromEntity(entity));
+            to.setParentTask(modelMapper.map(entity, TaskDto.class));
             to.setParentId(entity.getId());
         });
         to.setAssigneeId(from.getAssigneeId());
         to.setAssigneeName(
                 getUserName(Objects.requireNonNullElse(from.getAssigneeId(), 0L)));
+
+        to.setProgressHistories(
+                progressHistoryMapper.mapFromEntities(progressHistoryRepository.findByTaskId(from.getId())));
 
         return to;
     }

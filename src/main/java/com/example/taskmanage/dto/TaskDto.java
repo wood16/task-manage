@@ -32,4 +32,5 @@ public class TaskDto {
     private TaskDto parentTask;
     private Long assigneeId;
     private String assigneeName;
+    private List<ProgressHistoryDto> progressHistories;
 }

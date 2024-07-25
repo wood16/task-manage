@@ -120,33 +120,33 @@ public class TaskServiceImpl implements TaskService {
                                    long taskId,
                                    TaskDto taskDto) {
 
-        return modelMapper.map(
+        return taskMapper.mapModelFromEntity(
                 taskRepository.findById(taskId)
                         .map(taskEntity -> {
 
-                            if(Objects.nonNull(taskDto.getName())){
+                            if (Objects.nonNull(taskDto.getName())) {
                                 taskEntity.setName(taskDto.getName());
                             }
-                            if(Objects.nonNull(taskDto.getDescription())){
+                            if (Objects.nonNull(taskDto.getDescription())) {
                                 taskEntity.setDescription(taskDto.getDescription());
                             }
-                            if(Objects.nonNull(taskDto.getStartDate())){
+                            if (Objects.nonNull(taskDto.getStartDate())) {
                                 taskEntity.setStartDate(taskDto.getStartDate());
                             }
-                            if(Objects.nonNull(taskDto.getEndDate())){
+                            if (Objects.nonNull(taskDto.getEndDate())) {
                                 taskEntity.setEndDate(taskDto.getEndDate());
                             }
-                            if(Objects.nonNull(taskDto.getProgress())){
+                            if (Objects.nonNull(taskDto.getProgress())) {
 
                                 updateProgress(userId, taskEntity, taskDto.getProgress(), "");
                             }
-                            if(Objects.nonNull(taskDto.getAssigneeId())){
+                            if (Objects.nonNull(taskDto.getAssigneeId())) {
                                 taskEntity.setAssigneeId(taskDto.getAssigneeId());
                             }
-                            if(Objects.nonNull(taskDto.getStatus())){
+                            if (Objects.nonNull(taskDto.getStatus())) {
                                 taskEntity.setStatus(taskDto.getStatus());
                             }
-                            if(Objects.nonNull(taskDto.getPriority())){
+                            if (Objects.nonNull(taskDto.getPriority())) {
                                 taskEntity.setPriority(taskDto.getPriority());
                             }
 
@@ -156,8 +156,7 @@ public class TaskServiceImpl implements TaskService {
                         })
                         .orElseThrow(
                                 () -> new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found!")
-                        ),
-                TaskDto.class
+                        )
         );
     }
 
@@ -274,7 +273,7 @@ public class TaskServiceImpl implements TaskService {
     private void updateProgress(long userId,
                                 TaskEntity taskEntity,
                                 long progress,
-                                String description){
+                                String description) {
 
         taskEntity.setProgress(progress);
 

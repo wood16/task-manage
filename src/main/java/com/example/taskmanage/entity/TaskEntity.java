@@ -3,6 +3,8 @@ package com.example.taskmanage.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Date;
 
@@ -17,6 +19,7 @@ public class TaskEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Field(type = FieldType.Keyword)
     private String name;
     private Date startDate;
     private Date endDate;
