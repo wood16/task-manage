@@ -9,6 +9,7 @@ import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.mapper.CommonMapper;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
+import com.example.taskmanage.service.HistoryService;
 import com.example.taskmanage.service.ProgressHistoryService;
 import com.example.taskmanage.service.TaskService;
 import org.modelmapper.ModelMapper;
@@ -45,6 +46,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private ProgressHistoryService progressHistoryService;
+
+    @Autowired
+    private HistoryService historyService;
 
     @Override
     public Page<TaskDto> getAllTask(String filter,
@@ -92,7 +96,11 @@ public class TaskServiceImpl implements TaskService {
         taskEntity.setStatus("pending");
         taskEntity.setProgress(0L);
 
-        return taskMapper.mapModelFromEntity(saveEntity(taskEntity));
+        TaskEntity saved = saveEntity(taskEntity);
+
+        historyService.addHistory(userId, "task", saved.getId(), "tạo mới công việc");
+
+        return taskMapper.mapModelFromEntity(saved);
     }
 
     @Override
