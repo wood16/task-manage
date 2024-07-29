@@ -18,5 +18,5 @@ public class ProgressHistoryDto {
     private String description;
     private Long creatorId;
     private Date createDate;
-    private String createName;
+    private String creatorName;
 }

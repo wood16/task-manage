@@ -9,6 +9,7 @@ public class HistoryDto {
 
     private Long id;
     private Long creatorId;
+    private String creatorName;
     private Date createDate;
     private Long objectId;
     private String type;

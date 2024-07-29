@@ -3,12 +3,13 @@ package com.example.taskmanage.service.impl;
 import com.example.taskmanage.dto.HistoryDto;
 import com.example.taskmanage.elasticrepository.HistoryElasticRepository;
 import com.example.taskmanage.entity.HistoryEntity;
-import com.example.taskmanage.mapper.CommonMapper;
+import com.example.taskmanage.mapper.HistoryMapper;
 import com.example.taskmanage.repository.HistoryRepository;
 import com.example.taskmanage.service.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class HistoryServiceImpl implements HistoryService {
     private HistoryElasticRepository historyElasticRepository;
 
     @Autowired
-    private CommonMapper commonMapper;
+    private HistoryMapper historyMapper;
 
     @Override
     public void addHistory(long creatorId,
@@ -44,7 +45,11 @@ public class HistoryServiceImpl implements HistoryService {
     @Override
     public List<HistoryDto> findByTypeAndObjectId(String type, long objectId) {
 
-        return commonMapper.mapList(historyRepository.findByTypeAndObjectId(type, objectId), HistoryDto.class);
+        return historyMapper.mapFromEntities(
+                historyRepository.findByTypeAndObjectId(type, objectId)
+                        .stream()
+                        .sorted(Comparator.comparing(HistoryEntity::getCreateDate).reversed())
+                        .toList());
     }
 
     private String mapAction(String action, String detail) {
