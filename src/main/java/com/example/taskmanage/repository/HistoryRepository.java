@@ -10,4 +10,5 @@ import java.util.List;
 public interface HistoryRepository extends JpaRepository<HistoryEntity, Long> {
 
     List<HistoryEntity> findByTypeAndObjectId(String type, Long objectId);
+    List<HistoryEntity> findByCreatorId(Long creatorId);
 }

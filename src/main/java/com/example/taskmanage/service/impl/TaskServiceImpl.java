@@ -1,5 +1,6 @@
 package com.example.taskmanage.service.impl;
 
+import com.example.taskmanage.common.constant.HistoryAction;
 import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.elasticsearch.TaskElasticSearch;
@@ -98,7 +99,7 @@ public class TaskServiceImpl implements TaskService {
 
         TaskEntity saved = saveEntity(taskEntity);
 
-        historyService.addHistory(userId, "task", saved.getId(), "tạo mới công việc");
+        historyService.addHistory(userId, "task", saved.getId(), HistoryAction.CREATE.getValue(), "");
 
         return taskMapper.mapModelFromEntity(saved);
     }
@@ -134,28 +135,43 @@ public class TaskServiceImpl implements TaskService {
 
                             if (Objects.nonNull(taskDto.getName())) {
                                 taskEntity.setName(taskDto.getName());
+
                             }
                             if (Objects.nonNull(taskDto.getDescription())) {
                                 taskEntity.setDescription(taskDto.getDescription());
+                                historyService.addHistory(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), " mô tả");
                             }
                             if (Objects.nonNull(taskDto.getStartDate())) {
                                 taskEntity.setStartDate(taskDto.getStartDate());
+                                historyService.addHistory(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), " ngày bắt đầu");
                             }
                             if (Objects.nonNull(taskDto.getEndDate())) {
                                 taskEntity.setEndDate(taskDto.getEndDate());
+                                historyService.addHistory(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), " ngày kết thúc");
                             }
                             if (Objects.nonNull(taskDto.getProgress())) {
 
                                 updateProgress(userId, taskEntity, taskDto.getProgress(), "");
+                                historyService.addHistory(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), " tiến độ");
                             }
                             if (Objects.nonNull(taskDto.getAssigneeId())) {
                                 taskEntity.setAssigneeId(taskDto.getAssigneeId());
+                                historyService.addHistory(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), " người thực hiện");
                             }
                             if (Objects.nonNull(taskDto.getStatus())) {
                                 taskEntity.setStatus(taskDto.getStatus());
+                                historyService.addHistory(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), " trạng thái");
                             }
                             if (Objects.nonNull(taskDto.getPriority())) {
                                 taskEntity.setPriority(taskDto.getPriority());
+                                historyService.addHistory(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), " độ ưu tiên");
                             }
 
                             setModifiedInfo(userId, taskEntity);
@@ -174,6 +190,9 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findById(taskId)
                 .map(entity -> {
                     TaskEntity newTaskEntity = taskMapper.mapEntityFromModel(taskDto, entity);
+
+                    historyService.addHistory(userId, "task", newTaskEntity.getId(),
+                            HistoryAction.UPDATE.getValue(), "");
 
                     setModifiedInfo(userId, newTaskEntity);
 
@@ -210,7 +229,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTaskById(long taskId) {
+    public void deleteTaskById(long userId, long taskId) {
+
+        historyService.addHistory(userId, "task", taskId,
+                HistoryAction.CREATE.getValue(), "");
 
         deleteEntity(taskId);
     }

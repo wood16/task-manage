@@ -83,7 +83,7 @@ public class TaskController {
 
         taskValidator.validateExist(id);
 
-        taskService.deleteTaskById(id);
+        taskService.deleteTaskById(getUserContext().getUserId(), id);
     }
 
     @GetMapping("/childTasks/{id}")
