@@ -10,7 +10,9 @@ public interface HistoryService {
                     String type,
                     long objectId,
                     String action,
-                    String detail);
+                    String detail,
+                    Object fromValue,
+                    Object toValue);
 
     List<HistoryDto> findByTypeAndObjectId(String type, long objectId);
 }

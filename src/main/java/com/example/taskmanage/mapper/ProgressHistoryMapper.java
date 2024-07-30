@@ -26,7 +26,7 @@ public class ProgressHistoryMapper {
 
         ProgressHistoryDto to = modelMapper.map(from, ProgressHistoryDto.class);
 
-        to.setCreateName(mapperUtil.getUserName(from.getCreatorId()));
+        to.setCreatorName(mapperUtil.getUserName(from.getCreatorId()));
 
         return to;
     }

@@ -14,4 +14,6 @@ public class HistoryDto {
     private Long objectId;
     private String type;
     private String description;
+    private String fromValue;
+    private String toValue;
 }

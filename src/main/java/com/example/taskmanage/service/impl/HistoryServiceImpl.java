@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class HistoryServiceImpl implements HistoryService {
@@ -30,7 +31,9 @@ public class HistoryServiceImpl implements HistoryService {
                            String type,
                            long objectId,
                            String action,
-                           String detail) {
+                           String detail,
+                           Object fromValue,
+                           Object toValue) {
         HistoryEntity entity = new HistoryEntity();
 
         entity.setCreatorId(creatorId);
@@ -38,6 +41,8 @@ public class HistoryServiceImpl implements HistoryService {
         entity.setType(type);
         entity.setObjectId(objectId);
         entity.setDescription(mapDescription(type, action, detail));
+        entity.setFromValue(Objects.requireNonNullElse(fromValue, "").toString());
+        entity.setToValue(Objects.requireNonNullElse(toValue, "").toString());
 
         saveEntity(entity);
     }
