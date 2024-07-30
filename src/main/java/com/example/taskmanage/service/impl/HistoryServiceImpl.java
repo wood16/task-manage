@@ -2,6 +2,7 @@ package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.dto.HistoryDto;
 import com.example.taskmanage.elasticrepository.HistoryElasticRepository;
+import com.example.taskmanage.elasticsearch.HistoryElasticSearch;
 import com.example.taskmanage.entity.HistoryEntity;
 import com.example.taskmanage.mapper.HistoryMapper;
 import com.example.taskmanage.repository.HistoryRepository;
@@ -26,6 +27,9 @@ public class HistoryServiceImpl implements HistoryService {
     @Autowired
     private HistoryMapper historyMapper;
 
+    @Autowired
+    private HistoryElasticSearch historyElasticSearch;
+
     @Override
     public void addHistoryTask(long creatorId,
                                String type,
@@ -47,6 +51,12 @@ public class HistoryServiceImpl implements HistoryService {
         entity.setToValue(Objects.requireNonNullElse(toValue, "").toString());
 
         saveEntity(entity);
+    }
+
+    @Override
+    public void reindexAllHistory() {
+
+        historyElasticSearch.reindexAllHistory();
     }
 
     @Override

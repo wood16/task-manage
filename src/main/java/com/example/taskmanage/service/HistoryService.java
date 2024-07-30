@@ -14,5 +14,7 @@ public interface HistoryService {
                         Object fromValue,
                         Object toValue);
 
+    void reindexAllHistory();
+
     List<HistoryDto> findByTypeAndObjectId(String type, long objectId);
 }

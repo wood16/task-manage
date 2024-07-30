@@ -245,6 +245,12 @@ public class TaskServiceImpl implements TaskService {
         deleteEntity(taskId);
     }
 
+    @Override
+    public void reindexAllTask() {
+
+        taskElasticSearch.reindexAllTask();
+    }
+
     public TaskEntity saveEntity(TaskEntity taskEntity) {
 
 //        save and index task

@@ -152,8 +152,9 @@ public class TaskElasticSearch {
 
     public void reindexAllTask() {
 
-        List<TaskEntity> taskEntities = taskRepository.findAll();
+        taskElasticRepository.deleteAll();
 
+        List<TaskEntity> taskEntities = taskRepository.findAll();
         taskEntities.forEach(taskElasticRepository::save);
     }
 }

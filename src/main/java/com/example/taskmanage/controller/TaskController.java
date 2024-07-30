@@ -102,4 +102,11 @@ public class TaskController {
         return (UserContextDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
+    @GetMapping("/reindex")
+    public ResponseEntity<String> reindexAllTask(){
+
+        taskService.reindexAllTask();
+        return ResponseEntity.ok("Success");
+    }
+
 }

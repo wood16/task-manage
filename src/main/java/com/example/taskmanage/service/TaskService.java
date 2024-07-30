@@ -29,4 +29,6 @@ public interface TaskService {
     Page<TaskDto> getChildTasks(long taskId, int page, int pageSize, String search, String sortBy, Sort.Direction sortOrder);
 
     void deleteTaskById(long userId, long taskId);
+
+    void reindexAllTask();
 }

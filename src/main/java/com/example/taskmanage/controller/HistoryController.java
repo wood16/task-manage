@@ -24,7 +24,14 @@ public class HistoryController {
             @RequestParam(required = true) long objectId
     ) {
 
-
         return ResponseEntity.ok(historyService.findByTypeAndObjectId(type, objectId));
+    }
+
+    @GetMapping("/reindex")
+    public ResponseEntity<String> reindexAllHistory(){
+
+        historyService.reindexAllHistory();
+
+        return ResponseEntity.ok("Success");
     }
 }
