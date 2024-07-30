@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface HistoryService {
 
-    void addHistory(long creatorId,
-                    String type,
-                    long objectId,
-                    String action,
-                    String detail,
-                    Object fromValue,
-                    Object toValue);
+    void addHistoryTask(long creatorId,
+                        String type,
+                        long objectId,
+                        String action,
+                        String field,
+                        Object fromValue,
+                        Object toValue);
 
     List<HistoryDto> findByTypeAndObjectId(String type, long objectId);
 }

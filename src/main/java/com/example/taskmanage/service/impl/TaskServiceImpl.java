@@ -99,7 +99,7 @@ public class TaskServiceImpl implements TaskService {
 
         TaskEntity saved = saveEntity(taskEntity);
 
-        historyService.addHistory(userId, "task", saved.getId(), HistoryAction.CREATE.getValue(), "", null, null);
+        historyService.addHistoryTask(userId, "task", saved.getId(), HistoryAction.CREATE.getValue(), "", null, null);
 
         return taskMapper.mapModelFromEntity(saved);
     }
@@ -134,48 +134,50 @@ public class TaskServiceImpl implements TaskService {
                         .map(taskEntity -> {
 
                             if (Objects.nonNull(taskDto.getName())) {
+                                historyService.addHistoryTask(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), "name",
+                                        taskEntity.getDescription(), taskDto.getDescription());
                                 taskEntity.setName(taskDto.getName());
-
                             }
                             if (Objects.nonNull(taskDto.getDescription())) {
-                                historyService.addHistory(userId, "task", taskEntity.getId(),
-                                        HistoryAction.UPDATE.getValue(), "mô tả",
+                                historyService.addHistoryTask(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), "description",
                                         taskEntity.getDescription(), taskDto.getDescription());
                                 taskEntity.setDescription(taskDto.getDescription());
                             }
                             if (Objects.nonNull(taskDto.getStartDate())) {
-                                historyService.addHistory(userId, "task", taskEntity.getId(),
-                                        HistoryAction.UPDATE.getValue(), "ngày bắt đầu",
+                                historyService.addHistoryTask(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), "startDate",
                                         taskEntity.getStartDate(), taskDto.getStartDate());
                                 taskEntity.setStartDate(taskDto.getStartDate());
                             }
                             if (Objects.nonNull(taskDto.getEndDate())) {
-                                historyService.addHistory(userId, "task", taskEntity.getId(),
-                                        HistoryAction.UPDATE.getValue(), "ngày kết thúc",
+                                historyService.addHistoryTask(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), "endDate",
                                         taskEntity.getEndDate(), taskDto.getEndDate());
                                 taskEntity.setEndDate(taskDto.getEndDate());
                             }
                             if (Objects.nonNull(taskDto.getProgress())) {
-                                historyService.addHistory(userId, "task", taskEntity.getId(),
-                                        HistoryAction.UPDATE.getValue(), "tiến độ",
+                                historyService.addHistoryTask(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), "progress",
                                         taskEntity.getProgress(), taskDto.getProgress());
                                 updateProgress(userId, taskEntity, taskDto.getProgress(), "");
                             }
                             if (Objects.nonNull(taskDto.getAssigneeId())) {
-                                historyService.addHistory(userId, "task", taskEntity.getId(),
-                                        HistoryAction.UPDATE.getValue(), "người thực hiện",
+                                historyService.addHistoryTask(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), "assigneeId",
                                         taskEntity.getAssigneeId(), taskDto.getAssigneeId());
                                 taskEntity.setAssigneeId(taskDto.getAssigneeId());
                             }
                             if (Objects.nonNull(taskDto.getStatus())) {
-                                historyService.addHistory(userId, "task", taskEntity.getId(),
-                                        HistoryAction.UPDATE.getValue(), "trạng thái",
+                                historyService.addHistoryTask(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), "status",
                                         taskEntity.getStatus(), taskDto.getStatus());
                                 taskEntity.setStatus(taskDto.getStatus());
                             }
                             if (Objects.nonNull(taskDto.getPriority())) {
-                                historyService.addHistory(userId, "task", taskEntity.getId(),
-                                        HistoryAction.UPDATE.getValue(), "độ ưu tiên",
+                                historyService.addHistoryTask(userId, "task", taskEntity.getId(),
+                                        HistoryAction.UPDATE.getValue(), "priority",
                                         taskEntity.getPriority(), taskDto.getPriority());
                                 taskEntity.setPriority(taskDto.getPriority());
                             }
@@ -197,7 +199,7 @@ public class TaskServiceImpl implements TaskService {
                 .map(entity -> {
                     TaskEntity newTaskEntity = taskMapper.mapEntityFromModel(taskDto, entity);
 
-                    historyService.addHistory(userId, "task", newTaskEntity.getId(),
+                    historyService.addHistoryTask(userId, "task", newTaskEntity.getId(),
                             HistoryAction.UPDATE.getValue(), "", null, null);
 
                     setModifiedInfo(userId, newTaskEntity);
@@ -237,7 +239,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteTaskById(long userId, long taskId) {
 
-        historyService.addHistory(userId, "task", taskId,
+        historyService.addHistoryTask(userId, "task", taskId,
                 HistoryAction.DELETE.getValue(), "", null, null);
 
         deleteEntity(taskId);

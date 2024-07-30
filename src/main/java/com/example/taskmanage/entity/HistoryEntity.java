@@ -22,5 +22,7 @@ public class HistoryEntity {
     private String description;
     private String fromValue;
     private String toValue;
+    private String action;
+    private String field;
 
 }

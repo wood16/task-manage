@@ -27,20 +27,22 @@ public class HistoryServiceImpl implements HistoryService {
     private HistoryMapper historyMapper;
 
     @Override
-    public void addHistory(long creatorId,
-                           String type,
-                           long objectId,
-                           String action,
-                           String detail,
-                           Object fromValue,
-                           Object toValue) {
+    public void addHistoryTask(long creatorId,
+                               String type,
+                               long objectId,
+                               String action,
+                               String field,
+                               Object fromValue,
+                               Object toValue) {
         HistoryEntity entity = new HistoryEntity();
 
         entity.setCreatorId(creatorId);
         entity.setCreateDate(new Date());
         entity.setType(type);
         entity.setObjectId(objectId);
-        entity.setDescription(mapDescription(type, action, detail));
+        entity.setDescription(mapDescription(type, action, field));
+        entity.setAction(action);
+        entity.setField(field);
         entity.setFromValue(Objects.requireNonNullElse(fromValue, "").toString());
         entity.setToValue(Objects.requireNonNullElse(toValue, "").toString());
 
@@ -69,14 +71,29 @@ public class HistoryServiceImpl implements HistoryService {
 
     private String mapType(String type) {
         if (type.equals("task"))
-            return " công việc";
+            return "công việc";
 
         return "";
     }
 
-    private String mapDescription(String type, String action, String detail) {
+    private String mapField(String field){
 
-        return mapAction(action, detail) + mapType(type);
+        return switch (field){
+            case "name" -> "tên công việc ";
+            case "description" -> "mô tả ";
+            case "priority" -> "độ ưu tiên ";
+            case "status" -> "trạng thái ";
+            case "startDate" -> "ngày bắt đầu ";
+            case "endDate" -> "ngày kết thúc ";
+            case "assigneeId" -> "người thực hiện ";
+            case "progress" -> "tiến độ ";
+            default -> "";
+        };
+    }
+
+    private String mapDescription(String type, String action, String field) {
+
+        return mapAction(action, mapField(field)) + mapType(type);
     }
 
     private HistoryEntity saveEntity(HistoryEntity historyEntity) {

@@ -16,4 +16,5 @@ public class HistoryDto {
     private String description;
     private String fromValue;
     private String toValue;
+    private String field;
 }
