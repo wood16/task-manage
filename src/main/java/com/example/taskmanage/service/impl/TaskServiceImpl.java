@@ -136,7 +136,7 @@ public class TaskServiceImpl implements TaskService {
                             if (Objects.nonNull(taskDto.getName())) {
                                 historyService.addHistoryTask(userId, "task", taskEntity.getId(),
                                         HistoryAction.UPDATE.getValue(), "name",
-                                        taskEntity.getDescription(), taskDto.getDescription());
+                                        taskEntity.getName(), taskDto.getName());
                                 taskEntity.setName(taskDto.getName());
                             }
                             if (Objects.nonNull(taskDto.getDescription())) {

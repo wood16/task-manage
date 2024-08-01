@@ -89,7 +89,7 @@ public class HistoryServiceImpl implements HistoryService {
     private String mapField(String field){
 
         return switch (field){
-            case "name" -> "tên công việc ";
+            case "name" -> "tên ";
             case "description" -> "mô tả ";
             case "priority" -> "độ ưu tiên ";
             case "status" -> "trạng thái ";
