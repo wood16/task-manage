@@ -5,6 +5,7 @@ import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.repository.TaskRepository;
+import com.example.taskmanage.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,10 +39,15 @@ public class TaskElasticSearch {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private UserService userService;
+
 
     public Page<TaskEntity> getAllTask(long userId, String searchTerm, Pageable pageable) {
 
-        BoolQuery query = BoolQuery.of(
+        boolean isAdmin = userService.checkUserRole(userId, "admin");
+
+        BoolQuery searchQuery = BoolQuery.of(
                 b -> b.must(
                         m -> m.wildcard(
                                 w -> w.field(TaskKeys.NAME)
@@ -51,28 +57,33 @@ public class TaskElasticSearch {
                 )
         );
 
-        Query searchQuery = NativeQuery.builder()
-                .withQuery(q -> q.bool(
-                        b -> b.must(
-                                m -> m.bool(
-                                        b1 -> b1.should(
-                                                s1 -> s1.term(
-                                                        t1 -> t1.field(TaskKeys.CREATOR_ID).value(userId)
-                                                )
-                                        ).should(
-                                                s2 -> s2.term(
-                                                        t2 -> t2.field(TaskKeys.ASSIGNEE_ID).value(userId)
-                                                )
-                                        )
-                                )
-                        ).must(
-                                s2 -> s2.bool(query)
+        BoolQuery ownQuery = BoolQuery.of(
+                b -> b.should(s1 -> s1.term(
+                                t1 -> t1.field(TaskKeys.CREATOR_ID).value(userId)
                         )
+                ).should(
+                        s2 -> s2.term(
+                                t2 -> t2.field(TaskKeys.ASSIGNEE_ID).value(userId)
+                        )
+                )
+        );
+
+        Query query = NativeQuery.builder()
+                .withQuery(q -> q.bool(
+                        isAdmin ?
+                                b -> b.must(
+                                        m1 -> m1.bool(searchQuery))
+                                :
+                                b -> b.must(
+                                        m1 -> m1.bool(ownQuery)
+                                ).must(
+                                        m2 -> m2.bool(searchQuery)
+                                )
                 ))
                 .withPageable(pageable)
                 .build();
 
-        SearchHits<TaskEntity> hits = elasticsearchOperations.search(searchQuery, TaskEntity.class);
+        SearchHits<TaskEntity> hits = elasticsearchOperations.search(query, TaskEntity.class);
 
         return new PageImpl<>(
                 hits.getSearchHits().stream().map(SearchHit::getContent).toList(),

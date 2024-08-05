@@ -13,7 +13,6 @@ import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.service.HistoryService;
 import com.example.taskmanage.service.ProgressHistoryService;
 import com.example.taskmanage.service.TaskService;
-import com.example.taskmanage.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -52,9 +51,6 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private HistoryService historyService;
 
-    @Autowired
-    private UserService userService;
-
     @Override
     public Page<TaskDto> getAllTask(long userId,
                                     String filter,
@@ -69,17 +65,8 @@ public class TaskServiceImpl implements TaskService {
 
         Pageable paging = PageRequest.of(page, pageSize, sort);
 
-        List<TaskDto> taskModels;
-
-        boolean isAdmin = userService.checkUserRole(userId, "admin");
-
-        if (isAdmin) {
-            taskModels = taskMapper.mapModelsFromEntities(
-                    taskElasticSearch.searchByName(search, paging).getContent());
-        } else {
-            taskModels = taskMapper.mapModelsFromEntities(
-                    taskElasticSearch.getAllTask(userId, search, paging).getContent());
-        }
+        List<TaskDto> taskModels =
+                taskMapper.mapModelsFromEntities(taskElasticSearch.getAllTask(userId, search, paging).getContent());
 
 //        taskElasticSearch.searchByName("Task", paging);
         taskElasticSearch.searchByStartDate(new Date(), paging);
