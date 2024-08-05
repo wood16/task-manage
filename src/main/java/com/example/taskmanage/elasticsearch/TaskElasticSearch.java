@@ -43,7 +43,7 @@ public class TaskElasticSearch {
     private UserService userService;
 
 
-    public Page<TaskEntity> getAllTask(long userId, String searchTerm, Pageable pageable) {
+    public Page<TaskEntity> getMyTask(long userId, String searchTerm, Pageable pageable) {
 
         boolean isAdmin = userService.checkUserRole(userId, "admin");
 

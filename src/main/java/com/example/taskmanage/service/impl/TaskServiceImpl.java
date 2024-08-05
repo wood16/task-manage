@@ -66,7 +66,7 @@ public class TaskServiceImpl implements TaskService {
         Pageable paging = PageRequest.of(page, pageSize, sort);
 
         List<TaskDto> taskModels =
-                taskMapper.mapModelsFromEntities(taskElasticSearch.getAllTask(userId, search, paging).getContent());
+                taskMapper.mapModelsFromEntities(taskElasticSearch.getMyTask(userId, search, paging).getContent());
 
 //        taskElasticSearch.searchByName("Task", paging);
         taskElasticSearch.searchByStartDate(new Date(), paging);
