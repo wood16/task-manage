@@ -82,6 +82,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new BaseException(HttpStatus.BAD_REQUEST.value(), "User not found"));
     }
 
+    @Override
+    public boolean checkUserRole(Long userId, String role) {
+
+        return userRepository.findRoleByUser(userId).stream().anyMatch(item -> item.equalsIgnoreCase(role));
+    }
+
     private UserEntity insertUser(UserDto userDto) {
 
         UserEntity userEntity = new UserEntity();

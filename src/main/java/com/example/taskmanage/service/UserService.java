@@ -13,4 +13,6 @@ public interface UserService {
     List<UserDto> getAllUserRole(String search, String role);
 
     UserDto getUserById(Long userId);
+
+    boolean checkUserRole(Long userId, String role);
 }

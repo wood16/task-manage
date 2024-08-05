@@ -1,5 +1,6 @@
 package com.example.taskmanage.elasticsearch;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.entity.TaskEntity;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TaskElasticSearch {
@@ -37,6 +39,47 @@ public class TaskElasticSearch {
     private ModelMapper modelMapper;
 
 
+    public Page<TaskEntity> getAllTask(long userId, String searchTerm, Pageable pageable) {
+
+        BoolQuery query = BoolQuery.of(
+                b -> b.must(
+                        m -> m.wildcard(
+                                w -> w.field(TaskKeys.NAME)
+                                        .wildcard("*".concat(
+                                                Objects.requireNonNullElse(searchTerm, "")).concat("*"))
+                        )
+                )
+        );
+
+        Query searchQuery = NativeQuery.builder()
+                .withQuery(q -> q.bool(
+                        b -> b.must(
+                                m -> m.bool(
+                                        b1 -> b1.should(
+                                                s1 -> s1.term(
+                                                        t1 -> t1.field(TaskKeys.CREATOR_ID).value(userId)
+                                                )
+                                        ).should(
+                                                s2 -> s2.term(
+                                                        t2 -> t2.field(TaskKeys.ASSIGNEE_ID).value(userId)
+                                                )
+                                        )
+                                )
+                        ).must(
+                                s2 -> s2.bool(query)
+                        )
+                ))
+                .withPageable(pageable)
+                .build();
+
+        SearchHits<TaskEntity> hits = elasticsearchOperations.search(searchQuery, TaskEntity.class);
+
+        return new PageImpl<>(
+                hits.getSearchHits().stream().map(SearchHit::getContent).toList(),
+                pageable,
+                hits.getTotalHits());
+    }
+
     public Page<TaskEntity> searchByName(String searchTerm, Pageable pageable) {
         //text field can not sort
 
@@ -44,28 +87,20 @@ public class TaskElasticSearch {
 
         Query search = NativeQuery.builder()
                 .withQuery(p -> p
-                                .bool(b -> b
-                                                .should(s -> s
-                                                        .bool(b1 -> b1
-                                                                .must(w -> w
-                                                                        .wildcard(s1 -> s1
-                                                                                .field(TaskKeys.NAME)
-                                                                                .wildcard("*".concat(searchTerm).concat("*"))
-                                                                        )
-                                                                )
+                        .bool(b -> b
+                                .should(s -> s
+                                        .bool(b1 -> b1
+                                                .must(w -> w
+                                                        .wildcard(s1 -> s1
+                                                                .field(TaskKeys.NAME)
+                                                                .wildcard("*"
+                                                                        .concat(Objects.requireNonNullElse(searchTerm, ""))
+                                                                        .concat("*"))
                                                         )
                                                 )
-//                                .should(s -> s
-//                                        .bool(b1 -> b1
-//                                                .must(a1 -> a1
-//                                                        .matchPhrase(m -> m
-//                                                                .field("name")
-//                                                                .query("Task 05")
-//                                                        )
-//                                                )
-//                                        )
-//                                )
+                                        )
                                 )
+                        )
                 )
                 .withPageable(pageable)
                 .build();

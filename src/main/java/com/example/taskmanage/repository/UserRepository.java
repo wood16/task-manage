@@ -18,4 +18,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             "SELECT r.id from tbl_role r where r.name != ?1 ))" +
             "and u.username like %?2%", nativeQuery = true)
     List<UserEntity> findAllUserWithoutRole(String roleName, String search);
+
+    @Query(value = "SELECT r.name from tbl_role r where r.id in (" +
+            "SELECT ur.role_id from tbl_user_role ur where ur.user_id = ?1)", nativeQuery = true)
+    List<String> findRoleByUser(long userId);
 }

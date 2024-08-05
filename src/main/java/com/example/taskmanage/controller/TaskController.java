@@ -35,7 +35,8 @@ public class TaskController {
             @RequestParam(required = false, defaultValue = "ASC") Sort.Direction sortOrder
     ) {
 
-        Page<TaskDto> taskModels = taskService.getAllTask(filter, page, pageSize, search, sortBy, sortOrder);
+        Page<TaskDto> taskModels = taskService.getAllTask(
+                getUserContext().getUserId(), filter, page, pageSize, search, sortBy, sortOrder);
 
         Map<String, Object> response = new HashMap<>();
         response.put("tasks", taskModels.getContent());

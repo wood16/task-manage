@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface TaskService {
 
-    Page<TaskDto> getAllTask(String filter,
+    Page<TaskDto> getAllTask(long userId,
+                             String filter,
                              int page,
                              int pageSize,
                              String search,
