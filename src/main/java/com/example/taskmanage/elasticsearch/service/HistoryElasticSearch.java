@@ -1,6 +1,6 @@
-package com.example.taskmanage.elasticsearch;
+package com.example.taskmanage.elasticsearch.service;
 
-import com.example.taskmanage.elasticrepository.HistoryElasticRepository;
+import com.example.taskmanage.elasticsearch.elasticrepository.HistoryElasticRepository;
 import com.example.taskmanage.entity.HistoryEntity;
 import com.example.taskmanage.repository.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;

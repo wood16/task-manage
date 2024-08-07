@@ -1,4 +1,4 @@
-package com.example.taskmanage.elasticrepository;
+package com.example.taskmanage.elasticsearch.elasticrepository;
 
 import com.example.taskmanage.entity.HistoryEntity;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;

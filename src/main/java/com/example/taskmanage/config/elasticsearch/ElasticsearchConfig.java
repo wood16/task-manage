@@ -7,7 +7,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EnableElasticsearchRepositories(basePackages = "com.example.taskmanage.elasticrepository")
+@EnableElasticsearchRepositories(basePackages = "com.example.taskmanage.elasticsearch.elasticrepository")
 @EnableJpaRepositories(basePackages = "com.example.taskmanage.repository")
 public class ElasticsearchConfig extends ElasticsearchConfiguration {
 

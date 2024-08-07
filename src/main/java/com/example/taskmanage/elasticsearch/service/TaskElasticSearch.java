@@ -1,9 +1,11 @@
-package com.example.taskmanage.elasticsearch;
+package com.example.taskmanage.elasticsearch.service;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import com.example.taskmanage.dto.TaskDto;
-import com.example.taskmanage.elasticrepository.TaskElasticRepository;
-import com.example.taskmanage.entity.TaskEntity;
+import com.example.taskmanage.elasticsearch.TaskKeys;
+import com.example.taskmanage.elasticsearch.elasticrepository.TaskElasticRepository;
+import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
+import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -21,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -42,8 +43,11 @@ public class TaskElasticSearch {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TaskMapper taskMapper;
 
-    public Page<TaskEntity> getMyTask(long userId, String searchTerm, Pageable pageable) {
+
+    public Page<TaskElasticModel> getMyTask(long userId, String searchTerm, Pageable pageable) {
 
         boolean isAdmin = userService.checkUserRole(userId, "admin");
 
@@ -83,7 +87,7 @@ public class TaskElasticSearch {
                 .withPageable(pageable)
                 .build();
 
-        SearchHits<TaskEntity> hits = elasticsearchOperations.search(query, TaskEntity.class);
+        SearchHits<TaskElasticModel> hits = elasticsearchOperations.search(query, TaskElasticModel.class);
 
         return new PageImpl<>(
                 hits.getSearchHits().stream().map(SearchHit::getContent).toList(),
@@ -91,7 +95,7 @@ public class TaskElasticSearch {
                 hits.getTotalHits());
     }
 
-    public Page<TaskEntity> searchByName(String searchTerm, Pageable pageable) {
+    public Page<TaskElasticModel> searchByName(String searchTerm, Pageable pageable) {
         //text field can not sort
 
         Query query = new StringQuery("{ \"match\": { \"name\": { \"query\": \"Jack\" } } } ");
@@ -116,7 +120,7 @@ public class TaskElasticSearch {
                 .withPageable(pageable)
                 .build();
 
-        SearchHits<TaskEntity> hits = elasticsearchOperations.search(search, TaskEntity.class);
+        SearchHits<TaskElasticModel> hits = elasticsearchOperations.search(search, TaskElasticModel.class);
 
         return new PageImpl<>(
                 hits.getSearchHits().stream().map(SearchHit::getContent).toList(),
@@ -124,7 +128,7 @@ public class TaskElasticSearch {
                 hits.getTotalHits());
     }
 
-    public Page<TaskEntity> searchByStartDate(Date startDate, Pageable pageable) {
+    public Page<TaskElasticModel> searchByStartDate(Date startDate, Pageable pageable) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
@@ -139,7 +143,7 @@ public class TaskElasticSearch {
                 .withPageable(pageable)
                 .build();
 
-        SearchHits<TaskEntity> hits = elasticsearchOperations.search(search, TaskEntity.class);
+        SearchHits<TaskElasticModel> hits = elasticsearchOperations.search(search, TaskElasticModel.class);
 
         return new PageImpl<>(
                 hits.getSearchHits().stream().map(SearchHit::getContent).toList(),
@@ -188,7 +192,7 @@ public class TaskElasticSearch {
                 .withPageable(pageable)
                 .build();
 
-        SearchHits<TaskEntity> hits = elasticsearchOperations.search(searchChildTask, TaskEntity.class);
+        SearchHits<TaskElasticModel> hits = elasticsearchOperations.search(searchChildTask, TaskElasticModel.class);
 
         return new PageImpl<>(
                 hits.stream().map(hit -> modelMapper.map(hit.getContent(), TaskDto.class)).toList(),
@@ -200,7 +204,6 @@ public class TaskElasticSearch {
 
         taskElasticRepository.deleteAll();
 
-        List<TaskEntity> taskEntities = taskRepository.findAll();
-        taskEntities.forEach(taskElasticRepository::save);
+        taskMapper.mapForIndexList(taskRepository.findAll()).forEach(taskElasticRepository::save);
     }
 }

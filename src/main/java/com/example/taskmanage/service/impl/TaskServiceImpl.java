@@ -2,8 +2,9 @@ package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.common.constant.HistoryAction;
 import com.example.taskmanage.dto.TaskDto;
-import com.example.taskmanage.elasticrepository.TaskElasticRepository;
-import com.example.taskmanage.elasticsearch.TaskElasticSearch;
+import com.example.taskmanage.elasticsearch.elasticrepository.TaskElasticRepository;
+import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
+import com.example.taskmanage.elasticsearch.service.TaskElasticSearch;
 import com.example.taskmanage.elasticsearch.TaskKeys;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
@@ -65,16 +66,16 @@ public class TaskServiceImpl implements TaskService {
 
         Pageable paging = PageRequest.of(page, pageSize, sort);
 
-        Page<TaskEntity> resultSearch = taskElasticSearch.getMyTask(userId, search, paging);
+        Page<TaskElasticModel> resultSearch = taskElasticSearch.getMyTask(userId, search, paging);
 
         long total = resultSearch.getTotalElements();
 
-        List<TaskDto> taskModels = taskMapper.mapModelsFromEntities(resultSearch.getContent());
+        List<TaskDto> taskModels = taskMapper.mapFromElasticModels(resultSearch.getContent());
 
 //        taskElasticSearch.searchByName("Task", paging);
-        taskElasticSearch.searchByStartDate(new Date(), paging);
-
-        taskElasticSearch.getChildTasks(4, paging, "021");
+//        taskElasticSearch.searchByStartDate(new Date(), paging);
+//
+//        taskElasticSearch.getChildTasks(4, paging, "021");
 
         return new PageImpl<>(taskModels, paging, total);
     }
@@ -247,7 +248,7 @@ public class TaskServiceImpl implements TaskService {
 //        save and index task
         TaskEntity saved = taskRepository.save(taskEntity);
 
-        taskElaRepository.save(saved);
+        taskElaRepository.save(taskMapper.mapForIndex(saved));
 
         return saved;
     }

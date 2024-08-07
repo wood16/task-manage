@@ -1,8 +1,8 @@
 package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.dto.HistoryDto;
-import com.example.taskmanage.elasticrepository.HistoryElasticRepository;
-import com.example.taskmanage.elasticsearch.HistoryElasticSearch;
+import com.example.taskmanage.elasticsearch.elasticrepository.HistoryElasticRepository;
+import com.example.taskmanage.elasticsearch.service.HistoryElasticSearch;
 import com.example.taskmanage.entity.HistoryEntity;
 import com.example.taskmanage.mapper.HistoryMapper;
 import com.example.taskmanage.repository.HistoryRepository;
