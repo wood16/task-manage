@@ -62,11 +62,13 @@ public class HistoryServiceImpl implements HistoryService {
     @Override
     public List<HistoryDto> findByTypeAndObjectId(String type, long objectId) {
 
-        return historyMapper.mapFromEntities(
-                historyRepository.findByTypeAndObjectId(type, objectId)
-                        .stream()
-                        .sorted(Comparator.comparing(HistoryEntity::getCreateDate).reversed())
-                        .toList());
+        return historyMapper.mapFromEntities(historyElasticSearch.getHistoryOfObject(type, objectId));
+
+//        return historyMapper.mapFromEntities(
+//                historyRepository.findByTypeAndObjectId(type, objectId)
+//                        .stream()
+//                        .sorted(Comparator.comparing(HistoryEntity::getCreateDate).reversed())
+//                        .toList());
     }
 
     private String mapAction(String action, String detail) {
@@ -86,9 +88,9 @@ public class HistoryServiceImpl implements HistoryService {
         return "";
     }
 
-    private String mapField(String field){
+    private String mapField(String field) {
 
-        return switch (field){
+        return switch (field) {
             case "name" -> "tên ";
             case "description" -> "mô tả ";
             case "priority" -> "độ ưu tiên ";
