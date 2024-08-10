@@ -26,7 +26,6 @@ public class TaskEntity {
     private String priority;
     private String description;
     private Long progress;
-    private String progressType;
     private String status;
     private Long creatorId;
     private Date createDate;

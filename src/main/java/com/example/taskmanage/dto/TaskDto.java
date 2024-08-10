@@ -19,7 +19,6 @@ public class TaskDto {
     private String priority;
     private String description;
     private Long progress;
-    private String progressType;
     private String status;
     private Date createDate;
     private Long creatorId;

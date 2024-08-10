@@ -4,6 +4,8 @@ import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.dto.UserContextDto;
 import com.example.taskmanage.service.TaskService;
 import com.example.taskmanage.validator.TaskValidator;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -104,7 +106,7 @@ public class TaskController {
     }
 
     @GetMapping("/reindex")
-    public ResponseEntity<String> reindexAllTask(){
+    public ResponseEntity<String> reindexAllTask() {
 
         taskService.reindexAllTask();
         return ResponseEntity.ok("Success");

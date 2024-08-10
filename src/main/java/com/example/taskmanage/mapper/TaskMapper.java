@@ -34,7 +34,6 @@ public class TaskMapper {
         to.setStartDate(from.getStartDate());
         to.setEndDate(from.getEndDate());
         to.setPriority(from.getPriority());
-        to.setProgressType(from.getProgressType());
         to.setAssigneeId(from.getAssigneeId());
         if (Objects.nonNull(from.getParentId())) {
             to.setParentTask(taskRepository.findById(from.getParentId()).orElse(null));
@@ -53,7 +52,6 @@ public class TaskMapper {
         to.setStartDate(from.getStartDate());
         to.setEndDate(from.getEndDate());
         to.setPriority(from.getPriority());
-        to.setProgressType(from.getProgressType());
         to.setStatus(from.getStatus());
         to.setProgress(from.getProgress());
         to.setCreateDate(from.getCreateDate());
@@ -106,7 +104,6 @@ public class TaskMapper {
         to.setStartDate(from.getStartDate());
         to.setEndDate(from.getEndDate());
         to.setPriority(from.getPriority());
-        to.setProgressType(from.getProgressType());
         to.setStatus(from.getStatus());
         to.setProgress(from.getProgress());
         to.setCreateDate(from.getCreateDate());

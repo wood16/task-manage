@@ -20,9 +20,7 @@ import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -142,12 +140,16 @@ public class TaskServiceImpl implements TaskService {
                                         HistoryAction.UPDATE.getValue(), "startDate",
                                         taskEntity.getStartDate(), taskDto.getStartDate());
                                 taskEntity.setStartDate(taskDto.getStartDate());
+
+                                updateDateOfParent(taskEntity);
                             }
                             if (Objects.nonNull(taskDto.getEndDate())) {
                                 historyService.addHistoryTask(userId, "task", taskEntity.getId(),
                                         HistoryAction.UPDATE.getValue(), "endDate",
                                         taskEntity.getEndDate(), taskDto.getEndDate());
                                 taskEntity.setEndDate(taskDto.getEndDate());
+
+                                updateDateOfParent(taskEntity);
                             }
                             if (Objects.nonNull(taskDto.getProgress())) {
                                 historyService.addHistoryTask(userId, "task", taskEntity.getId(),
@@ -195,6 +197,8 @@ public class TaskServiceImpl implements TaskService {
                             HistoryAction.UPDATE.getValue(), "", null, null);
 
                     setModifiedInfo(userId, newTaskEntity);
+
+                    updateDateOfParent(newTaskEntity);
 
                     return modelMapper.map(saveEntity(newTaskEntity), TaskDto.class);
                 })
@@ -279,7 +283,7 @@ public class TaskServiceImpl implements TaskService {
                     setModifiedInfo(userId, entity);
                     entity.setProgress(progress);
 
-                    taskRepository.save(entity);
+                    saveEntity(entity);
                 });
     }
 
@@ -291,7 +295,7 @@ public class TaskServiceImpl implements TaskService {
                     entity.setStartDate(startDate);
                     entity.setEndDate(endDate);
 
-                    taskRepository.save(entity);
+                    saveEntity(entity);
                 });
     }
 
@@ -302,7 +306,7 @@ public class TaskServiceImpl implements TaskService {
                     setModifiedInfo(userId, entity);
                     entity.setDescription(description);
 
-                    taskRepository.save(entity);
+                    saveEntity(entity);
                 });
     }
 
@@ -317,6 +321,38 @@ public class TaskServiceImpl implements TaskService {
 
         progressHistoryService.addProgressHistory(
                 userId, taskEntity.getId(), fromProgress, progress, description);
+    }
+
+    private void updateDateOfParent(TaskEntity taskEntity){
+
+        Optional.ofNullable(taskEntity.getParentTask())
+                .ifPresent(parentEntity -> {
+                    List<TaskEntity> listTaskChild = taskRepository.findByParentTask_Id(parentEntity.getId());
+
+                    Date minStartDate = listTaskChild
+                            .stream()
+                            .min(Comparator.comparing(TaskEntity::getStartDate))
+                            .map(TaskEntity::getStartDate)
+                            .orElse(null);
+
+                    if(Objects.nonNull(minStartDate)){
+                        parentEntity.setStartDate(minStartDate);
+
+                        saveEntity(parentEntity);
+                    }
+
+                    Date maxEndDate = listTaskChild
+                            .stream()
+                            .max(Comparator.comparing(TaskEntity::getEndDate))
+                            .map(TaskEntity::getEndDate)
+                            .orElse(null);
+
+                    if(Objects.nonNull(maxEndDate)){
+                        parentEntity.setEndDate(maxEndDate);
+
+                        saveEntity(parentEntity);
+                    }
+                });
     }
 
     private void setCreateInfo(long creatorId, TaskEntity taskEntity) {
