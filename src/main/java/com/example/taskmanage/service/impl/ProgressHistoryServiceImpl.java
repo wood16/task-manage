@@ -14,7 +14,6 @@ public class ProgressHistoryServiceImpl implements ProgressHistoryService {
     @Autowired
     private ProgressHistoryRepository progressHistoryRepository;
 
-
     @Override
     public void addProgressHistory(long userId,
                                    long taskId,

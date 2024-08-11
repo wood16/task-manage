@@ -36,7 +36,7 @@ public class ProgressHistoryMapper {
         return from.stream().map(this::mapFromEntity).toList();
     }
 
-    public List<ProgressHistoryDto> mapFromTaskId(long taskId){
+    public List<ProgressHistoryDto> mapFromTaskId(long taskId) {
 
         return progressHistoryRepository.findByTaskId(taskId)
                 .stream()

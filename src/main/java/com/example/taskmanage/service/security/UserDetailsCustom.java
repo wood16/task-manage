@@ -1,6 +1,7 @@
 package com.example.taskmanage.service.security;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDetailsCustom implements UserDetails {
@@ -50,13 +52,5 @@ public class UserDetailsCustom implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 }

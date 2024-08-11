@@ -11,7 +11,7 @@ import java.util.Set;
 @Service
 public class UserMapper {
 
-    public UserDto mapFromEntry(UserEntity from){
+    public UserDto mapFromEntry(UserEntity from) {
         UserDto to = new UserDto();
 
         to.setId(from.getId());
@@ -22,12 +22,12 @@ public class UserMapper {
         return to;
     }
 
-    public List<UserDto> mapFromEntries(List<UserEntity> from){
+    public List<UserDto> mapFromEntries(List<UserEntity> from) {
 
         return from.stream().map(this::mapFromEntry).toList();
     }
 
-    private String[] getRoles(Set<RoleEntity> roleEntitySet){
+    private String[] getRoles(Set<RoleEntity> roleEntitySet) {
 
         return roleEntitySet.stream().map(RoleEntity::getName).toArray(String[]::new);
     }

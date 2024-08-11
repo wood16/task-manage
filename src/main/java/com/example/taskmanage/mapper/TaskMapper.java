@@ -81,7 +81,7 @@ public class TaskMapper {
         return from.stream().map(this::mapModelFromEntity).toList();
     }
 
-    public TaskElasticModel mapForIndex(TaskEntity from){
+    public TaskElasticModel mapForIndex(TaskEntity from) {
 
         TaskElasticModel to = modelMapper.map(from, TaskElasticModel.class);
 
@@ -95,7 +95,7 @@ public class TaskMapper {
         return from.stream().map(this::mapForIndex).toList();
     }
 
-    public TaskDto mapFromElasticModel(TaskElasticModel from){
+    public TaskDto mapFromElasticModel(TaskElasticModel from) {
         TaskDto to = new TaskDto();
 
         to.setId(from.getId());
@@ -125,12 +125,12 @@ public class TaskMapper {
         return to;
     }
 
-    public List<TaskDto> mapFromElasticModels(List<TaskElasticModel> from){
+    public List<TaskDto> mapFromElasticModels(List<TaskElasticModel> from) {
 
         return from.stream().map(this::mapFromElasticModel).toList();
     }
 
-    private long getPriorityNumber(String priority){
+    private long getPriorityNumber(String priority) {
 
         return switch (priority) {
             case "high" -> 3;

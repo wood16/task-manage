@@ -13,7 +13,6 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,15 +32,15 @@ public class HistoryElasticSearch {
         Query query = NativeQuery.builder()
                 .withQuery(
                         q -> q.bool(
-                            b -> b.must(
-                                    m1 -> m1.term(
-                                            t1 -> t1.field("type").value(type)
-                                    )
-                            ).must(
-                                    m2 -> m2.term(
-                                            t2 -> t2.field("objectId").value(objectId)
-                                    )
-                            )
+                                b -> b.must(
+                                        m1 -> m1.term(
+                                                t1 -> t1.field("type").value(type)
+                                        )
+                                ).must(
+                                        m2 -> m2.term(
+                                                t2 -> t2.field("objectId").value(objectId)
+                                        )
+                                )
                         )
                 )
                 .withSort(Sort.by(Sort.Direction.DESC, TaskKeys.CREATE_DATE))

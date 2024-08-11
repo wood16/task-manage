@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalException extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<BaseResponseDto> handleBaseException(BaseException e){
+    public ResponseEntity<BaseResponseDto> handleBaseException(BaseException e) {
         BaseResponseDto responseDto = BaseResponseDto.builder()
                 .code(e.getCode())
                 .message(e.getMessage())

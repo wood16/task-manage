@@ -36,7 +36,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshToken refreshToken = RefreshToken.builder()
                 .userEntity(userRepository.findByUsername(username))
                 .token(UUID.randomUUID().toString())
-                .expiryDate(Instant.now().plusSeconds(2))
+                .expiryDate(Instant.now().plusSeconds(900))
                 .build();
 
         return refreshTokenRepository.save(refreshToken).getToken();
@@ -48,9 +48,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public RefreshToken verifyExpiration(RefreshToken refreshToken){
+    public RefreshToken verifyExpiration(RefreshToken refreshToken) {
 
-        if(refreshToken.getExpiryDate().compareTo(Instant.now()) < 0){
+        if (refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(refreshToken);
 
             throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "Refresh token was expiration");

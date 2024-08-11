@@ -2,10 +2,10 @@ package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.common.constant.HistoryAction;
 import com.example.taskmanage.dto.TaskDto;
+import com.example.taskmanage.elasticsearch.TaskKeys;
 import com.example.taskmanage.elasticsearch.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
 import com.example.taskmanage.elasticsearch.service.TaskElasticSearch;
-import com.example.taskmanage.elasticsearch.TaskKeys;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.mapper.CommonMapper;
@@ -323,7 +323,7 @@ public class TaskServiceImpl implements TaskService {
                 userId, taskEntity.getId(), fromProgress, progress, description);
     }
 
-    private void updateDateOfParent(TaskEntity taskEntity){
+    private void updateDateOfParent(TaskEntity taskEntity) {
 
         Optional.ofNullable(taskEntity.getParentTask())
                 .ifPresent(parentEntity -> {
@@ -335,7 +335,7 @@ public class TaskServiceImpl implements TaskService {
                             .map(TaskEntity::getStartDate)
                             .orElse(null);
 
-                    if(Objects.nonNull(minStartDate)){
+                    if (Objects.nonNull(minStartDate)) {
                         parentEntity.setStartDate(minStartDate);
 
                         saveEntity(parentEntity);
@@ -347,7 +347,7 @@ public class TaskServiceImpl implements TaskService {
                             .map(TaskEntity::getEndDate)
                             .orElse(null);
 
-                    if(Objects.nonNull(maxEndDate)){
+                    if (Objects.nonNull(maxEndDate)) {
                         parentEntity.setEndDate(maxEndDate);
 
                         saveEntity(parentEntity);

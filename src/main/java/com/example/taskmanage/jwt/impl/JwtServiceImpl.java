@@ -24,7 +24,6 @@ import java.security.Key;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -62,9 +61,7 @@ public class JwtServiceImpl implements JwtService {
 
         List<String> roles = new ArrayList<>();
 
-        userDetailsCustom.getAuthorities().forEach(role -> {
-            roles.add(role.getAuthority());
-        });
+        userDetailsCustom.getAuthorities().forEach(role -> roles.add(role.getAuthority()));
 
         log.info("Roles: {}", roles);
 
@@ -75,7 +72,7 @@ public class JwtServiceImpl implements JwtService {
                         userDetailsCustom.getAuthorities()
                                 .stream()
                                 .map(GrantedAuthority::getAuthority)
-                                .collect(Collectors.toList()))
+                                .toList())
                 .claim("roles", roles)
                 .claim("isEnable", userDetailsCustom.isEnabled())
                 .setIssuedAt(Date.from(now))
@@ -104,7 +101,7 @@ public class JwtServiceImpl implements JwtService {
                 .setSubject(userDto.getUsername())
                 .claim("userId", userDto.getId())
                 .claim("authorities", Arrays.stream(userDto.getRoles()).toList())
-                .claim("roles",  Arrays.stream(userDto.getRoles()).toList())
+                .claim("roles", Arrays.stream(userDto.getRoles()).toList())
                 .claim("isEnable", Boolean.TRUE)
                 .setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(1800)))
