@@ -1,13 +1,5 @@
 package com.example.taskmanage.config.filter;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-
-import java.io.IOException;
-
 //@Configuration
 public class CorsFilter
 //        implements Filter

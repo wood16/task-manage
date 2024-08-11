@@ -2,10 +2,7 @@ package com.example.taskmanage.service;
 
 import com.example.taskmanage.dto.TaskDto;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import java.util.List;
 
 public interface TaskService {
 

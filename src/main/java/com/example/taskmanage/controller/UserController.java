@@ -25,8 +25,6 @@ public class UserController {
 
         UserContextDto userContextDto = (UserContextDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        System.out.println("LAM" + userContextDto.getUserId());
-
         return ResponseEntity.ok("Wellcome to user Page : " + userContextDto.getUserName());
     }
 

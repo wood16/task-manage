@@ -1,6 +1,6 @@
 package com.example.taskmanage.common.constant;
 
-public enum HistoryAction implements Value{
+public enum HistoryAction implements Value {
 
     CREATE("create"),
     UPDATE("update"),

@@ -28,7 +28,7 @@ public class HistoryController {
     }
 
     @GetMapping("/reindex")
-    public ResponseEntity<String> reindexAllHistory(){
+    public ResponseEntity<String> reindexAllHistory() {
 
         historyService.reindexAllHistory();
 

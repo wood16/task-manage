@@ -80,18 +80,18 @@ public class TaskValidator {
         }
     }
 
-    private void validateRequireField(TaskDto taskDto){
+    private void validateRequireField(TaskDto taskDto) {
 
-        if(Objects.isNull(taskDto.getName())){
+        if (Objects.isNull(taskDto.getName())) {
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Name of task is required!");
         }
 
-        if(Objects.isNull(taskDto.getAssigneeId())){
+        if (Objects.isNull(taskDto.getAssigneeId())) {
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Assignee of task is required!");
         }
     }
 
-    private void validateTaskRecurTask(long id, TaskDto taskDto){
+    private void validateTaskRecurTask(long id, TaskDto taskDto) {
 
     }
 

@@ -18,7 +18,7 @@ public class AccountController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<BaseResponseDto> register(@RequestBody UserDto userDto){
+    public ResponseEntity<BaseResponseDto> register(@RequestBody UserDto userDto) {
         return ResponseEntity.ok(userService.registerAccount(userDto));
     }
 }
