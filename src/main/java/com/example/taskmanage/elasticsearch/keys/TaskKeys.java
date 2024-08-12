@@ -1,4 +1,4 @@
-package com.example.taskmanage.elasticsearch;
+package com.example.taskmanage.elasticsearch.keys;
 
 public class TaskKeys {
 

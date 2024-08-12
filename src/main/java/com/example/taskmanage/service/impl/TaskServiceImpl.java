@@ -2,7 +2,7 @@ package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.common.constant.HistoryAction;
 import com.example.taskmanage.dto.TaskDto;
-import com.example.taskmanage.elasticsearch.TaskKeys;
+import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.elasticsearch.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
 import com.example.taskmanage.elasticsearch.service.TaskElasticSearch;

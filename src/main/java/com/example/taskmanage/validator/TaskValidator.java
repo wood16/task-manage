@@ -9,8 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class TaskValidator {
@@ -31,6 +33,8 @@ public class TaskValidator {
 
         Optional<TaskEntity> optionalTask = taskRepository.findById(taskId);
         validateDate(optionalTask, taskDto);
+
+        validateCircularRelationship(taskId, taskDto);
     }
 
     public void validateForPatch(long taskId, TaskDto taskDto) {
@@ -67,7 +71,7 @@ public class TaskValidator {
 
             if (Objects.nonNull(taskDto.getStartDate()) && Objects.isNull(taskDto.getEndDate())) {
 
-                validateStartAndEndDate(taskEntity.getStartDate(), taskDto.getEndDate());
+                validateStartAndEndDate(taskDto.getStartDate(), taskEntity.getEndDate());
             }
         });
     }
@@ -83,16 +87,42 @@ public class TaskValidator {
     private void validateRequireField(TaskDto taskDto) {
 
         if (Objects.isNull(taskDto.getName())) {
+
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Name of task is required!");
         }
 
         if (Objects.isNull(taskDto.getAssigneeId())) {
+
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Assignee of task is required!");
         }
     }
 
-    private void validateTaskRecurTask(long id, TaskDto taskDto) {
+    private void validateCircularRelationship(long id, TaskDto taskDto) {
 
+        AtomicBoolean isCircular = new AtomicBoolean();
+
+        if(Objects.nonNull(taskDto.getParentId())){
+
+            checkCircularRelationship(id, taskDto.getParentId(), isCircular);
+        }
+
+        if(isCircular.get()){
+
+            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Task have circular relationship, please check again!");
+        }
+    }
+
+    private void checkCircularRelationship(long id, long parentId, AtomicBoolean isCircular) {
+
+        for (TaskEntity task : taskRepository.findByParentTask_Id(id)) {
+            if (Objects.equals(task.getId(), parentId)) {
+
+                isCircular.set(true);
+                break;
+            }
+
+            checkCircularRelationship(task.getId(), parentId, isCircular);
+        }
     }
 
 }

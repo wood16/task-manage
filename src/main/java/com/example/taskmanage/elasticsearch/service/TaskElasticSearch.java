@@ -2,7 +2,7 @@ package com.example.taskmanage.elasticsearch.service;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import com.example.taskmanage.dto.TaskDto;
-import com.example.taskmanage.elasticsearch.TaskKeys;
+import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.elasticsearch.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
 import com.example.taskmanage.mapper.TaskMapper;

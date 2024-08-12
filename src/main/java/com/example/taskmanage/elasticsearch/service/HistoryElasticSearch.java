@@ -1,6 +1,7 @@
 package com.example.taskmanage.elasticsearch.service;
 
-import com.example.taskmanage.elasticsearch.TaskKeys;
+import com.example.taskmanage.elasticsearch.keys.HistoryKeys;
+import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.elasticsearch.elasticrepository.HistoryElasticRepository;
 import com.example.taskmanage.entity.HistoryEntity;
 import com.example.taskmanage.repository.HistoryRepository;
@@ -34,11 +35,11 @@ public class HistoryElasticSearch {
                         q -> q.bool(
                                 b -> b.must(
                                         m1 -> m1.term(
-                                                t1 -> t1.field("type").value(type)
+                                                t1 -> t1.field(HistoryKeys.TYPE).value(type)
                                         )
                                 ).must(
                                         m2 -> m2.term(
-                                                t2 -> t2.field("objectId").value(objectId)
+                                                t2 -> t2.field(HistoryKeys.OBJECT_ID).value(objectId)
                                         )
                                 )
                         )
