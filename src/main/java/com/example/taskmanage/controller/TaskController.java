@@ -28,7 +28,7 @@ public class TaskController {
     @GetMapping("/getAll")
     public ResponseEntity<Map<String, Object>> getAll(
             @RequestParam(required = false) String filter,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "1") int pageSize,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String sortBy,

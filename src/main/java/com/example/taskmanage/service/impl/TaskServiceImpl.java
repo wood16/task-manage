@@ -58,13 +58,12 @@ public class TaskServiceImpl implements TaskService {
                                     String search,
                                     String sortBy,
                                     Sort.Direction sortOrder) {
-
         Sort sort = Objects.isNull(sortBy) ?
                 Sort.by(Sort.Direction.DESC, TaskKeys.MODIFIED_DATE) : Sort.by(sortOrder, sortBy);
 
-        Pageable paging = PageRequest.of(page, pageSize, sort);
+        Pageable paging = PageRequest.of(Math.max(page - 1, 0), pageSize, sort);
 
-        Page<TaskElasticModel> resultSearch = taskElasticSearch.getMyTask(userId, search, paging);
+        Page<TaskElasticModel> resultSearch = taskElasticSearch.getMyTask(filter, userId, search, paging);
 
         long total = resultSearch.getTotalElements();
 

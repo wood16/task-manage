@@ -47,7 +47,7 @@ public class TaskElasticSearch {
     private TaskMapper taskMapper;
 
 
-    public Page<TaskElasticModel> getMyTask(long userId, String searchTerm, Pageable pageable) {
+    public Page<TaskElasticModel> getMyTask(String type, long userId, String searchTerm, Pageable pageable) {
 
         boolean isAdmin = userService.checkUserRole(userId, "admin");
 
@@ -61,7 +61,12 @@ public class TaskElasticSearch {
                 )
         );
 
-        BoolQuery ownQuery = BoolQuery.of(
+        BoolQuery ownQuery = Objects.nonNull(type) && type.equals("assignee") ? BoolQuery.of(
+                b -> b.should(
+                        s1 -> s1.term(
+                                t1 -> t1.field(TaskKeys.ASSIGNEE_ID).value(userId))
+                )
+        ) : BoolQuery.of(
                 b -> b.should(s1 -> s1.term(
                                 t1 -> t1.field(TaskKeys.CREATOR_ID).value(userId)
                         )
