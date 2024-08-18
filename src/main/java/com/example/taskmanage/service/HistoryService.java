@@ -17,4 +17,6 @@ public interface HistoryService {
     void reindexAllHistory();
 
     List<HistoryDto> findByTypeAndObjectId(String type, long objectId);
+
+    List<HistoryDto> findByDate(String date);
 }

@@ -70,6 +70,12 @@ public class HistoryServiceImpl implements HistoryService {
 //                        .toList());
     }
 
+    @Override
+    public List<HistoryDto> findByDate(String date) {
+
+        return historyMapper.mapFromEntities(historyElasticSearch.getHistoryOfDate(date));
+    }
+
     private String mapAction(String action, String detail) {
 
         return switch (action) {

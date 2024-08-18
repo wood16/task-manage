@@ -34,4 +34,12 @@ public class HistoryController {
 
         return ResponseEntity.ok("Success");
     }
+
+    @GetMapping("/date")
+    public ResponseEntity<List<HistoryDto>> getHistoryDate(
+            @RequestParam(required = true) String date
+    ){
+
+        return ResponseEntity.ok(historyService.findByDate(date));
+    }
 }
