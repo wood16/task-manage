@@ -25,7 +25,7 @@ public class TaskController {
     @Autowired
     private TaskValidator taskValidator;
 
-    @GetMapping("/getAll")
+    @GetMapping
     public ResponseEntity<Map<String, Object>> getAll(
             @RequestParam(required = false) String filter,
             @RequestParam(defaultValue = "1") int page,
@@ -47,7 +47,7 @@ public class TaskController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<TaskDto> postTask(@RequestBody TaskDto taskModel) {
 
         taskValidator.validateForAdd(taskModel);
@@ -55,7 +55,7 @@ public class TaskController {
         return ResponseEntity.ok(taskService.addTask(getUserContext().getUserId(), taskModel));
     }
 
-    @PutMapping("/put/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<TaskDto> putTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
 
         taskValidator.validateForUpdate(id, taskModel);
@@ -63,7 +63,7 @@ public class TaskController {
         return ResponseEntity.ok(taskService.putTask(getUserContext().getUserId(), id, taskModel));
     }
 
-    @PatchMapping("/patch/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<TaskDto> patchTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
 
         taskValidator.validateForPatch(id, taskModel);

@@ -6,6 +6,7 @@ import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.entity.HistoryEntity;
 import com.example.taskmanage.repository.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -49,6 +50,7 @@ public class HistoryElasticSearch {
                                 )
                         )
                 )
+                .withPageable(PageRequest.of(0, 100))
                 .withSort(Sort.by(Sort.Direction.DESC, TaskKeys.CREATE_DATE))
                 .build();
 
@@ -76,6 +78,7 @@ public class HistoryElasticSearch {
                                 )
                         )
                 )
+                .withPageable(PageRequest.of(0, 100))
                 .withSort(Sort.by(Sort.Direction.DESC, TaskKeys.CREATE_DATE))
                 .build();
 

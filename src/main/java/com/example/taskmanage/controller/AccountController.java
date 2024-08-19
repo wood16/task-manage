@@ -21,4 +21,6 @@ public class AccountController {
     public ResponseEntity<BaseResponseDto> register(@RequestBody UserDto userDto) {
         return ResponseEntity.ok(userService.registerAccount(userDto));
     }
+
+
 }
