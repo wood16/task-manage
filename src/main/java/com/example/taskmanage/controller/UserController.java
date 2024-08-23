@@ -20,22 +20,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/index")
-    public ResponseEntity<String> index() {
-
-        UserContextDto userContextDto = (UserContextDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        return ResponseEntity.ok("Wellcome to user Page : " + userContextDto.getUserName());
-    }
-
-    @GetMapping("/getAll")
+    @GetMapping()
     public ResponseEntity<List<UserDto>> getAllUser(
             @RequestParam(required = false) String search) {
 
         return ResponseEntity.ok(userService.getAllUser(search));
     }
 
-    @GetMapping("/getAll/user")
+    @GetMapping("/role/user")
     public ResponseEntity<List<UserDto>> getAllUserRole(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String role) {

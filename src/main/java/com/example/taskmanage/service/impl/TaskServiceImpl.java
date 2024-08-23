@@ -2,13 +2,12 @@ package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.common.constant.HistoryAction;
 import com.example.taskmanage.dto.TaskDto;
-import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.elasticsearch.elasticrepository.TaskElasticRepository;
+import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
 import com.example.taskmanage.elasticsearch.service.TaskElasticSearch;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
-import com.example.taskmanage.mapper.CommonMapper;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.service.HistoryService;
@@ -34,9 +33,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private ModelMapper modelMapper;
-
-    @Autowired
-    private CommonMapper commonMapper;
 
     @Autowired
     private TaskElasticRepository taskElaRepository;
@@ -94,29 +90,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto patchTask(long userId, long taskId, TaskDto taskDto) {
-
-        if (Objects.nonNull(taskDto.getProgress())) {
-            updateProgress(userId, taskId, taskDto.getProgress());
-        }
-
-        if (Objects.nonNull(taskDto.getStartDate()) && Objects.nonNull(taskDto.getEndDate())) {
-            updateDate(userId, taskId, taskDto.getStartDate(), taskDto.getEndDate());
-        }
-
-        if (Objects.nonNull(taskDto.getDescription())) {
-            updateDescription(userId, taskId, taskDto.getDescription());
-        }
-
-        return taskRepository.findById(taskId)
-                .map(task -> modelMapper.map(task, TaskDto.class))
-                .orElseGet(TaskDto::new);
-    }
-
-    @Override
-    public TaskDto patchTaskUpdate(long userId,
-                                   long taskId,
-                                   TaskDto taskDto) {
+    public TaskDto patchTask(long userId,
+                             long taskId,
+                             TaskDto taskDto) {
 
         return taskMapper.mapModelFromEntity(
                 taskRepository.findById(taskId)
@@ -273,40 +249,6 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findById(id)
                 .map(taskFunction)
                 .orElse(null);
-    }
-
-    private void updateProgress(long userId, long taskId, long progress) {
-
-        taskRepository.findById(taskId)
-                .ifPresent(entity -> {
-                    setModifiedInfo(userId, entity);
-                    entity.setProgress(progress);
-
-                    saveEntity(entity);
-                });
-    }
-
-    private void updateDate(long userId, long taskId, Date startDate, Date endDate) {
-
-        taskRepository.findById(taskId)
-                .ifPresent(entity -> {
-                    setModifiedInfo(userId, entity);
-                    entity.setStartDate(startDate);
-                    entity.setEndDate(endDate);
-
-                    saveEntity(entity);
-                });
-    }
-
-    private void updateDescription(long userId, long taskId, String description) {
-
-        taskRepository.findById(taskId)
-                .ifPresent(entity -> {
-                    setModifiedInfo(userId, entity);
-                    entity.setDescription(description);
-
-                    saveEntity(entity);
-                });
     }
 
     private void updateProgress(long userId,

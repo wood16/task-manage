@@ -101,12 +101,12 @@ public class HistoryElasticSearch {
         return LocalDate.parse(dateString, formatter);
     }
 
-    private LocalDateTime getEndOfDay(LocalDate localDate){
+    private LocalDateTime getEndOfDay(LocalDate localDate) {
 
         return localDate.atTime(23, 59, 59, 999_999_999);
     }
 
-    private long getMilliSecond(LocalDateTime localDateTime){
+    private long getMilliSecond(LocalDateTime localDateTime) {
         Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
 
         return instant.toEpochMilli();
