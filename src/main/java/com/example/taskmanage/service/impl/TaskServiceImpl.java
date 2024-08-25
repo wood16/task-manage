@@ -11,6 +11,7 @@ import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.service.HistoryService;
+import com.example.taskmanage.service.NotificationService;
 import com.example.taskmanage.service.ProgressHistoryService;
 import com.example.taskmanage.service.TaskService;
 import org.modelmapper.ModelMapper;
@@ -45,6 +46,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private HistoryService historyService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public Page<TaskDto> getAllTask(long userId,
@@ -85,6 +89,8 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity saved = saveEntity(taskEntity);
 
         historyService.addHistoryTask(userId, "task", saved.getId(), HistoryAction.CREATE.getValue(), "", null, null);
+
+        notificationService.createNotification(userId, saved.getAssigneeId(), "", "Ban duoc giao xu ly cong viec " + saved.getName());
 
         return taskMapper.mapModelFromEntity(saved);
     }
