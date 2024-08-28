@@ -1,6 +1,6 @@
 package com.example.taskmanage.service;
 
-import com.example.taskmanage.entity.NotificationEntity;
+import com.example.taskmanage.dto.NotificationDto;
 
 import java.util.List;
 
@@ -11,5 +11,7 @@ public interface NotificationService {
                             String type,
                             String content);
 
-    List<NotificationEntity> getNotificationOfUser(long userId);
+    List<NotificationDto> getNotificationOfUser(long userId);
+
+    void patchNotification(Long id, NotificationDto dto);
 }
