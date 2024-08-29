@@ -1,8 +1,10 @@
 package com.example.taskmanage.elasticsearch.service;
 
 import com.example.taskmanage.elasticsearch.keys.NotificationKeys;
+import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.entity.NotificationEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -31,6 +33,7 @@ public class NotificationElasticSearch {
                                 )
                         )
                 )
+                .withSort(Sort.by(Sort.Direction.DESC, TaskKeys.CREATE_DATE))
                 .build();
 
         SearchHits<NotificationEntity> searchHits = searchOperations.search(query, NotificationEntity.class);
