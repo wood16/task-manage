@@ -15,4 +15,6 @@ public interface NotificationService {
     List<NotificationDto> getNotificationOfUser(long userId);
 
     void patchNotification(Long id, NotificationDto dto);
+
+    void reindexAllNotification();
 }

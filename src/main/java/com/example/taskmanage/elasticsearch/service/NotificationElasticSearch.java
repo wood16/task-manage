@@ -1,8 +1,10 @@
 package com.example.taskmanage.elasticsearch.service;
 
+import com.example.taskmanage.elasticsearch.elasticrepository.NotificationElasticRepository;
 import com.example.taskmanage.elasticsearch.keys.NotificationKeys;
 import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.entity.NotificationEntity;
+import com.example.taskmanage.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -19,6 +21,10 @@ public class NotificationElasticSearch {
 
     @Autowired
     private SearchOperations searchOperations;
+    @Autowired
+    private NotificationElasticRepository notificationElasticRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     public List<NotificationEntity> getNotifyOfUser(long userId) {
 
@@ -39,5 +45,12 @@ public class NotificationElasticSearch {
         SearchHits<NotificationEntity> searchHits = searchOperations.search(query, NotificationEntity.class);
 
         return searchHits.getSearchHits().stream().map(SearchHit::getContent).toList();
+    }
+
+    public void reindexAllNotification(){
+
+        notificationElasticRepository.deleteAll();
+
+        notificationRepository.findAll().stream().parallel().forEach(item -> notificationElasticRepository.save(item));
     }
 }

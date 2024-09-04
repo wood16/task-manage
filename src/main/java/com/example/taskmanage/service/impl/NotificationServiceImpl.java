@@ -65,6 +65,12 @@ public class NotificationServiceImpl implements NotificationService {
                 });
     }
 
+    @Override
+    public void reindexAllNotification() {
+
+        notificationElasticSearch.reindexAllNotification();
+    }
+
     private NotificationEntity saveEntity(NotificationEntity entity) {
 
         NotificationEntity saved = notificationRepository.save(entity);

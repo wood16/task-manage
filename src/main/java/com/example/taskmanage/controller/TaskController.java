@@ -107,6 +107,7 @@ public class TaskController {
     public ResponseEntity<String> reindexAllTask() {
 
         taskService.reindexAllTask();
+
         return ResponseEntity.ok("Success");
     }
 

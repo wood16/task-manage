@@ -30,6 +30,14 @@ public class NotificationController {
         notificationService.patchNotification(id, dto);
     }
 
+    @GetMapping("/reindex")
+    public ResponseEntity<String> reindexAllNotification(){
+
+        notificationService.reindexAllNotification();
+
+        return ResponseEntity.ok("Success");
+    }
+
     private UserContextDto getUserContext() {
 
         return (UserContextDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
