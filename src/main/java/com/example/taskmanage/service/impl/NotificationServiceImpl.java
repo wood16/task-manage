@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -31,15 +30,16 @@ public class NotificationServiceImpl implements NotificationService {
     private NotificationMapper notificationMapper;
 
     @Override
-    public void createNotification(Long creatorId, Long receiverId, String type, String content) {
+    public void createNotification(Long creatorId, Long receiverId, Long objectId, String type, String content) {
 
-        if(!Objects.equals(creatorId, receiverId)){
+        if (!Objects.equals(creatorId, receiverId)) {
 
             NotificationEntity entity = new NotificationEntity();
 
             entity.setCreatorId(creatorId);
             entity.setCreateDate(new Date());
             entity.setReceiverId(receiverId);
+            entity.setObjectId(objectId);
             entity.setType(type);
             entity.setContent(content);
             entity.setStatus("noRead");

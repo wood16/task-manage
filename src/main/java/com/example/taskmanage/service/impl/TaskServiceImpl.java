@@ -88,9 +88,11 @@ public class TaskServiceImpl implements TaskService {
 
         TaskEntity saved = saveEntity(taskEntity);
 
-        historyService.addHistoryTask(userId, "task", saved.getId(), HistoryAction.CREATE.getValue(), "", null, null);
+        historyService.addHistoryTask(userId, "task", saved.getId(),
+                HistoryAction.CREATE.getValue(), "", null, null);
 
-        notificationService.createNotification(userId, saved.getAssigneeId(), "", "Bạn được giao xử lý công việc  " + saved.getName());
+        notificationService.createNotification(userId, saved.getAssigneeId(), taskEntity.getId(),
+                "", "Bạn được giao xử lý công việc  " + saved.getName());
 
         return taskMapper.mapModelFromEntity(saved);
     }

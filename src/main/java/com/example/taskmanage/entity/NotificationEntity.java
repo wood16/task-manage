@@ -21,4 +21,5 @@ public class NotificationEntity {
     private String content;
     private Long receiverId;
     private String status;
+    private Long objectId;
 }

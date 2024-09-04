@@ -8,6 +8,7 @@ public interface NotificationService {
 
     void createNotification(Long creatorId,
                             Long receiverId,
+                            Long objectId,
                             String type,
                             String content);
 
