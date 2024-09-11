@@ -10,10 +10,7 @@ import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
-import com.example.taskmanage.service.HistoryService;
-import com.example.taskmanage.service.NotificationService;
-import com.example.taskmanage.service.ProgressHistoryService;
-import com.example.taskmanage.service.TaskService;
+import com.example.taskmanage.service.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -49,6 +46,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private ImportExportService importExportService;
 
     @Override
     public Page<TaskDto> getAllTask(long userId,
@@ -93,6 +93,8 @@ public class TaskServiceImpl implements TaskService {
 
         notificationService.createNotification(userId, saved.getAssigneeId(), taskEntity.getId(),
                 "", "Bạn được giao xử lý công việc  " + saved.getName());
+
+        importExportService.exportObject();
 
         return taskMapper.mapModelFromEntity(saved);
     }

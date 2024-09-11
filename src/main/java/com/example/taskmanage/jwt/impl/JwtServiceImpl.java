@@ -142,10 +142,11 @@ public class JwtServiceImpl implements JwtService {
         } catch (SignatureException e) {
 
             throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "Invalid format token");
-        } catch (Exception e) {
-
-            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), e.getLocalizedMessage());
         }
+//        catch (Exception e) {
+//
+//            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), e.getLocalizedMessage());
+//        }
 
         return claims;
     }
