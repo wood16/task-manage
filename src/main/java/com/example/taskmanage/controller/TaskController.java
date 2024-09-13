@@ -98,6 +98,12 @@ public class TaskController {
         return taskService.getChildTasks(id, page, pageSize, search, sortBy, sortOrder);
     }
 
+    @GetMapping("/export")
+    public byte[] getExportTask() {
+
+        return taskService.exportTask(getUserContext().getUserId());
+    }
+
     private UserContextDto getUserContext() {
 
         return (UserContextDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -2,12 +2,14 @@ package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.common.constant.HistoryAction;
 import com.example.taskmanage.dto.TaskDto;
+import com.example.taskmanage.dto.TaskExportDto;
 import com.example.taskmanage.elasticsearch.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
 import com.example.taskmanage.elasticsearch.service.TaskElasticSearch;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
+import com.example.taskmanage.mapper.TaskExportMapper;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.service.*;
@@ -49,6 +51,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private ImportExportService importExportService;
+
+    @Autowired
+    private TaskExportMapper taskExportMapper;
 
     @Override
     public Page<TaskDto> getAllTask(long userId,
@@ -93,8 +98,6 @@ public class TaskServiceImpl implements TaskService {
 
         notificationService.createNotification(userId, saved.getAssigneeId(), taskEntity.getId(),
                 "", "Bạn được giao xử lý công việc  " + saved.getName());
-
-        importExportService.exportObject();
 
         return taskMapper.mapModelFromEntity(saved);
     }
@@ -230,6 +233,16 @@ public class TaskServiceImpl implements TaskService {
     public void reindexAllTask() {
 
         taskElasticSearch.reindexAllTask();
+    }
+
+    @Override
+    public byte[] exportTask(long userId) {
+
+        List<TaskElasticModel> taskElasticModels = taskElasticSearch.getMyTaskForExport("", userId);
+
+        TaskExportDto[] data = taskExportMapper.mapFromModels(taskElasticModels);
+
+        return importExportService.exportObject(data);
     }
 
     public TaskEntity saveEntity(TaskEntity taskEntity) {

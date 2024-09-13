@@ -27,4 +27,6 @@ public interface TaskService {
     void deleteTaskById(long userId, long taskId);
 
     void reindexAllTask();
+
+    byte[] exportTask(long userId);
 }

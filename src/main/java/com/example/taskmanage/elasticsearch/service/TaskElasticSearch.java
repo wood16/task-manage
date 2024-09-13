@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -203,6 +204,32 @@ public class TaskElasticSearch {
                 hits.stream().map(hit -> modelMapper.map(hit.getContent(), TaskDto.class)).toList(),
                 pageable,
                 hits.getTotalHits());
+    }
+
+    public List<TaskElasticModel> getMyTaskForExport(String type, long userId) {
+
+        boolean isAdmin = userService.checkUserRole(userId, "admin");
+
+        BoolQuery ownQuery = BoolQuery.of(
+                b -> b.should(s1 -> s1.term(
+                                t1 -> t1.field(TaskKeys.CREATOR_ID).value(userId)
+                        )
+                ).should(
+                        s2 -> s2.term(
+                                t2 -> t2.field(TaskKeys.ASSIGNEE_ID).value(userId)
+                        )
+                )
+        );
+
+        Query query = NativeQuery.builder()
+                .withQuery(q -> q.bool(
+                        b -> b.must(m -> m.bool(ownQuery))
+                ))
+                .build();
+
+        SearchHits<TaskElasticModel> hits = elasticsearchOperations.search(query, TaskElasticModel.class);
+
+        return hits.getSearchHits().stream().map(SearchHit::getContent).toList();
     }
 
     public void reindexAllTask() {

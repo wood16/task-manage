@@ -1,5 +1,6 @@
 package com.example.taskmanage.service.impl;
 
+import com.example.taskmanage.common.export.ExportConstant;
 import com.example.taskmanage.service.ImportExportService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 @Slf4j
 @Service
@@ -18,30 +20,37 @@ public class ImportExportServiceImpl implements ImportExportService {
 
 
     @Override
-    public byte[] exportObject() {
+    public byte[] exportObject(Object[] data) {
 
         Workbook workbook = createWorkbook();
 
         Sheet sheet = workbook.createSheet("Danh sach cong viec");
 
-        createHeaderRow(sheet);
-
-        Object[][] data = {
-                {1, "John Doe", 25},
-                {2, "Jane Smith", 30},
-                {3, "Mike Johnson", 28},
-        };
+        createHeaderRow(sheet, ExportConstant.EXPORT_HEADER);
 
         int rowNum = 1;
-        for (Object[] rowData : data) {
+        for (Object rowData : data) {
+//            TODO toi uu code
+            Class<?> objClass = rowData.getClass(); // Get the class of the object
+
+            // Get all fields (including private fields)
+            Field[] fields = objClass.getDeclaredFields();
+
             Row row = sheet.createRow(rowNum);
             int colNum = 0;
-            for (Object field : rowData) {
+
+            for (Field field : fields) {
+                field.setAccessible(true);
                 Cell cell = row.createCell(colNum++);
-                if (field instanceof String) {
-                    cell.setCellValue((String) field);
-                } else if (field instanceof Integer) {
-                    cell.setCellValue((Integer) field);
+                try {
+                    if (field.getType().equals(String.class)) {
+
+                        cell.setCellValue((String) field.get(rowData));
+                    } else if (field.getType().equals(Long.class)) {
+                        cell.setCellValue((Long) field.get(rowData));
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
                 }
             }
             rowNum++;
@@ -66,10 +75,10 @@ public class ImportExportServiceImpl implements ImportExportService {
         return new byte[0];
     }
 
-    private void createHeaderRow(Sheet sheet) {
+    private void createHeaderRow(Sheet sheet, String[] headers) {
 
         Row headerRow = sheet.createRow(0);
-        String[] headers = {"ID", "Name", "Date"};
+
         for (int i = 0; i < headers.length; i++) {
 
             Cell cell = headerRow.createCell(i);
