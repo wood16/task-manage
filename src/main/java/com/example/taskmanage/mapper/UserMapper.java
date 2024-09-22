@@ -27,7 +27,7 @@ public class UserMapper {
         return from.stream().map(this::mapFromEntry).toList();
     }
 
-    private String[] getRoles(Set<RoleEntity> roleEntitySet) {
+    public String[] getRoles(Set<RoleEntity> roleEntitySet) {
 
         return roleEntitySet.stream().map(RoleEntity::getName).toArray(String[]::new);
     }

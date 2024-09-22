@@ -1,14 +1,13 @@
 package com.example.taskmanage.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "tbl_user")
 @AllArgsConstructor
 @NoArgsConstructor

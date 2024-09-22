@@ -1,8 +1,10 @@
 package com.example.taskmanage.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import org.springframework.data.elasticsearch.annotations.Document;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
@@ -10,7 +12,10 @@ import java.util.Date;
 
 @Entity
 @Table(name = "tbl_task")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 //@Document(indexName = "tbl_task")
 public class TaskEntity {
 

@@ -5,6 +5,7 @@ import com.example.taskmanage.entity.RoleEntity;
 import com.example.taskmanage.entity.UserEntity;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.mapper.UserMapper;
+import com.example.taskmanage.mapper.UserStructMapper;
 import com.example.taskmanage.repository.RoleRepository;
 import com.example.taskmanage.repository.UserRepository;
 import com.example.taskmanage.service.UserService;
@@ -30,6 +31,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserStructMapper userStructMapper;
 
     @Override
     public BaseResponseDto registerAccount(UserDto userDto) {
@@ -78,7 +82,13 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserById(Long userId) {
 
         return userRepository.findById(userId)
-                .map(item -> userMapper.mapFromEntry(item))
+                .map(item -> {
+                    UserDto result = userStructMapper.toUserDto(item);
+
+                    result.setRoles(userMapper.getRoles(item.getRoles()));
+
+                    return result;
+                })
                 .orElseThrow(() -> new BaseException(HttpStatus.BAD_REQUEST.value(), "User not found"));
     }
 

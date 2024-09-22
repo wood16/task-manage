@@ -1,14 +1,17 @@
 package com.example.taskmanage.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "tbl_notification")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(indexName = "tbl_notification")
 public class NotificationEntity {
 

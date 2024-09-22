@@ -1,13 +1,16 @@
 package com.example.taskmanage.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "tbl_progress_history")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProgressHistoryEntity {
 
     @Id
