@@ -7,6 +7,9 @@ import com.example.taskmanage.entity.NotificationEntity;
 import com.example.taskmanage.mapper.NotificationMapper;
 import com.example.taskmanage.repository.NotificationRepository;
 import com.example.taskmanage.service.NotificationService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,19 +18,14 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class NotificationServiceImpl implements NotificationService {
 
-    @Autowired
-    private NotificationElasticRepository notificationElasticRepository;
-
-    @Autowired
-    private NotificationRepository notificationRepository;
-
-    @Autowired
-    private NotificationElasticSearch notificationElasticSearch;
-
-    @Autowired
-    private NotificationMapper notificationMapper;
+    NotificationElasticRepository notificationElasticRepository;
+    NotificationRepository notificationRepository;
+    NotificationElasticSearch notificationElasticSearch;
+    NotificationMapper notificationMapper;
 
     @Override
     public void createNotification(Long creatorId, Long receiverId, Long objectId, String type, String content) {
@@ -71,12 +69,10 @@ public class NotificationServiceImpl implements NotificationService {
         notificationElasticSearch.reindexAllNotification();
     }
 
-    private NotificationEntity saveEntity(NotificationEntity entity) {
+    private void saveEntity(NotificationEntity entity) {
 
         NotificationEntity saved = notificationRepository.save(entity);
 
         notificationElasticRepository.save(saved);
-
-        return saved;
     }
 }

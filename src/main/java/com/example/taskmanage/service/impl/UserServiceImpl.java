@@ -10,7 +10,9 @@ import com.example.taskmanage.repository.RoleRepository;
 import com.example.taskmanage.repository.UserRepository;
 import com.example.taskmanage.service.UserService;
 import com.example.taskmanage.utils.BaseResponseDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,22 +20,15 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private UserStructMapper userStructMapper;
+    UserRepository userRepository;
+    RoleRepository roleRepository;
+    BCryptPasswordEncoder passwordEncoder;
+    UserMapper userMapper;
+    UserStructMapper userStructMapper;
 
     @Override
     public BaseResponseDto registerAccount(UserDto userDto) {

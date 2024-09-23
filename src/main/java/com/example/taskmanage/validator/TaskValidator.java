@@ -4,6 +4,9 @@ import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.repository.TaskRepository;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,10 +18,11 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TaskValidator {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    TaskRepository taskRepository;
 
     public void validateForAdd(TaskDto taskDto) {
 

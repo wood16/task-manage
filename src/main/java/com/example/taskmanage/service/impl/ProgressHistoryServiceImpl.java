@@ -3,16 +3,20 @@ package com.example.taskmanage.service.impl;
 import com.example.taskmanage.entity.ProgressHistoryEntity;
 import com.example.taskmanage.repository.ProgressHistoryRepository;
 import com.example.taskmanage.service.ProgressHistoryService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProgressHistoryServiceImpl implements ProgressHistoryService {
 
-    @Autowired
-    private ProgressHistoryRepository progressHistoryRepository;
+    ProgressHistoryRepository progressHistoryRepository;
 
     @Override
     public void addProgressHistory(long userId,

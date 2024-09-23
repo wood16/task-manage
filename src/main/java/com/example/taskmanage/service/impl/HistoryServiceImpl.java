@@ -7,6 +7,9 @@ import com.example.taskmanage.entity.HistoryEntity;
 import com.example.taskmanage.mapper.HistoryMapper;
 import com.example.taskmanage.repository.HistoryRepository;
 import com.example.taskmanage.service.HistoryService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,19 +18,14 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class HistoryServiceImpl implements HistoryService {
 
-    @Autowired
-    private HistoryRepository historyRepository;
-
-    @Autowired
-    private HistoryElasticRepository historyElasticRepository;
-
-    @Autowired
-    private HistoryMapper historyMapper;
-
-    @Autowired
-    private HistoryElasticSearch historyElasticSearch;
+    HistoryRepository historyRepository;
+    HistoryElasticRepository historyElasticRepository;
+    HistoryMapper historyMapper;
+    HistoryElasticSearch historyElasticSearch;
 
     @Override
     public void addHistoryTask(long creatorId,
@@ -62,12 +60,6 @@ public class HistoryServiceImpl implements HistoryService {
     public List<HistoryDto> findByTypeAndObjectId(String type, long objectId) {
 
         return historyMapper.mapFromEntities(historyElasticSearch.getHistoryOfObject(type, objectId));
-
-//        return historyMapper.mapFromEntities(
-//                historyRepository.findByTypeAndObjectId(type, objectId)
-//                        .stream()
-//                        .sorted(Comparator.comparing(HistoryEntity::getCreateDate).reversed())
-//                        .toList());
     }
 
     @Override
@@ -113,12 +105,10 @@ public class HistoryServiceImpl implements HistoryService {
         return mapAction(action, mapField(field)) + mapType(type);
     }
 
-    private HistoryEntity saveEntity(HistoryEntity historyEntity) {
+    private void saveEntity(HistoryEntity historyEntity) {
 
         HistoryEntity saved = historyRepository.save(historyEntity);
 
         historyElasticRepository.save(saved);
-
-        return saved;
     }
 }

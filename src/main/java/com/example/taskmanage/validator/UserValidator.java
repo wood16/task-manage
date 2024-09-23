@@ -3,21 +3,25 @@ package com.example.taskmanage.validator;
 import com.example.taskmanage.dto.UserDto;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserValidator {
 
-    @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
-    public void validatorRegister(UserDto userDto){
+    public void validatorRegister(UserDto userDto) {
+//        TODO update unique field
 
-        if(Objects.nonNull(userRepository.findByUsername(userDto.getUsername()))){
+        if (Objects.nonNull(userRepository.findByUsername(userDto.getUsername()))) {
 
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Username already used!");
         }

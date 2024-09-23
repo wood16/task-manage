@@ -27,6 +27,9 @@ public class TaskMapper {
     @Autowired
     private MapperUtil mapperUtil;
 
+    @Autowired
+    private TaskStructMapper taskStructMapper;
+
     public TaskEntity mapEntityFromModel(TaskDto from, TaskEntity to) {
 
         to.setName(from.getName());
@@ -83,7 +86,7 @@ public class TaskMapper {
 
     public TaskElasticModel mapForIndex(TaskEntity from) {
 
-        TaskElasticModel to = modelMapper.map(from, TaskElasticModel.class);
+        TaskElasticModel to = taskStructMapper.mapForIndex(from);
 
         to.setPriorityNumber(getPriorityNumber(from.getPriority()));
 

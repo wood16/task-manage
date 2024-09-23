@@ -13,8 +13,10 @@ import com.example.taskmanage.mapper.TaskExportMapper;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.service.*;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,37 +25,20 @@ import java.util.*;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TaskServiceImpl implements TaskService {
 
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TaskMapper taskMapper;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private TaskElasticRepository taskElaRepository;
-
-    @Autowired
-    private TaskElasticSearch taskElasticSearch;
-
-    @Autowired
-    private ProgressHistoryService progressHistoryService;
-
-    @Autowired
-    private HistoryService historyService;
-
-    @Autowired
-    private NotificationService notificationService;
-
-    @Autowired
-    private ImportExportService importExportService;
-
-    @Autowired
-    private TaskExportMapper taskExportMapper;
+    TaskRepository taskRepository;
+    TaskMapper taskMapper;
+    ModelMapper modelMapper;
+    TaskElasticRepository taskElaRepository;
+    TaskElasticSearch taskElasticSearch;
+    ProgressHistoryService progressHistoryService;
+    HistoryService historyService;
+    NotificationService notificationService;
+    ImportExportService importExportService;
+    TaskExportMapper taskExportMapper;
 
     @Override
     public Page<TaskDto> getAllTask(long userId,
@@ -198,7 +183,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto getTask(long taskId) {
 
         return taskRepository.findById(taskId)
-                .map(task -> taskMapper.mapModelFromEntity(task))
+                .map(taskMapper::mapModelFromEntity)
                 .orElseThrow(() ->
                         new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found"));
     }
