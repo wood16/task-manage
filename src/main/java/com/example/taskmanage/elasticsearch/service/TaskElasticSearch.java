@@ -8,6 +8,9 @@ import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
 import com.example.taskmanage.service.UserService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,26 +30,16 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TaskElasticSearch {
 
-    @Autowired
-    private ElasticsearchOperations elasticsearchOperations;
-
-    @Autowired
-    private TaskElasticRepository taskElasticRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private TaskMapper taskMapper;
-
+    ElasticsearchOperations elasticsearchOperations;
+    TaskElasticRepository taskElasticRepository;
+    TaskRepository taskRepository;
+    ModelMapper modelMapper;
+    UserService userService;
+    TaskMapper taskMapper;
 
     public Page<TaskElasticModel> getMyTask(String type, long userId, String searchTerm, Pageable pageable) {
 

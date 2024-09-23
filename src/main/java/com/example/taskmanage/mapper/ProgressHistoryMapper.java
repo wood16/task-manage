@@ -3,24 +3,23 @@ package com.example.taskmanage.mapper;
 import com.example.taskmanage.dto.ProgressHistoryDto;
 import com.example.taskmanage.entity.ProgressHistoryEntity;
 import com.example.taskmanage.repository.ProgressHistoryRepository;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProgressHistoryMapper {
 
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private MapperUtil mapperUtil;
-
-    @Autowired
-    private ProgressHistoryRepository progressHistoryRepository;
+    ModelMapper modelMapper;
+    MapperUtil mapperUtil;
+    ProgressHistoryRepository progressHistoryRepository;
 
     public ProgressHistoryDto mapFromEntity(ProgressHistoryEntity from) {
 

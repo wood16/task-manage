@@ -1,16 +1,19 @@
 package com.example.taskmanage.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
 
-    private Long id;
-    private String username;
-    private String password;
-    private String[] roles;
+    Long id;
+    String username;
+    String password;
+    String[] roles;
 }

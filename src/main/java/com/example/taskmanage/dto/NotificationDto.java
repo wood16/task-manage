@@ -1,18 +1,21 @@
 package com.example.taskmanage.dto;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class NotificationDto {
 
-    private Long id;
-    private Long creatorId;
-    private Date createDate;
-    private String type;
-    private String content;
-    private Long receiverId;
-    private String status;
-    private Long objectId;
+    Long id;
+    Long creatorId;
+    Date createDate;
+    String type;
+    String content;
+    Long receiverId;
+    String status;
+    Long objectId;
 }

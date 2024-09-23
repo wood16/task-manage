@@ -2,6 +2,7 @@ package com.example.taskmanage.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.Date;
@@ -13,16 +14,17 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(indexName = "tbl_notification")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class NotificationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Long creatorId;
-    private Date createDate;
-    private String type;
-    private String content;
-    private Long receiverId;
-    private String status;
-    private Long objectId;
+    Long id;
+    Long creatorId;
+    Date createDate;
+    String type;
+    String content;
+    Long receiverId;
+    String status;
+    Long objectId;
 }

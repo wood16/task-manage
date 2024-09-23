@@ -5,6 +5,9 @@ import com.example.taskmanage.elasticsearch.keys.NotificationKeys;
 import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.entity.NotificationEntity;
 import com.example.taskmanage.repository.NotificationRepository;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -17,14 +20,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class NotificationElasticSearch {
 
-    @Autowired
-    private SearchOperations searchOperations;
-    @Autowired
-    private NotificationElasticRepository notificationElasticRepository;
-    @Autowired
-    private NotificationRepository notificationRepository;
+    SearchOperations searchOperations;
+    NotificationElasticRepository notificationElasticRepository;
+    NotificationRepository notificationRepository;
 
     public List<NotificationEntity> getNotifyOfUser(long userId) {
 
@@ -51,6 +53,6 @@ public class NotificationElasticSearch {
 
         notificationElasticRepository.deleteAll();
 
-        notificationRepository.findAll().stream().parallel().forEach(item -> notificationElasticRepository.save(item));
+        notificationRepository.findAll().stream().parallel().forEach(notificationElasticRepository::save);
     }
 }

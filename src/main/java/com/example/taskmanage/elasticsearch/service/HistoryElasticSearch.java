@@ -5,6 +5,9 @@ import com.example.taskmanage.elasticsearch.keys.HistoryKeys;
 import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.entity.HistoryEntity;
 import com.example.taskmanage.repository.HistoryRepository;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,16 +26,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class HistoryElasticSearch {
 
-    @Autowired
-    private HistoryRepository historyRepository;
-
-    @Autowired
-    private HistoryElasticRepository historyElasticRepository;
-
-    @Autowired
-    private ElasticsearchOperations elasticsearchOperations;
+    HistoryRepository historyRepository;
+    HistoryElasticRepository historyElasticRepository;
+    ElasticsearchOperations elasticsearchOperations;
 
     public List<HistoryEntity> getHistoryOfObject(String type, long objectId) {
 

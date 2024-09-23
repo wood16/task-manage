@@ -4,7 +4,9 @@ import com.example.taskmanage.dto.TaskDto;
 import com.example.taskmanage.dto.UserContextDto;
 import com.example.taskmanage.service.TaskService;
 import com.example.taskmanage.validator.TaskValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -17,13 +19,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/tasks")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TaskController {
 
-    @Autowired
-    private TaskService taskService;
-
-    @Autowired
-    private TaskValidator taskValidator;
+    TaskService taskService;
+    TaskValidator taskValidator;
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAll(

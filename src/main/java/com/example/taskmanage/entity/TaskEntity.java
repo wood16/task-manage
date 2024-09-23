@@ -1,10 +1,8 @@
 package com.example.taskmanage.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
@@ -17,28 +15,29 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 //@Document(indexName = "tbl_task")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TaskEntity {
 
 //    @table va @document phai co cung 'name' = 'indexName' de co the index
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
     @Field(type = FieldType.Keyword)
-    private String name;
-    private Date startDate;
-    private Date endDate;
-    private String priority;
-    private String description;
-    private Long progress;
-    private String status;
-    private Long creatorId;
-    private Date createDate;
-    private Long modifiedId;
-    private Date modifiedDate;
-    private Long assigneeId;
+    String name;
+    Date startDate;
+    Date endDate;
+    String priority;
+    String description;
+    Long progress;
+    String status;
+    Long creatorId;
+    Date createDate;
+    Long modifiedId;
+    Date modifiedDate;
+    Long assigneeId;
 
     @OneToOne
     @JoinColumn(name = "parentId", referencedColumnName = "id")
-    private TaskEntity parentTask;
+    TaskEntity parentTask;
 }

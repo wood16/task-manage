@@ -2,7 +2,9 @@ package com.example.taskmanage.controller;
 
 import com.example.taskmanage.dto.HistoryDto;
 import com.example.taskmanage.service.HistoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +15,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/histories")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class HistoryController {
 
-    @Autowired
-    private HistoryService historyService;
+    HistoryService historyService;
 
     @GetMapping("/object")
     public ResponseEntity<List<HistoryDto>> getHistoryObject(
@@ -38,7 +41,7 @@ public class HistoryController {
     @GetMapping("/date")
     public ResponseEntity<List<HistoryDto>> getHistoryDate(
             @RequestParam(required = true) String date
-    ){
+    ) {
 
         return ResponseEntity.ok(historyService.findByDate(date));
     }

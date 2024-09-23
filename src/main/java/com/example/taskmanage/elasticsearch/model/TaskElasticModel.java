@@ -1,28 +1,31 @@
 package com.example.taskmanage.elasticsearch.model;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.Date;
 
 @Data
 @Document(indexName = "tbl_task")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TaskElasticModel {
 
-    private Long id;
-    private String name;
-    private Date startDate;
-    private Date endDate;
-    private String priority;
-    private String description;
-    private Long progress;
-    private String status;
-    private Long creatorId;
-    private Date createDate;
-    private Long modifiedId;
-    private Date modifiedDate;
-    private Long assigneeId;
-    private Long priorityNumber;
+    Long id;
+    String name;
+    Date startDate;
+    Date endDate;
+    String priority;
+    String description;
+    Long progress;
+    String status;
+    Long creatorId;
+    Date createDate;
+    Long modifiedId;
+    Date modifiedDate;
+    Long assigneeId;
+    Long priorityNumber;
 
-    private TaskElasticModel parentTask;
+    TaskElasticModel parentTask;
 }

@@ -1,5 +1,8 @@
 package com.example.taskmanage.mapper;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,10 +10,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CommonMapper {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    ModelMapper modelMapper;
 
     public <S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
 

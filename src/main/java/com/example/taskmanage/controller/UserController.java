@@ -3,7 +3,9 @@ package com.example.taskmanage.controller;
 import com.example.taskmanage.dto.UserContextDto;
 import com.example.taskmanage.dto.UserDto;
 import com.example.taskmanage.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +17,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    UserService userService;
 
     @GetMapping()
     public ResponseEntity<List<UserDto>> getAllUser(
@@ -33,10 +36,5 @@ public class UserController {
             @RequestParam(required = false) String role) {
 
         return ResponseEntity.ok(userService.getAllUserRole(search, role));
-    }
-
-    private UserContextDto getUserContext() {
-
-        return (UserContextDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

@@ -3,7 +3,9 @@ package com.example.taskmanage.controller;
 import com.example.taskmanage.dto.NotificationDto;
 import com.example.taskmanage.dto.UserContextDto;
 import com.example.taskmanage.service.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +14,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/notifications")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class NotificationController {
 
-    @Autowired
-    private NotificationService notificationService;
+    NotificationService notificationService;
 
     @GetMapping("/user")
     public ResponseEntity<List<NotificationDto>> getNotificationOfUser() {
@@ -31,7 +34,7 @@ public class NotificationController {
     }
 
     @GetMapping("/reindex")
-    public ResponseEntity<String> reindexAllNotification(){
+    public ResponseEntity<String> reindexAllNotification() {
 
         notificationService.reindexAllNotification();
 

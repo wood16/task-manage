@@ -5,7 +5,9 @@ import com.example.taskmanage.entity.RefreshToken;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.jwt.JwtService;
 import com.example.taskmanage.service.RefreshTokenService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +20,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/refreshToken")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RefreshTokenController {
 
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private RefreshTokenService refreshTokenService;
+    JwtService jwtService;
+    RefreshTokenService refreshTokenService;
 
     @PostMapping()
     private ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {

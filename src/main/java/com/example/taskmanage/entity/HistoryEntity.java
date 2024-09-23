@@ -2,6 +2,7 @@ package com.example.taskmanage.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.Date;
@@ -13,19 +14,20 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(indexName = "tbl_history")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class HistoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Long creatorId;
-    private Date createDate;
-    private Long objectId;
-    private String type;
-    private String description;
-    private String fromValue;
-    private String toValue;
-    private String action;
-    private String field;
+    Long id;
+    Long creatorId;
+    Date createDate;
+    Long objectId;
+    String type;
+    String description;
+    String fromValue;
+    String toValue;
+    String action;
+    String field;
 
 }

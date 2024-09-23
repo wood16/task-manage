@@ -1,21 +1,24 @@
 package com.example.taskmanage.dto;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class HistoryDto {
 
-    private Long id;
-    private Long creatorId;
-    private String creatorName;
-    private Date createDate;
-    private Long objectId;
-    private String type;
-    private String description;
-    private String fromValue;
-    private String toValue;
-    private String field;
-    private String action;
+    Long id;
+    Long creatorId;
+    String creatorName;
+    Date createDate;
+    Long objectId;
+    String type;
+    String description;
+    String fromValue;
+    String toValue;
+    String field;
+    String action;
 }

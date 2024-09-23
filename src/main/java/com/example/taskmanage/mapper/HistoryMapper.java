@@ -2,6 +2,9 @@ package com.example.taskmanage.mapper;
 
 import com.example.taskmanage.dto.HistoryDto;
 import com.example.taskmanage.entity.HistoryEntity;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,13 +12,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class HistoryMapper {
 
-    @Autowired
-    private MapperUtil mapperUtil;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    MapperUtil mapperUtil;
+    ModelMapper modelMapper;
 
     public HistoryDto mapFromEntity(HistoryEntity from) {
 
