@@ -34,20 +34,20 @@ public class UserServiceImpl implements UserService {
     public BaseResponseDto registerAccount(UserDto userDto) {
         BaseResponseDto responseDto = new BaseResponseDto();
 
-        validateAccount(userDto);
+//        validateAccount(userDto);
 
         UserEntity userEntity = insertUser(userDto);
 
-        try {
+//        try {
 
             userRepository.save(userEntity);
             responseDto.setCode(HttpStatus.OK.value());
             responseDto.setMessage("Create account success");
-        } catch (Exception e) {
-
-            responseDto.setCode(HttpStatus.SERVICE_UNAVAILABLE.value());
-            responseDto.setMessage("Service unavailable");
-        }
+//        } catch (Exception e) {
+//
+//            responseDto.setCode(HttpStatus.SERVICE_UNAVAILABLE.value());
+//            responseDto.setMessage("Service unavailable");
+//        }
 
         return responseDto;
     }

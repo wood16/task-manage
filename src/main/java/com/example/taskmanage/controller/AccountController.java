@@ -25,7 +25,7 @@ public class AccountController {
     @PostMapping("/register")
     public ResponseEntity<BaseResponseDto> register(@RequestBody UserDto userDto) {
 
-        userValidator.validatorRegister(userDto);
+//        userValidator.validatorRegister(userDto);
 
         return ResponseEntity.ok(userService.registerAccount(userDto));
     }

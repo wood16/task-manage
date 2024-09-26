@@ -1,5 +1,6 @@
 package com.example.taskmanage.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.util.List;
 public class TaskDto {
 
     Long id;
+    @NotNull
     String name;
     Date startDate;
     Date endDate;
