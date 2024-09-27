@@ -1,6 +1,6 @@
 package com.example.taskmanage.mapper;
 
-import com.example.taskmanage.dto.TaskExportDto;
+import com.example.taskmanage.dto.response.TaskExportResponse;
 import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +9,9 @@ import java.util.List;
 @Service
 public class TaskExportMapper {
 
-    public TaskExportDto mapFromModel(TaskElasticModel from){
+    public TaskExportResponse mapFromModel(TaskElasticModel from){
 
-        TaskExportDto to = new TaskExportDto();
+        TaskExportResponse to = new TaskExportResponse();
 
         to.setName(from.getName());
         to.setStatus(from.getStatus());
@@ -23,9 +23,9 @@ public class TaskExportMapper {
         return to;
     }
 
-    public TaskExportDto[] mapFromModels(List<TaskElasticModel> from){
+    public TaskExportResponse[] mapFromModels(List<TaskElasticModel> from){
 
-        return from.stream().map(this::mapFromModel).toArray(TaskExportDto[]::new);
+        return from.stream().map(this::mapFromModel).toArray(TaskExportResponse[]::new);
     }
 
 }

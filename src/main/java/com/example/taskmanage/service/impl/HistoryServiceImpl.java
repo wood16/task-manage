@@ -1,6 +1,6 @@
 package com.example.taskmanage.service.impl;
 
-import com.example.taskmanage.dto.HistoryDto;
+import com.example.taskmanage.dto.response.HistoryResponse;
 import com.example.taskmanage.elasticsearch.elasticrepository.HistoryElasticRepository;
 import com.example.taskmanage.elasticsearch.service.HistoryElasticSearch;
 import com.example.taskmanage.entity.HistoryEntity;
@@ -10,7 +10,6 @@ import com.example.taskmanage.service.HistoryService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -57,13 +56,13 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public List<HistoryDto> findByTypeAndObjectId(String type, long objectId) {
+    public List<HistoryResponse> findByTypeAndObjectId(String type, long objectId) {
 
         return historyMapper.mapFromEntities(historyElasticSearch.getHistoryOfObject(type, objectId));
     }
 
     @Override
-    public List<HistoryDto> findByDate(String date) {
+    public List<HistoryResponse> findByDate(String date) {
 
         return historyMapper.mapFromEntities(historyElasticSearch.getHistoryOfDate(date));
     }

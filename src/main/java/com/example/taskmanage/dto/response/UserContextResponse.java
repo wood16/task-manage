@@ -1,4 +1,4 @@
-package com.example.taskmanage.dto;
+package com.example.taskmanage.dto.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RefreshTokenRequest {
+public class UserContextResponse {
 
-    String token;
+    long userId;
+    String userName;
 }

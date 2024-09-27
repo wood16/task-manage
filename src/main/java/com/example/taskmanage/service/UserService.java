@@ -1,18 +1,18 @@
 package com.example.taskmanage.service;
 
-import com.example.taskmanage.dto.UserDto;
+import com.example.taskmanage.dto.request.UserRequest;
 import com.example.taskmanage.utils.BaseResponseDto;
 
 import java.util.List;
 
 public interface UserService {
-    BaseResponseDto registerAccount(UserDto userDto);
+    BaseResponseDto registerAccount(UserRequest userRequest);
 
-    List<UserDto> getAllUser(String search);
+    List<UserRequest> getAllUser(String search);
 
-    List<UserDto> getAllUserRole(String search, String role);
+    List<UserRequest> getAllUserRole(String search, String role);
 
-    UserDto getUserById(Long userId);
+    UserRequest getUserById(Long userId);
 
     boolean checkUserRole(Long userId, String role);
 }

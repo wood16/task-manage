@@ -1,8 +1,9 @@
 package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.common.constant.HistoryAction;
-import com.example.taskmanage.dto.TaskDto;
-import com.example.taskmanage.dto.TaskExportDto;
+import com.example.taskmanage.dto.request.TaskRequest;
+import com.example.taskmanage.dto.response.TaskResponse;
+import com.example.taskmanage.dto.response.TaskExportResponse;
 import com.example.taskmanage.elasticsearch.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
@@ -41,13 +42,13 @@ public class TaskServiceImpl implements TaskService {
     TaskExportMapper taskExportMapper;
 
     @Override
-    public Page<TaskDto> getAllTask(long userId,
-                                    String filter,
-                                    int page,
-                                    int pageSize,
-                                    String search,
-                                    String sortBy,
-                                    Sort.Direction sortOrder) {
+    public Page<TaskResponse> getAllTask(long userId,
+                                         String filter,
+                                         int page,
+                                         int pageSize,
+                                         String search,
+                                         String sortBy,
+                                         Sort.Direction sortOrder) {
         Sort sort = Objects.isNull(sortBy) ?
                 Sort.by(Sort.Direction.DESC, TaskKeys.MODIFIED_DATE) : Sort.by(sortOrder, sortBy);
 
@@ -57,7 +58,7 @@ public class TaskServiceImpl implements TaskService {
 
         long total = resultSearch.getTotalElements();
 
-        List<TaskDto> taskModels = taskMapper.mapFromElasticModels(resultSearch.getContent());
+        List<TaskResponse> taskModels = taskMapper.mapFromElasticModels(resultSearch.getContent());
 
 //        taskElasticSearch.searchByName("Task", paging);
 //        taskElasticSearch.searchByStartDate(new Date(), paging);
@@ -68,9 +69,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto addTask(long userId, TaskDto taskDto) {
+    public TaskResponse addTask(long userId, TaskRequest taskRequest) {
 
-        TaskEntity taskEntity = taskMapper.mapEntityFromModel(taskDto, new TaskEntity());
+        TaskEntity taskEntity = taskMapper.mapEntityFromModel(taskRequest, new TaskEntity());
         setCreateInfo(userId, taskEntity);
 
         taskEntity.setStatus("pending");
@@ -88,65 +89,65 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto patchTask(long userId,
-                             long taskId,
-                             TaskDto taskDto) {
+    public TaskResponse patchTask(long userId,
+                                  long taskId,
+                                  TaskRequest taskRequest) {
 
         return taskMapper.mapModelFromEntity(
                 taskRepository.findById(taskId)
                         .map(taskEntity -> {
 
-                            if (Objects.nonNull(taskDto.getName())) {
+                            if (Objects.nonNull(taskRequest.getName())) {
                                 historyService.addHistoryTask(userId, "task", taskEntity.getId(),
                                         HistoryAction.UPDATE.getValue(), "name",
-                                        taskEntity.getName(), taskDto.getName());
-                                taskEntity.setName(taskDto.getName());
+                                        taskEntity.getName(), taskRequest.getName());
+                                taskEntity.setName(taskRequest.getName());
                             }
-                            if (Objects.nonNull(taskDto.getDescription())) {
+                            if (Objects.nonNull(taskRequest.getDescription())) {
                                 historyService.addHistoryTask(userId, "task", taskEntity.getId(),
                                         HistoryAction.UPDATE.getValue(), "description",
-                                        taskEntity.getDescription(), taskDto.getDescription());
-                                taskEntity.setDescription(taskDto.getDescription());
+                                        taskEntity.getDescription(), taskRequest.getDescription());
+                                taskEntity.setDescription(taskRequest.getDescription());
                             }
-                            if (Objects.nonNull(taskDto.getStartDate())) {
+                            if (Objects.nonNull(taskRequest.getStartDate())) {
                                 historyService.addHistoryTask(userId, "task", taskEntity.getId(),
                                         HistoryAction.UPDATE.getValue(), "startDate",
-                                        taskEntity.getStartDate(), taskDto.getStartDate());
-                                taskEntity.setStartDate(taskDto.getStartDate());
+                                        taskEntity.getStartDate(), taskRequest.getStartDate());
+                                taskEntity.setStartDate(taskRequest.getStartDate());
 
                                 updateDateOfParent(taskEntity);
                             }
-                            if (Objects.nonNull(taskDto.getEndDate())) {
+                            if (Objects.nonNull(taskRequest.getEndDate())) {
                                 historyService.addHistoryTask(userId, "task", taskEntity.getId(),
                                         HistoryAction.UPDATE.getValue(), "endDate",
-                                        taskEntity.getEndDate(), taskDto.getEndDate());
-                                taskEntity.setEndDate(taskDto.getEndDate());
+                                        taskEntity.getEndDate(), taskRequest.getEndDate());
+                                taskEntity.setEndDate(taskRequest.getEndDate());
 
                                 updateDateOfParent(taskEntity);
                             }
-                            if (Objects.nonNull(taskDto.getProgress())) {
+                            if (Objects.nonNull(taskRequest.getProgress())) {
                                 historyService.addHistoryTask(userId, "task", taskEntity.getId(),
                                         HistoryAction.UPDATE.getValue(), "progress",
-                                        taskEntity.getProgress(), taskDto.getProgress());
-                                updateProgress(userId, taskEntity, taskDto.getProgress(), "");
+                                        taskEntity.getProgress(), taskRequest.getProgress());
+                                updateProgress(userId, taskEntity, taskRequest.getProgress(), "");
                             }
-                            if (Objects.nonNull(taskDto.getAssigneeId())) {
+                            if (Objects.nonNull(taskRequest.getAssigneeId())) {
                                 historyService.addHistoryTask(userId, "task", taskEntity.getId(),
                                         HistoryAction.UPDATE.getValue(), "assigneeId",
-                                        taskEntity.getAssigneeId(), taskDto.getAssigneeId());
-                                taskEntity.setAssigneeId(taskDto.getAssigneeId());
+                                        taskEntity.getAssigneeId(), taskRequest.getAssigneeId());
+                                taskEntity.setAssigneeId(taskRequest.getAssigneeId());
                             }
-                            if (Objects.nonNull(taskDto.getStatus())) {
+                            if (Objects.nonNull(taskRequest.getStatus())) {
                                 historyService.addHistoryTask(userId, "task", taskEntity.getId(),
                                         HistoryAction.UPDATE.getValue(), "status",
-                                        taskEntity.getStatus(), taskDto.getStatus());
-                                taskEntity.setStatus(taskDto.getStatus());
+                                        taskEntity.getStatus(), taskRequest.getStatus());
+                                taskEntity.setStatus(taskRequest.getStatus());
                             }
-                            if (Objects.nonNull(taskDto.getPriority())) {
+                            if (Objects.nonNull(taskRequest.getPriority())) {
                                 historyService.addHistoryTask(userId, "task", taskEntity.getId(),
                                         HistoryAction.UPDATE.getValue(), "priority",
-                                        taskEntity.getPriority(), taskDto.getPriority());
-                                taskEntity.setPriority(taskDto.getPriority());
+                                        taskEntity.getPriority(), taskRequest.getPriority());
+                                taskEntity.setPriority(taskRequest.getPriority());
                             }
 
                             setModifiedInfo(userId, taskEntity);
@@ -160,11 +161,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto putTask(long userId, long taskId, TaskDto taskDto) {
+    public TaskResponse putTask(long userId, long taskId, TaskRequest taskRequest) {
 
         return taskRepository.findById(taskId)
                 .map(entity -> {
-                    TaskEntity newTaskEntity = taskMapper.mapEntityFromModel(taskDto, entity);
+                    TaskEntity newTaskEntity = taskMapper.mapEntityFromModel(taskRequest, entity);
 
                     historyService.addHistoryTask(userId, "task", newTaskEntity.getId(),
                             HistoryAction.UPDATE.getValue(), "", null, null);
@@ -173,14 +174,14 @@ public class TaskServiceImpl implements TaskService {
 
                     updateDateOfParent(newTaskEntity);
 
-                    return modelMapper.map(saveEntity(newTaskEntity), TaskDto.class);
+                    return modelMapper.map(saveEntity(newTaskEntity), TaskResponse.class);
                 })
                 .orElseThrow(() ->
                         new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found"));
     }
 
     @Override
-    public TaskDto getTask(long taskId) {
+    public TaskResponse getTask(long taskId) {
 
         return taskRepository.findById(taskId)
                 .map(taskMapper::mapModelFromEntity)
@@ -189,12 +190,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskDto> getChildTasks(long taskId,
-                                       int page,
-                                       int pageSize,
-                                       String search,
-                                       String sortBy,
-                                       Sort.Direction sortOrder) {
+    public Page<TaskResponse> getChildTasks(long taskId,
+                                            int page,
+                                            int pageSize,
+                                            String search,
+                                            String sortBy,
+                                            Sort.Direction sortOrder) {
 
         Sort sort = Objects.isNull(sortBy) ? Sort.unsorted() : Sort.by(sortOrder, sortBy);
 
@@ -225,7 +226,7 @@ public class TaskServiceImpl implements TaskService {
 
         List<TaskElasticModel> taskElasticModels = taskElasticSearch.getMyTaskForExport("", userId);
 
-        TaskExportDto[] data = taskExportMapper.mapFromModels(taskElasticModels);
+        TaskExportResponse[] data = taskExportMapper.mapFromModels(taskElasticModels);
 
         return importExportService.exportObject(data);
     }

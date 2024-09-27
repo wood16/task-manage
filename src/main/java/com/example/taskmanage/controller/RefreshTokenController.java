@@ -1,6 +1,6 @@
 package com.example.taskmanage.controller;
 
-import com.example.taskmanage.dto.RefreshTokenRequest;
+import com.example.taskmanage.dto.request.RefreshTokenRequest;
 import com.example.taskmanage.entity.RefreshToken;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.jwt.JwtService;

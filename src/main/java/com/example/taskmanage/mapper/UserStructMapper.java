@@ -1,6 +1,6 @@
 package com.example.taskmanage.mapper;
 
-import com.example.taskmanage.dto.UserDto;
+import com.example.taskmanage.dto.request.UserRequest;
 import com.example.taskmanage.entity.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 public interface UserStructMapper {
 
     @Mapping(target = "roles", ignore = true)
-    UserEntity toUserEntity(UserDto userDto);
+    UserEntity toUserEntity(UserRequest userRequest);
 
     @Mapping(target = "roles", ignore = true)
-    UserDto toUserDto(UserEntity userEntity);
+    UserRequest toUserRequest(UserEntity userEntity);
 }

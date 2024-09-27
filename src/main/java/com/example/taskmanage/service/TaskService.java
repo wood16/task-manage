@@ -1,28 +1,29 @@
 package com.example.taskmanage.service;
 
-import com.example.taskmanage.dto.TaskDto;
+import com.example.taskmanage.dto.request.TaskRequest;
+import com.example.taskmanage.dto.response.TaskResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
 public interface TaskService {
 
-    Page<TaskDto> getAllTask(long userId,
-                             String filter,
-                             int page,
-                             int pageSize,
-                             String search,
-                             String sortBy,
-                             Sort.Direction sortOrder);
+    Page<TaskResponse> getAllTask(long userId,
+                                  String filter,
+                                  int page,
+                                  int pageSize,
+                                  String search,
+                                  String sortBy,
+                                  Sort.Direction sortOrder);
 
-    TaskDto addTask(long userId, TaskDto taskModel);
+    TaskResponse addTask(long userId, TaskRequest taskRequest);
 
-    TaskDto patchTask(long userId, long taskId, TaskDto taskDto);
+    TaskResponse patchTask(long userId, long taskId, TaskRequest taskRequest);
 
-    TaskDto putTask(long userId, long taskId, TaskDto taskModel);
+    TaskResponse putTask(long userId, long taskId, TaskRequest taskRequest);
 
-    TaskDto getTask(long taskId);
+    TaskResponse getTask(long taskId);
 
-    Page<TaskDto> getChildTasks(long taskId, int page, int pageSize, String search, String sortBy, Sort.Direction sortOrder);
+    Page<TaskResponse> getChildTasks(long taskId, int page, int pageSize, String search, String sortBy, Sort.Direction sortOrder);
 
     void deleteTaskById(long userId, long taskId);
 

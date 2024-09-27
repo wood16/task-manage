@@ -1,4 +1,4 @@
-package com.example.taskmanage.dto;
+package com.example.taskmanage.dto.request;
 
 import lombok.AccessLevel;
 import lombok.Data;

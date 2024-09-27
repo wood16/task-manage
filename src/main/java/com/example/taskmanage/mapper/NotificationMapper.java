@@ -1,6 +1,6 @@
 package com.example.taskmanage.mapper;
 
-import com.example.taskmanage.dto.NotificationDto;
+import com.example.taskmanage.dto.response.NotificationResponse;
 import com.example.taskmanage.entity.NotificationEntity;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +17,12 @@ public class NotificationMapper {
 
     ModelMapper modelMapper;
 
-    public NotificationDto mapFromEntity(NotificationEntity from) {
+    public NotificationResponse mapFromEntity(NotificationEntity from) {
 
-        return modelMapper.map(from, NotificationDto.class);
+        return modelMapper.map(from, NotificationResponse.class);
     }
 
-    public List<NotificationDto> mapFromEntities(List<NotificationEntity> from) {
+    public List<NotificationResponse> mapFromEntities(List<NotificationEntity> from) {
 
         return from.stream().map(this::mapFromEntity).toList();
     }

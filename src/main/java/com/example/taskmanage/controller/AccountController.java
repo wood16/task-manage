@@ -1,9 +1,10 @@
 package com.example.taskmanage.controller;
 
-import com.example.taskmanage.dto.UserDto;
+import com.example.taskmanage.dto.request.UserRequest;
 import com.example.taskmanage.service.UserService;
 import com.example.taskmanage.utils.BaseResponseDto;
 import com.example.taskmanage.validator.UserValidator;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,11 +24,11 @@ public class AccountController {
     UserValidator userValidator;
 
     @PostMapping("/register")
-    public ResponseEntity<BaseResponseDto> register(@RequestBody UserDto userDto) {
+    public ResponseEntity<BaseResponseDto> register(@RequestBody @Valid UserRequest userRequest) {
 
 //        userValidator.validatorRegister(userDto);
 
-        return ResponseEntity.ok(userService.registerAccount(userDto));
+        return ResponseEntity.ok(userService.registerAccount(userRequest));
     }
 
 

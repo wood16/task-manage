@@ -1,6 +1,6 @@
 package com.example.taskmanage.config.filter;
 
-import com.example.taskmanage.dto.LoginRequest;
+import com.example.taskmanage.dto.request.LoginRequest;
 import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
 import com.example.taskmanage.service.RefreshTokenService;

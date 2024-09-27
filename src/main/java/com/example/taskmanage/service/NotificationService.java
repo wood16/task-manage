@@ -1,6 +1,6 @@
 package com.example.taskmanage.service;
 
-import com.example.taskmanage.dto.NotificationDto;
+import com.example.taskmanage.dto.response.NotificationResponse;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ public interface NotificationService {
                             String type,
                             String content);
 
-    List<NotificationDto> getNotificationOfUser(long userId);
+    List<NotificationResponse> getNotificationOfUser(long userId);
 
-    void patchNotification(Long id, NotificationDto dto);
+    void patchNotification(Long id, NotificationResponse dto);
 
     void reindexAllNotification();
 }

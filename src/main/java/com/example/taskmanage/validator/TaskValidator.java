@@ -1,18 +1,16 @@
 package com.example.taskmanage.validator;
 
-import com.example.taskmanage.dto.TaskDto;
+import com.example.taskmanage.dto.response.TaskResponse;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.repository.TaskRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,29 +22,29 @@ public class TaskValidator {
 
     TaskRepository taskRepository;
 
-    public void validateForAdd(TaskDto taskDto) {
+    public void validateForAdd(TaskResponse taskResponse) {
 
-        validateRequireField(taskDto);
-        validateDate(Optional.empty(), taskDto);
+        validateRequireField(taskResponse);
+        validateDate(Optional.empty(), taskResponse);
     }
 
-    public void validateForUpdate(long taskId, TaskDto taskDto) {
+    public void validateForUpdate(long taskId, TaskResponse taskResponse) {
 
         validateExist(taskId);
-        validateRequireField(taskDto);
+        validateRequireField(taskResponse);
 
         Optional<TaskEntity> optionalTask = taskRepository.findById(taskId);
-        validateDate(optionalTask, taskDto);
+        validateDate(optionalTask, taskResponse);
 
-        validateCircularRelationship(taskId, taskDto);
+        validateCircularRelationship(taskId, taskResponse);
     }
 
-    public void validateForPatch(long taskId, TaskDto taskDto) {
+    public void validateForPatch(long taskId, TaskResponse taskResponse) {
 
         validateExist(taskId);
 
         Optional<TaskEntity> optionalTask = taskRepository.findById(taskId);
-        validateDate(optionalTask, taskDto);
+        validateDate(optionalTask, taskResponse);
     }
 
     public void validateExist(long taskId) {
@@ -59,23 +57,23 @@ public class TaskValidator {
         throw new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found!");
     }
 
-    private void validateDate(Optional<TaskEntity> optionalTask, TaskDto taskDto) {
+    private void validateDate(Optional<TaskEntity> optionalTask, TaskResponse taskResponse) {
 
-        if (Objects.nonNull(taskDto.getStartDate()) && Objects.nonNull(taskDto.getEndDate())) {
+        if (Objects.nonNull(taskResponse.getStartDate()) && Objects.nonNull(taskResponse.getEndDate())) {
 
-            validateStartAndEndDate(taskDto.getStartDate(), taskDto.getEndDate());
+            validateStartAndEndDate(taskResponse.getStartDate(), taskResponse.getEndDate());
         }
 
         optionalTask.ifPresent(taskEntity -> {
 
-            if (Objects.isNull(taskDto.getStartDate()) && Objects.nonNull(taskDto.getEndDate())) {
+            if (Objects.isNull(taskResponse.getStartDate()) && Objects.nonNull(taskResponse.getEndDate())) {
 
-                validateStartAndEndDate(taskEntity.getStartDate(), taskDto.getEndDate());
+                validateStartAndEndDate(taskEntity.getStartDate(), taskResponse.getEndDate());
             }
 
-            if (Objects.nonNull(taskDto.getStartDate()) && Objects.isNull(taskDto.getEndDate())) {
+            if (Objects.nonNull(taskResponse.getStartDate()) && Objects.isNull(taskResponse.getEndDate())) {
 
-                validateStartAndEndDate(taskDto.getStartDate(), taskEntity.getEndDate());
+                validateStartAndEndDate(taskResponse.getStartDate(), taskEntity.getEndDate());
             }
         });
     }
@@ -88,26 +86,26 @@ public class TaskValidator {
         }
     }
 
-    private void validateRequireField(TaskDto taskDto) {
+    private void validateRequireField(TaskResponse taskResponse) {
 
-        if (Objects.isNull(taskDto.getName())) {
+        if (Objects.isNull(taskResponse.getName())) {
 
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Name of task is required!");
         }
 
-        if (Objects.isNull(taskDto.getAssigneeId())) {
+        if (Objects.isNull(taskResponse.getAssigneeId())) {
 
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Assignee of task is required!");
         }
     }
 
-    private void validateCircularRelationship(long id, TaskDto taskDto) {
+    private void validateCircularRelationship(long id, TaskResponse taskResponse) {
 
         AtomicBoolean isCircular = new AtomicBoolean();
 
-        if(Objects.nonNull(taskDto.getParentId())){
+        if(Objects.nonNull(taskResponse.getParentId())){
 
-            checkCircularRelationship(id, taskDto.getParentId(), isCircular);
+            checkCircularRelationship(id, taskResponse.getParentId(), isCircular);
         }
 
         if(isCircular.get()){

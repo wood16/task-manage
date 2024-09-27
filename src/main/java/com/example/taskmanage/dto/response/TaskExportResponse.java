@@ -1,4 +1,4 @@
-package com.example.taskmanage.dto;
+package com.example.taskmanage.dto.response;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TaskExportDto {
+public class TaskExportResponse {
 
     String name;
     Date startDate;

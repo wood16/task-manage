@@ -2,16 +2,15 @@ package com.example.taskmanage.exception;
 
 import com.example.taskmanage.utils.BaseResponseDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
-@RestControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+@ControllerAdvice
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<BaseResponseDto> handleAllException(RuntimeException exception) {
@@ -26,9 +25,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    @ExceptionHandler(value = DataIntegrityViolationException.class)
-    public ResponseEntity<BaseResponseDto> handleDataIntegrityViolationException(
-            DataIntegrityViolationException exception) {
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<BaseResponseDto> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException exception) {
 
         log.error("Exception ", exception);
 

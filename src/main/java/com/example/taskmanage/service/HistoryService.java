@@ -1,6 +1,6 @@
 package com.example.taskmanage.service;
 
-import com.example.taskmanage.dto.HistoryDto;
+import com.example.taskmanage.dto.response.HistoryResponse;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface HistoryService {
 
     void reindexAllHistory();
 
-    List<HistoryDto> findByTypeAndObjectId(String type, long objectId);
+    List<HistoryResponse> findByTypeAndObjectId(String type, long objectId);
 
-    List<HistoryDto> findByDate(String date);
+    List<HistoryResponse> findByDate(String date);
 }

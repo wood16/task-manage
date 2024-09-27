@@ -1,4 +1,4 @@
-package com.example.taskmanage.dto;
+package com.example.taskmanage.dto.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProgressHistoryDto {
+public class ProgressHistoryResponse {
 
     Long id;
     Long taskId;

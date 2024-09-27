@@ -1,4 +1,4 @@
-package com.example.taskmanage.dto;
+package com.example.taskmanage.dto.response;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,14 +8,17 @@ import java.util.Date;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class NotificationDto {
+public class HistoryResponse {
 
     Long id;
     Long creatorId;
+    String creatorName;
     Date createDate;
-    String type;
-    String content;
-    Long receiverId;
-    String status;
     Long objectId;
+    String type;
+    String description;
+    String fromValue;
+    String toValue;
+    String field;
+    String action;
 }

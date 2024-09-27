@@ -1,7 +1,8 @@
 package com.example.taskmanage.controller;
 
-import com.example.taskmanage.dto.TaskDto;
-import com.example.taskmanage.dto.UserContextDto;
+import com.example.taskmanage.dto.request.TaskRequest;
+import com.example.taskmanage.dto.response.TaskResponse;
+import com.example.taskmanage.dto.response.UserContextResponse;
 import com.example.taskmanage.service.TaskService;
 import com.example.taskmanage.validator.TaskValidator;
 import lombok.AccessLevel;
@@ -36,7 +37,7 @@ public class TaskController {
             @RequestParam(required = false, defaultValue = "ASC") Sort.Direction sortOrder
     ) {
 
-        Page<TaskDto> taskModels = taskService.getAllTask(
+        Page<TaskResponse> taskModels = taskService.getAllTask(
                 getUserContext().getUserId(), filter, page, pageSize, search, sortBy, sortOrder);
 
         Map<String, Object> response = new HashMap<>();
@@ -49,31 +50,31 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskDto> postTask(@RequestBody TaskDto taskModel) {
+    public ResponseEntity<TaskResponse> postTask(@RequestBody TaskRequest taskRequest) {
 
-        taskValidator.validateForAdd(taskModel);
+//        taskValidator.validateForAdd(taskModel);
 
-        return ResponseEntity.ok(taskService.addTask(getUserContext().getUserId(), taskModel));
+        return ResponseEntity.ok(taskService.addTask(getUserContext().getUserId(), taskRequest));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDto> putTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
+    public ResponseEntity<TaskResponse> putTask(@RequestBody TaskRequest taskRequest, @PathVariable long id) {
 
-        taskValidator.validateForUpdate(id, taskModel);
+//        taskValidator.validateForUpdate(id, taskModel);
 
-        return ResponseEntity.ok(taskService.putTask(getUserContext().getUserId(), id, taskModel));
+        return ResponseEntity.ok(taskService.putTask(getUserContext().getUserId(), id, taskRequest));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TaskDto> patchTask(@RequestBody TaskDto taskModel, @PathVariable long id) {
+    public ResponseEntity<TaskResponse> patchTask(@RequestBody TaskRequest taskRequest, @PathVariable long id) {
 
-        taskValidator.validateForPatch(id, taskModel);
+//        taskValidator.validateForPatch(id, taskModel);
 
-        return ResponseEntity.ok(taskService.patchTask(getUserContext().getUserId(), id, taskModel));
+        return ResponseEntity.ok(taskService.patchTask(getUserContext().getUserId(), id, taskRequest));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDto> getOne(@PathVariable long id) {
+    public ResponseEntity<TaskResponse> getOne(@PathVariable long id) {
 
         taskValidator.validateExist(id);
 
@@ -89,12 +90,12 @@ public class TaskController {
     }
 
     @GetMapping("/childTasks/{id}")
-    public Page<TaskDto> getChildTasks(@PathVariable long id,
-                                       @RequestParam(defaultValue = "0") int page,
-                                       @RequestParam(defaultValue = "1") int pageSize,
-                                       @RequestParam(required = false) String search,
-                                       @RequestParam(required = false) String sortBy,
-                                       @RequestParam(required = false, defaultValue = "ASC") Sort.Direction sortOrder) {
+    public Page<TaskResponse> getChildTasks(@PathVariable long id,
+                                            @RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(defaultValue = "1") int pageSize,
+                                            @RequestParam(required = false) String search,
+                                            @RequestParam(required = false) String sortBy,
+                                            @RequestParam(required = false, defaultValue = "ASC") Sort.Direction sortOrder) {
 
         return taskService.getChildTasks(id, page, pageSize, search, sortBy, sortOrder);
     }
@@ -105,9 +106,9 @@ public class TaskController {
         return taskService.exportTask(getUserContext().getUserId());
     }
 
-    private UserContextDto getUserContext() {
+    private UserContextResponse getUserContext() {
 
-        return (UserContextDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (UserContextResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     @GetMapping("/reindex")

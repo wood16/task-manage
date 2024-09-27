@@ -1,6 +1,5 @@
-package com.example.taskmanage.dto;
+package com.example.taskmanage.dto.response;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,10 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TaskDto {
+public class TaskResponse {
 
     Long id;
-    @NotNull
     String name;
     Date startDate;
     Date endDate;
@@ -32,9 +30,9 @@ public class TaskDto {
     Long modifiedId;
     String modifiedName;
     Long parentId;
-    List<TaskDto> tasks;
-    TaskDto parentTask;
+    List<TaskResponse> tasks;
+    TaskResponse parentTask;
     Long assigneeId;
     String assigneeName;
-    List<ProgressHistoryDto> progressHistories;
+    List<ProgressHistoryResponse> progressHistories;
 }

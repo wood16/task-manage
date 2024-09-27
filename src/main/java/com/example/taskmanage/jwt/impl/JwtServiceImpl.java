@@ -1,7 +1,8 @@
 package com.example.taskmanage.jwt.impl;
 
 
-import com.example.taskmanage.dto.UserDto;
+
+import com.example.taskmanage.dto.request.UserRequest;
 import com.example.taskmanage.exception.BaseException;
 import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
@@ -95,13 +96,13 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String generateTokenForRefreshToken(Long userId) {
 
-        UserDto userDto = userService.getUserById(userId);
+        UserRequest userRequest = userService.getUserById(userId);
 
         return Jwts.builder()
-                .setSubject(userDto.getUsername())
-                .claim("userId", userDto.getId())
-                .claim("authorities", Arrays.stream(userDto.getRoles()).toList())
-                .claim("roles", Arrays.stream(userDto.getRoles()).toList())
+                .setSubject(userRequest.getUsername())
+                .claim("userId", userRequest.getId())
+                .claim("authorities", Arrays.stream(userRequest.getRoles()).toList())
+                .claim("roles", Arrays.stream(userRequest.getRoles()).toList())
                 .claim("isEnable", Boolean.TRUE)
                 .setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(1800)))

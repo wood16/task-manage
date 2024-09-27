@@ -1,7 +1,7 @@
 package com.example.taskmanage.controller;
 
-import com.example.taskmanage.dto.NotificationDto;
-import com.example.taskmanage.dto.UserContextDto;
+import com.example.taskmanage.dto.response.NotificationResponse;
+import com.example.taskmanage.dto.response.UserContextResponse;
 import com.example.taskmanage.service.NotificationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +21,14 @@ public class NotificationController {
     NotificationService notificationService;
 
     @GetMapping("/user")
-    public ResponseEntity<List<NotificationDto>> getNotificationOfUser() {
+    public ResponseEntity<List<NotificationResponse>> getNotificationOfUser() {
 
         return ResponseEntity.ok(notificationService.getNotificationOfUser(getUserContext().getUserId()));
     }
 
     @PatchMapping("/{id}")
     public void patchNotification(@PathVariable long id,
-                                  @RequestBody NotificationDto dto) {
+                                  @RequestBody NotificationResponse dto) {
 
         notificationService.patchNotification(id, dto);
     }
@@ -41,8 +41,8 @@ public class NotificationController {
         return ResponseEntity.ok("Success");
     }
 
-    private UserContextDto getUserContext() {
+    private UserContextResponse getUserContext() {
 
-        return (UserContextDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (UserContextResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

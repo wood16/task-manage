@@ -1,7 +1,7 @@
 package com.example.taskmanage.elasticsearch.service;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
-import com.example.taskmanage.dto.TaskDto;
+import com.example.taskmanage.dto.response.TaskResponse;
 import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.elasticsearch.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
@@ -12,7 +12,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -150,9 +149,9 @@ public class TaskElasticSearch {
                 hits.getTotalHits());
     }
 
-    public Page<TaskDto> getChildTasks(long id,
-                                       Pageable pageable,
-                                       String search) {
+    public Page<TaskResponse> getChildTasks(long id,
+                                            Pageable pageable,
+                                            String search) {
 
 
         co.elastic.clients.elasticsearch._types.query_dsl.Query searchQuery =
@@ -194,7 +193,7 @@ public class TaskElasticSearch {
         SearchHits<TaskElasticModel> hits = elasticsearchOperations.search(searchChildTask, TaskElasticModel.class);
 
         return new PageImpl<>(
-                hits.stream().map(hit -> modelMapper.map(hit.getContent(), TaskDto.class)).toList(),
+                hits.stream().map(hit -> modelMapper.map(hit.getContent(), TaskResponse.class)).toList(),
                 pageable,
                 hits.getTotalHits());
     }

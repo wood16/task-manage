@@ -1,6 +1,6 @@
 package com.example.taskmanage.controller;
 
-import com.example.taskmanage.dto.HistoryDto;
+import com.example.taskmanage.dto.response.HistoryResponse;
 import com.example.taskmanage.service.HistoryService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class HistoryController {
     HistoryService historyService;
 
     @GetMapping("/object")
-    public ResponseEntity<List<HistoryDto>> getHistoryObject(
+    public ResponseEntity<List<HistoryResponse>> getHistoryObject(
             @RequestParam(required = true) String type,
             @RequestParam(required = true) long objectId
     ) {
@@ -39,7 +39,7 @@ public class HistoryController {
     }
 
     @GetMapping("/date")
-    public ResponseEntity<List<HistoryDto>> getHistoryDate(
+    public ResponseEntity<List<HistoryResponse>> getHistoryDate(
             @RequestParam(required = true) String date
     ) {
 

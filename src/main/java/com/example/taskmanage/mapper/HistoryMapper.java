@@ -1,12 +1,11 @@
 package com.example.taskmanage.mapper;
 
-import com.example.taskmanage.dto.HistoryDto;
+import com.example.taskmanage.dto.response.HistoryResponse;
 import com.example.taskmanage.entity.HistoryEntity;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,16 +18,16 @@ public class HistoryMapper {
     MapperUtil mapperUtil;
     ModelMapper modelMapper;
 
-    public HistoryDto mapFromEntity(HistoryEntity from) {
+    public HistoryResponse mapFromEntity(HistoryEntity from) {
 
-        HistoryDto to = modelMapper.map(from, HistoryDto.class);
+        HistoryResponse to = modelMapper.map(from, HistoryResponse.class);
 
         to.setCreatorName(mapperUtil.getUserName(from.getCreatorId()));
 
         return to;
     }
 
-    public List<HistoryDto> mapFromEntities(List<HistoryEntity> from) {
+    public List<HistoryResponse> mapFromEntities(List<HistoryEntity> from) {
 
         return from.stream().map(this::mapFromEntity).toList();
     }

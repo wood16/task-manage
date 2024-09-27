@@ -1,6 +1,6 @@
 package com.example.taskmanage.service.impl;
 
-import com.example.taskmanage.dto.NotificationDto;
+import com.example.taskmanage.dto.response.NotificationResponse;
 import com.example.taskmanage.elasticsearch.elasticrepository.NotificationElasticRepository;
 import com.example.taskmanage.elasticsearch.service.NotificationElasticSearch;
 import com.example.taskmanage.entity.NotificationEntity;
@@ -10,7 +10,6 @@ import com.example.taskmanage.service.NotificationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -47,13 +46,13 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<NotificationDto> getNotificationOfUser(long userId) {
+    public List<NotificationResponse> getNotificationOfUser(long userId) {
 
         return notificationMapper.mapFromEntities(notificationElasticSearch.getNotifyOfUser(userId));
     }
 
     @Override
-    public void patchNotification(Long id, NotificationDto dto) {
+    public void patchNotification(Long id, NotificationResponse dto) {
         notificationRepository.findById(id)
                 .ifPresent(entity -> {
 

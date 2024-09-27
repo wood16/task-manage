@@ -1,6 +1,7 @@
 package com.example.taskmanage.mapper;
 
-import com.example.taskmanage.dto.TaskDto;
+import com.example.taskmanage.dto.request.TaskRequest;
+import com.example.taskmanage.dto.response.TaskResponse;
 import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.repository.TaskRepository;
@@ -25,7 +26,7 @@ public class TaskMapper {
     MapperUtil mapperUtil;
     TaskStructMapper taskStructMapper;
 
-    public TaskEntity mapEntityFromModel(TaskDto from, TaskEntity to) {
+    public TaskEntity mapEntityFromModel(TaskRequest from, TaskEntity to) {
 
         to.setName(from.getName());
         to.setDescription(from.getDescription());
@@ -40,9 +41,9 @@ public class TaskMapper {
         return to;
     }
 
-    public TaskDto mapModelFromEntity(TaskEntity from) {
+    public TaskResponse mapModelFromEntity(TaskEntity from) {
 
-        TaskDto to = new TaskDto();
+        TaskResponse to = new TaskResponse();
 
         to.setId(from.getId());
         to.setName(from.getName());
@@ -61,7 +62,7 @@ public class TaskMapper {
 //        to.setTasks(mapModelsFromEntities(taskRepository.findByParentTask_Id(from.getId())));
 
         Optional.ofNullable(from.getParentTask()).ifPresent(entity -> {
-            to.setParentTask(modelMapper.map(entity, TaskDto.class));
+            to.setParentTask(modelMapper.map(entity, TaskResponse.class));
             to.setParentId(entity.getId());
         });
 
@@ -74,7 +75,7 @@ public class TaskMapper {
         return to;
     }
 
-    public List<TaskDto> mapModelsFromEntities(List<TaskEntity> from) {
+    public List<TaskResponse> mapModelsFromEntities(List<TaskEntity> from) {
 
         return from.stream().map(this::mapModelFromEntity).toList();
     }
@@ -93,8 +94,8 @@ public class TaskMapper {
         return from.stream().map(this::mapForIndex).toList();
     }
 
-    public TaskDto mapFromElasticModel(TaskElasticModel from) {
-        TaskDto to = new TaskDto();
+    public TaskResponse mapFromElasticModel(TaskElasticModel from) {
+        TaskResponse to = new TaskResponse();
 
         to.setId(from.getId());
         to.setName(from.getName());
@@ -112,7 +113,7 @@ public class TaskMapper {
         to.setModifiedName(mapperUtil.getUserName(from.getModifiedId()));
 
         Optional.ofNullable(from.getParentTask()).ifPresent(entity -> {
-            to.setParentTask(modelMapper.map(entity, TaskDto.class));
+            to.setParentTask(modelMapper.map(entity, TaskResponse.class));
             to.setParentId(entity.getId());
         });
 
@@ -123,7 +124,7 @@ public class TaskMapper {
         return to;
     }
 
-    public List<TaskDto> mapFromElasticModels(List<TaskElasticModel> from) {
+    public List<TaskResponse> mapFromElasticModels(List<TaskElasticModel> from) {
 
         return from.stream().map(this::mapFromElasticModel).toList();
     }

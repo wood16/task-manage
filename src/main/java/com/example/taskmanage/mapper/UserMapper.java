@@ -1,6 +1,7 @@
 package com.example.taskmanage.mapper;
 
-import com.example.taskmanage.dto.UserDto;
+
+import com.example.taskmanage.dto.request.UserRequest;
 import com.example.taskmanage.entity.RoleEntity;
 import com.example.taskmanage.entity.UserEntity;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,8 @@ import java.util.Set;
 @Service
 public class UserMapper {
 
-    public UserDto mapFromEntry(UserEntity from) {
-        UserDto to = new UserDto();
+    public UserRequest mapFromEntry(UserEntity from) {
+        UserRequest to = new UserRequest();
 
         to.setId(from.getId());
         to.setUsername(from.getUsername());
@@ -22,7 +23,7 @@ public class UserMapper {
         return to;
     }
 
-    public List<UserDto> mapFromEntries(List<UserEntity> from) {
+    public List<UserRequest> mapFromEntries(List<UserEntity> from) {
 
         return from.stream().map(this::mapFromEntry).toList();
     }

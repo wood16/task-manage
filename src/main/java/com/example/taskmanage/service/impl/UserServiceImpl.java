@@ -1,6 +1,6 @@
 package com.example.taskmanage.service.impl;
 
-import com.example.taskmanage.dto.UserDto;
+import com.example.taskmanage.dto.request.UserRequest;
 import com.example.taskmanage.entity.RoleEntity;
 import com.example.taskmanage.entity.UserEntity;
 import com.example.taskmanage.exception.BaseException;
@@ -31,12 +31,12 @@ public class UserServiceImpl implements UserService {
     UserStructMapper userStructMapper;
 
     @Override
-    public BaseResponseDto registerAccount(UserDto userDto) {
+    public BaseResponseDto registerAccount(UserRequest userRequest) {
         BaseResponseDto responseDto = new BaseResponseDto();
 
 //        validateAccount(userDto);
 
-        UserEntity userEntity = insertUser(userDto);
+        UserEntity userEntity = insertUser(userRequest);
 
 //        try {
 
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUser(String search) {
+    public List<UserRequest> getAllUser(String search) {
 
         if (Objects.nonNull(search)) {
             return userMapper.mapFromEntries(userRepository.findByUsernameContaining(search));
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUserRole(String search, String role) {
+    public List<UserRequest> getAllUserRole(String search, String role) {
 
         return userMapper.mapFromEntries(userRepository.findAllUserWithoutRole(
                 Objects.requireNonNullElse(role, "ADMIN"),
@@ -74,11 +74,11 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserDto getUserById(Long userId) {
+    public UserRequest getUserById(Long userId) {
 
         return userRepository.findById(userId)
                 .map(item -> {
-                    UserDto result = userStructMapper.toUserDto(item);
+                    UserRequest result = userStructMapper.toUserRequest(item);
 
                     result.setRoles(userMapper.getRoles(item.getRoles()));
 
@@ -93,15 +93,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.findRoleByUser(userId).stream().anyMatch(item -> item.equalsIgnoreCase(role));
     }
 
-    private UserEntity insertUser(UserDto userDto) {
+    private UserEntity insertUser(UserRequest userRequest) {
 
         UserEntity userEntity = new UserEntity();
 
-        userEntity.setUsername(userDto.getUsername());
-        userEntity.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        userEntity.setUsername(userRequest.getUsername());
+        userEntity.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         Set<RoleEntity> roles = new HashSet<>();
-        Arrays.stream(userDto.getRoles()).forEach(item ->
+        Arrays.stream(userRequest.getRoles()).forEach(item ->
                 roles.add(roleRepository.findByName(item))
         );
 
@@ -110,22 +110,22 @@ public class UserServiceImpl implements UserService {
         return userEntity;
     }
 
-    private void validateAccount(UserDto userDto) {
+    private void validateAccount(UserRequest userRequest) {
 
 //        validate null data
-        if (Objects.isNull(userDto)) {
+        if (Objects.isNull(userRequest)) {
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Data must not empty");
         }
 
 //        validate duplicate name
-        UserEntity userEntity = userRepository.findByUsername(userDto.getUsername());
+        UserEntity userEntity = userRepository.findByUsername(userRequest.getUsername());
         if (Objects.nonNull(userEntity)) {
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Username had existed");
         }
 
 //        validate role
         List<String> roles = roleRepository.findAll().stream().map(RoleEntity::getName).toList();
-        if (!roles.containsAll(Arrays.stream(userDto.getRoles()).toList())) {
+        if (!roles.containsAll(Arrays.stream(userRequest.getRoles()).toList())) {
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Invalid role");
         }
     }
