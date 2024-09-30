@@ -8,6 +8,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.Objects;
+
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -24,18 +26,29 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(responseDto, HttpStatus.valueOf(responseDto.getCode()));
     }
 
-
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponseDto> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException exception) {
 
-        log.error("Exception ", exception);
+        String enumKey = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
+
+        ErrorCode errorCode = ErrorCode.INVALID_KEY;
+
+        try {
+            errorCode = ErrorCode.valueOf(enumKey);
+
+
+        } catch (IllegalArgumentException e) {
+
+            log.warn(e.getMessage());
+        }
 
         BaseResponseDto responseDto = BaseResponseDto.builder()
-                .message(exception.getMessage())
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
                 .build();
 
-        return new ResponseEntity<>(responseDto, HttpStatus.valueOf(responseDto.getCode()));
+        return ResponseEntity.badRequest().body(responseDto);
     }
 
     @ExceptionHandler(value = BaseException.class)

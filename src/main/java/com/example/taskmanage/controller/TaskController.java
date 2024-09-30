@@ -5,6 +5,7 @@ import com.example.taskmanage.dto.response.TaskResponse;
 import com.example.taskmanage.dto.response.UserContextResponse;
 import com.example.taskmanage.service.TaskService;
 import com.example.taskmanage.validator.TaskValidator;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -50,7 +51,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponse> postTask(@RequestBody TaskRequest taskRequest) {
+    public ResponseEntity<TaskResponse> postTask(@RequestBody @Valid TaskRequest taskRequest) {
 
 //        taskValidator.validateForAdd(taskModel);
 
@@ -58,7 +59,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponse> putTask(@RequestBody TaskRequest taskRequest, @PathVariable long id) {
+    public ResponseEntity<TaskResponse> putTask(@RequestBody @Valid TaskRequest taskRequest, @PathVariable long id) {
 
 //        taskValidator.validateForUpdate(id, taskModel);
 
