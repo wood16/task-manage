@@ -3,6 +3,7 @@ package com.example.taskmanage.controller;
 import com.example.taskmanage.dto.request.RefreshTokenRequest;
 import com.example.taskmanage.entity.RefreshToken;
 import com.example.taskmanage.exception.BaseException;
+import com.example.taskmanage.exception.ErrorCode;
 import com.example.taskmanage.jwt.JwtService;
 import com.example.taskmanage.service.RefreshTokenService;
 import lombok.AccessLevel;
@@ -45,6 +46,6 @@ public class RefreshTokenController {
                     return new ResponseEntity(responseObject, HttpStatus.OK);
                 })
                 .orElseThrow(() ->
-                        new BaseException(HttpStatus.BAD_REQUEST.value(), "Token not found"));
+                        new BaseException(ErrorCode.TOKEN_NOT_FOUND));
     }
 }

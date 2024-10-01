@@ -4,6 +4,7 @@ import com.example.taskmanage.dto.request.UserRequest;
 import com.example.taskmanage.entity.RoleEntity;
 import com.example.taskmanage.entity.UserEntity;
 import com.example.taskmanage.exception.BaseException;
+import com.example.taskmanage.exception.ErrorCode;
 import com.example.taskmanage.mapper.UserMapper;
 import com.example.taskmanage.mapper.UserStructMapper;
 import com.example.taskmanage.repository.RoleRepository;
@@ -84,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
                     return result;
                 })
-                .orElseThrow(() -> new BaseException(HttpStatus.BAD_REQUEST.value(), "User not found"));
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Override
@@ -112,21 +113,18 @@ public class UserServiceImpl implements UserService {
 
     private void validateAccount(UserRequest userRequest) {
 
-//        validate null data
-        if (Objects.isNull(userRequest)) {
-            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Data must not empty");
-        }
+//        TODO
+//        use validator of spring to check null object
 
-//        validate duplicate name
-        UserEntity userEntity = userRepository.findByUsername(userRequest.getUsername());
-        if (Objects.nonNull(userEntity)) {
-            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Username had existed");
-        }
+//        validate null data
+//        if (Objects.isNull(userRequest)) {
+//            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Data must not empty");
+//        }
 
 //        validate role
         List<String> roles = roleRepository.findAll().stream().map(RoleEntity::getName).toList();
         if (!roles.containsAll(Arrays.stream(userRequest.getRoles()).toList())) {
-            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Invalid role");
+            throw new BaseException(ErrorCode.INVALID_ROLE);
         }
     }
 }

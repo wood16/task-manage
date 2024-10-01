@@ -2,6 +2,7 @@ package com.example.taskmanage.service.security;
 
 import com.example.taskmanage.entity.UserEntity;
 import com.example.taskmanage.exception.BaseException;
+import com.example.taskmanage.exception.ErrorCode;
 import com.example.taskmanage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class UserDetailsServiceCustom implements UserDetailsService {
         UserDetailsCustom userDetailsCustom = getUserDetail(username);
 
         if (Objects.isNull(userDetailsCustom)) {
-            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Invalid username or password!");
+            throw new BaseException(ErrorCode.INVALID_USERNAME_PASSWORD);
         }
 
         return userDetailsCustom;
@@ -34,7 +35,7 @@ public class UserDetailsServiceCustom implements UserDetailsService {
         UserEntity userEntity = userRepository.findByUsername(username);
 
         if (Objects.isNull(userEntity)) {
-            throw new BaseException(HttpStatus.BAD_REQUEST.value(), "Invalid username or password!");
+            throw new BaseException(ErrorCode.INVALID_USERNAME_PASSWORD);
         }
 
         return new UserDetailsCustom(

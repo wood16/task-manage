@@ -17,13 +17,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<BaseResponseDto> handleAllException(RuntimeException exception) {
 
+        ErrorCode errorCode = ErrorCode.UN_CATEGORY;
+
         log.error("Exception ", exception);
 
         BaseResponseDto responseDto = BaseResponseDto.builder()
-                .message(exception.getMessage())
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
                 .build();
 
-        return new ResponseEntity<>(responseDto, HttpStatus.valueOf(responseDto.getCode()));
+        return ResponseEntity.badRequest().body(responseDto);
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
@@ -53,11 +56,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = BaseException.class)
     public ResponseEntity<BaseResponseDto> handleBaseException(BaseException exception) {
+
+        ErrorCode errorCode = exception.getErrorCode();
+
         BaseResponseDto responseDto = BaseResponseDto.builder()
-                .code(exception.getCode())
-                .message(exception.getMessage())
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
                 .build();
 
-        return new ResponseEntity<>(responseDto, HttpStatus.valueOf(responseDto.getCode()));
+        return ResponseEntity.status(errorCode.getCode()).body(responseDto);
     }
 }

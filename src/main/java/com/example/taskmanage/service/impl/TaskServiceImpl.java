@@ -2,14 +2,15 @@ package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.common.constant.HistoryAction;
 import com.example.taskmanage.dto.request.TaskRequest;
-import com.example.taskmanage.dto.response.TaskResponse;
 import com.example.taskmanage.dto.response.TaskExportResponse;
+import com.example.taskmanage.dto.response.TaskResponse;
 import com.example.taskmanage.elasticsearch.elasticrepository.TaskElasticRepository;
 import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
 import com.example.taskmanage.elasticsearch.service.TaskElasticSearch;
 import com.example.taskmanage.entity.TaskEntity;
 import com.example.taskmanage.exception.BaseException;
+import com.example.taskmanage.exception.ErrorCode;
 import com.example.taskmanage.mapper.TaskExportMapper;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
@@ -19,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -155,7 +155,7 @@ public class TaskServiceImpl implements TaskService {
                             return saveEntity(taskEntity);
                         })
                         .orElseThrow(
-                                () -> new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found!")
+                                () -> new BaseException(ErrorCode.TOKEN_NOT_FOUND)
                         )
         );
     }
@@ -177,7 +177,7 @@ public class TaskServiceImpl implements TaskService {
                     return modelMapper.map(saveEntity(newTaskEntity), TaskResponse.class);
                 })
                 .orElseThrow(() ->
-                        new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found"));
+                        new BaseException(ErrorCode.TOKEN_NOT_FOUND));
     }
 
     @Override
@@ -186,7 +186,7 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findById(taskId)
                 .map(taskMapper::mapModelFromEntity)
                 .orElseThrow(() ->
-                        new BaseException(HttpStatus.NOT_FOUND.value(), "Task not found"));
+                        new BaseException(ErrorCode.TOKEN_NOT_FOUND));
     }
 
     @Override

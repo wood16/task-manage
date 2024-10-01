@@ -19,5 +19,5 @@ public @interface NameConstraint {
 
     Class<? extends Payload>[] payload() default { };
 
-    int min() default 0;
+    int min();
 }

@@ -17,7 +17,7 @@ import java.util.Date;
 public class TaskRequest {
 
     @NotNull(message = "TASK_NAME_NULL")
-    @NameConstraint(min = 15, message = "INVALID_TASK_NAME")
+    @NameConstraint(min = 5, message = "INVALID_TASK_NAME")
     String name;
     @NotNull(message = "START_DATE_TASK_NAME")
     Date startDate;
@@ -26,7 +26,7 @@ public class TaskRequest {
     String priority;
     String description;
     Long parentId;
-    @NotNull(message = "ASSIGN_TASK_NAME")
+    @NotNull(message = "TASK_ASSIGN_NULL")
     Long assigneeId;
     Long progress;
     String status;

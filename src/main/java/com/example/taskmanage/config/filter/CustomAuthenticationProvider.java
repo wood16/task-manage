@@ -3,6 +3,7 @@ package com.example.taskmanage.config.filter;
 import com.example.taskmanage.entity.RoleEntity;
 import com.example.taskmanage.entity.UserEntity;
 import com.example.taskmanage.exception.BaseException;
+import com.example.taskmanage.exception.ErrorCode;
 import com.example.taskmanage.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         try {
             userEntity = userRepository.findByUsername(username);
         } catch (Exception e) {
-            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "User's not found");
+            throw new BaseException(ErrorCode.USER_NOT_FOUND);
         }
 
         final List<GrantedAuthority> authorities = getAuthorities(userEntity.getRoles().stream().toList());

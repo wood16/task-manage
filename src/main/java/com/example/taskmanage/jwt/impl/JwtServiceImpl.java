@@ -1,9 +1,9 @@
 package com.example.taskmanage.jwt.impl;
 
 
-
 import com.example.taskmanage.dto.request.UserRequest;
 import com.example.taskmanage.exception.BaseException;
+import com.example.taskmanage.exception.ErrorCode;
 import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
 import com.example.taskmanage.service.UserService;
@@ -15,7 +15,6 @@ import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -133,16 +132,16 @@ public class JwtServiceImpl implements JwtService {
                     .getBody();
         } catch (ExpiredJwtException e) {
 
-            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "Token expiration");
+            throw new BaseException(ErrorCode.TOKEN_EXPIRATION);
         } catch (UnsupportedJwtException e) {
 
-            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "Token's not supported");
+            throw new BaseException(ErrorCode.TOKEN_NOT_SUPPORT);
         } catch (MalformedJwtException e) {
 
-            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "Invalid format 3 part of token");
+            throw new BaseException(ErrorCode.INVALID_PART_TOKEN);
         } catch (SignatureException e) {
 
-            throw new BaseException(HttpStatus.UNAUTHORIZED.value(), "Invalid format token");
+            throw new BaseException(ErrorCode.INVALID_FORMAT_TOKEN);
         }
 //        catch (Exception e) {
 //

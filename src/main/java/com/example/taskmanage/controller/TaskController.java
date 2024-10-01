@@ -53,7 +53,7 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<TaskResponse> postTask(@RequestBody @Valid TaskRequest taskRequest) {
 
-//        taskValidator.validateForAdd(taskModel);
+        taskValidator.validateForAdd(taskRequest);
 
         return ResponseEntity.ok(taskService.addTask(getUserContext().getUserId(), taskRequest));
     }
@@ -61,7 +61,7 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> putTask(@RequestBody @Valid TaskRequest taskRequest, @PathVariable long id) {
 
-//        taskValidator.validateForUpdate(id, taskModel);
+        taskValidator.validateForUpdate(id, taskRequest);
 
         return ResponseEntity.ok(taskService.putTask(getUserContext().getUserId(), id, taskRequest));
     }
@@ -69,7 +69,7 @@ public class TaskController {
     @PatchMapping("/{id}")
     public ResponseEntity<TaskResponse> patchTask(@RequestBody TaskRequest taskRequest, @PathVariable long id) {
 
-//        taskValidator.validateForPatch(id, taskModel);
+        taskValidator.validateForPatch(id, taskRequest);
 
         return ResponseEntity.ok(taskService.patchTask(getUserContext().getUserId(), id, taskRequest));
     }
