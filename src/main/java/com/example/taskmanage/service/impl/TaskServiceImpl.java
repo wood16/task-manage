@@ -22,6 +22,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 
@@ -279,7 +280,7 @@ public class TaskServiceImpl implements TaskService {
                 .ifPresent(parentEntity -> {
                     List<TaskEntity> listTaskChild = taskRepository.findByParentTask_Id(parentEntity.getId());
 
-                    Date minStartDate = listTaskChild
+                    LocalDateTime minStartDate = listTaskChild
                             .stream()
                             .min(Comparator.comparing(TaskEntity::getStartDate))
                             .map(TaskEntity::getStartDate)
@@ -291,7 +292,7 @@ public class TaskServiceImpl implements TaskService {
                         saveEntity(parentEntity);
                     }
 
-                    Date maxEndDate = listTaskChild
+                    LocalDateTime maxEndDate = listTaskChild
                             .stream()
                             .max(Comparator.comparing(TaskEntity::getEndDate))
                             .map(TaskEntity::getEndDate)
@@ -307,13 +308,13 @@ public class TaskServiceImpl implements TaskService {
 
     private void setCreateInfo(long creatorId, TaskEntity taskEntity) {
         taskEntity.setCreatorId(creatorId);
-        taskEntity.setCreateDate(new Date());
+        taskEntity.setCreateDate(LocalDateTime.now());
 
         setModifiedInfo(creatorId, taskEntity);
     }
 
     private void setModifiedInfo(long modifiedId, TaskEntity taskEntity) {
         taskEntity.setModifiedId(modifiedId);
-        taskEntity.setModifiedDate(new Date());
+        taskEntity.setModifiedDate(LocalDateTime.now());
     }
 }

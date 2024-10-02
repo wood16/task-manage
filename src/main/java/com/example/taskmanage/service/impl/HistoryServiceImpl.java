@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +38,7 @@ public class HistoryServiceImpl implements HistoryService {
         HistoryEntity entity = new HistoryEntity();
 
         entity.setCreatorId(creatorId);
-        entity.setCreateDate(new Date());
+        entity.setCreateDate(LocalDateTime.now());
         entity.setType(type);
         entity.setObjectId(objectId);
         entity.setDescription(mapDescription(type, action, field));

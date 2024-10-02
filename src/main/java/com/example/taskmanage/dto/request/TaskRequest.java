@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -20,9 +20,9 @@ public class TaskRequest {
     @NameConstraint(min = 5, message = "INVALID_TASK_NAME")
     String name;
     @NotNull(message = "START_DATE_TASK_NAME")
-    Date startDate;
+    LocalDateTime startDate;
     @NotNull(message = "END_DATE_TASK_NAME")
-    Date endDate;
+    LocalDateTime endDate;
     String priority;
     String description;
     Long parentId;

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +35,7 @@ public class NotificationServiceImpl implements NotificationService {
             NotificationEntity entity = new NotificationEntity();
 
             entity.setCreatorId(creatorId);
-            entity.setCreateDate(new Date());
+            entity.setCreateDate(LocalDateTime.now());
             entity.setReceiverId(receiverId);
             entity.setObjectId(objectId);
             entity.setType(type);

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -20,6 +20,6 @@ public class ProgressHistoryResponse {
     Long toProgress;
     String description;
     Long creatorId;
-    Date createDate;
+    LocalDateTime createDate;
     String creatorName;
 }

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tbl_progress_history")
@@ -23,5 +23,5 @@ public class ProgressHistoryEntity {
     Long toProgress;
     String description;
     Long creatorId;
-    Date createDate;
+    LocalDateTime createDate;
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -17,16 +17,16 @@ public class TaskResponse {
 
     Long id;
     String name;
-    Date startDate;
-    Date endDate;
+    LocalDateTime startDate;
+    LocalDateTime endDate;
     String priority;
     String description;
     Long progress;
     String status;
-    Date createDate;
+    LocalDateTime createDate;
     Long creatorId;
     String creatorName;
-    Date modifiedDate;
+    LocalDateTime modifiedDate;
     Long modifiedId;
     String modifiedName;
     Long parentId;

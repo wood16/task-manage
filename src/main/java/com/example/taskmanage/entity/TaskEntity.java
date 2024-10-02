@@ -6,7 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tbl_task")
@@ -25,16 +25,16 @@ public class TaskEntity {
     Long id;
     @Field(type = FieldType.Keyword)
     String name;
-    Date startDate;
-    Date endDate;
+    LocalDateTime startDate;
+    LocalDateTime endDate;
     String priority;
     String description;
     Long progress;
     String status;
     Long creatorId;
-    Date createDate;
+    LocalDateTime createDate;
     Long modifiedId;
-    Date modifiedDate;
+    LocalDateTime modifiedDate;
     Long assigneeId;
 
     @OneToOne

@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tbl_notification")
@@ -21,7 +21,7 @@ public class NotificationEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     Long creatorId;
-    Date createDate;
+    LocalDateTime createDate;
     String type;
     String content;
     Long receiverId;

@@ -6,10 +6,9 @@ import com.example.taskmanage.service.ProgressHistoryService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class ProgressHistoryServiceImpl implements ProgressHistoryService {
         entity.setFromProgress(fromProgress);
         entity.setToProgress(toProgress);
         entity.setDescription(description);
-        entity.setCreateDate(new Date());
+        entity.setCreateDate(LocalDateTime.now());
 
         progressHistoryRepository.save(entity);
     }

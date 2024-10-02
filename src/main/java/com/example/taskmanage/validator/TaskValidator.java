@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -72,9 +73,8 @@ public class TaskValidator {
         });
     }
 
-    private void validateStartAndEndDate(Date startDate, Date endDate) {
-
-        if (startDate.after(endDate)) {
+    private void validateStartAndEndDate(LocalDateTime startDate, LocalDateTime endDate) {
+        if (startDate.isAfter(endDate)) {
 
             throw new BaseException(ErrorCode.START_END_DATE);
         }

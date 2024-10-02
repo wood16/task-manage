@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tbl_history")
@@ -21,7 +21,7 @@ public class HistoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     Long creatorId;
-    Date createDate;
+    LocalDateTime createDate;
     Long objectId;
     String type;
     String description;

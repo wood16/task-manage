@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -12,7 +12,7 @@ public class NotificationResponse {
 
     Long id;
     Long creatorId;
-    Date createDate;
+    LocalDateTime createDate;
     String type;
     String content;
     Long receiverId;

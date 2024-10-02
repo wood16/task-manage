@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -13,7 +13,7 @@ public class HistoryResponse {
     Long id;
     Long creatorId;
     String creatorName;
-    Date createDate;
+    LocalDateTime createDate;
     Long objectId;
     String type;
     String description;
