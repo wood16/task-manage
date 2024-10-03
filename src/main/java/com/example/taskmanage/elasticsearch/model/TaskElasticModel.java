@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -15,16 +14,16 @@ public class TaskElasticModel {
 
     Long id;
     String name;
-    LocalDateTime startDate;
-    LocalDateTime endDate;
+    Date startDate;
+    Date endDate;
     String priority;
     String description;
     Long progress;
     String status;
     Long creatorId;
-    LocalDateTime createDate;
+    Date createDate;
     Long modifiedId;
-    LocalDateTime modifiedDate;
+    Date modifiedDate;
     Long assigneeId;
     Long priorityNumber;
 

@@ -11,6 +11,9 @@ import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -84,6 +87,11 @@ public class TaskMapper {
 
         TaskElasticModel to = taskStructMapper.mapForIndex(from);
 
+        to.setStartDate(mapToDate(from.getStartDate()));
+        to.setEndDate(mapToDate(from.getEndDate()));
+        to.setCreateDate(mapToDate(from.getCreateDate()));
+        to.setModifiedDate(mapToDate(from.getModifiedDate()));
+
         to.setPriorityNumber(getPriorityNumber(from.getPriority()));
 
         return to;
@@ -100,15 +108,15 @@ public class TaskMapper {
         to.setId(from.getId());
         to.setName(from.getName());
         to.setDescription(from.getDescription());
-        to.setStartDate(from.getStartDate());
-        to.setEndDate(from.getEndDate());
+        to.setStartDate(mapToLocalDateTime(from.getStartDate()));
+        to.setEndDate(mapToLocalDateTime(from.getEndDate()));
         to.setPriority(from.getPriority());
         to.setStatus(from.getStatus());
         to.setProgress(from.getProgress());
-        to.setCreateDate(from.getCreateDate());
+        to.setCreateDate(mapToLocalDateTime(from.getCreateDate()));
         to.setCreatorId(from.getCreatorId());
         to.setCreatorName(mapperUtil.getUserName(from.getCreatorId()));
-        to.setModifiedDate(from.getModifiedDate());
+        to.setModifiedDate(mapToLocalDateTime(from.getModifiedDate()));
         to.setModifiedId(from.getModifiedId());
         to.setModifiedName(mapperUtil.getUserName(from.getModifiedId()));
 
@@ -137,5 +145,15 @@ public class TaskMapper {
             case "low" -> 1;
             default -> 0;
         };
+    }
+
+    private LocalDateTime mapToLocalDateTime(Date from){
+
+        return LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault());
+    }
+
+    private Date mapToDate(LocalDateTime from){
+
+        return Date.from(from.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

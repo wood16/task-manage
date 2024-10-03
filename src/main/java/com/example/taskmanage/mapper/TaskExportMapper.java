@@ -4,6 +4,9 @@ import com.example.taskmanage.dto.response.TaskExportResponse;
 import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -15,8 +18,8 @@ public class TaskExportMapper {
 
         to.setName(from.getName());
         to.setStatus(from.getStatus());
-        to.setStartDate(from.getStartDate());
-        to.setEndDate(from.getEndDate());
+        to.setStartDate(mapToLocalDateTime(from.getStartDate()));
+        to.setEndDate(mapToLocalDateTime(from.getEndDate()));
         to.setPriority(from.getPriority());
         to.setAssignee(String.valueOf(from.getAssigneeId()));
 
@@ -28,4 +31,8 @@ public class TaskExportMapper {
         return from.stream().map(this::mapFromModel).toArray(TaskExportResponse[]::new);
     }
 
+    private LocalDateTime mapToLocalDateTime(Date from){
+
+        return LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault());
+    }
 }
