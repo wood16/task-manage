@@ -12,9 +12,10 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,14 +29,12 @@ import java.util.function.Function;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtServiceImpl implements JwtService {
 
-    private final JwtConfig jwtConfig;
-
-    private final UserDetailsService userDetailsService;
-
-    @Autowired
-    private UserService userService;
+    JwtConfig jwtConfig;
+    UserDetailsService userDetailsService;
+    UserService userService;
 
     @Override
     public Claims extractClaims(String token) {

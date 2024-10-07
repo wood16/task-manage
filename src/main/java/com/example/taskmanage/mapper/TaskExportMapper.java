@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class TaskExportMapper {
 
-    public TaskExportResponse mapFromModel(TaskElasticModel from){
+    public TaskExportResponse mapFromModel(TaskElasticModel from) {
 
         TaskExportResponse to = new TaskExportResponse();
 
@@ -26,12 +26,12 @@ public class TaskExportMapper {
         return to;
     }
 
-    public TaskExportResponse[] mapFromModels(List<TaskElasticModel> from){
+    public TaskExportResponse[] mapFromModels(List<TaskElasticModel> from) {
 
         return from.stream().map(this::mapFromModel).toArray(TaskExportResponse[]::new);
     }
 
-    private LocalDateTime mapToLocalDateTime(Date from){
+    private LocalDateTime mapToLocalDateTime(Date from) {
 
         return LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault());
     }

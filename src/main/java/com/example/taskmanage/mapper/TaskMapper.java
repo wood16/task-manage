@@ -147,12 +147,12 @@ public class TaskMapper {
         };
     }
 
-    private LocalDateTime mapToLocalDateTime(Date from){
+    private LocalDateTime mapToLocalDateTime(Date from) {
 
         return LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault());
     }
 
-    private Date mapToDate(LocalDateTime from){
+    private Date mapToDate(LocalDateTime from) {
 
         return Date.from(from.atZone(ZoneId.systemDefault()).toInstant());
     }
