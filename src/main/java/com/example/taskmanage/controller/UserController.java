@@ -1,6 +1,7 @@
 package com.example.taskmanage.controller;
 
 import com.example.taskmanage.dto.request.UserRequest;
+import com.example.taskmanage.dto.response.BaseResponse;
 import com.example.taskmanage.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +23,21 @@ public class UserController {
     UserService userService;
 
     @GetMapping()
-    public ResponseEntity<List<UserRequest>> getAllUser(
+    public BaseResponse<List<UserRequest>> getAllUser(
             @RequestParam(required = false) String search) {
 
-        return ResponseEntity.ok(userService.getAllUser(search));
+        return BaseResponse.<List<UserRequest>>builder()
+                .result(userService.getAllUser(search))
+                .build();
     }
 
     @GetMapping("/role/user")
-    public ResponseEntity<List<UserRequest>> getAllUserRole(
+    public BaseResponse<List<UserRequest>> getAllUserRole(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String role) {
 
-        return ResponseEntity.ok(userService.getAllUserRole(search, role));
+        return BaseResponse.<List<UserRequest>>builder()
+                .result(userService.getAllUserRole(search, role))
+                .build();
     }
 }

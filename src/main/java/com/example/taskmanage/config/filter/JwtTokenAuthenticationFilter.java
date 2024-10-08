@@ -3,7 +3,7 @@ package com.example.taskmanage.config.filter;
 import com.example.taskmanage.dto.response.UserContextResponse;
 import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
-import com.example.taskmanage.utils.BaseResponseDto;
+import com.example.taskmanage.dto.response.BaseResponse;
 import com.example.taskmanage.utils.HelperUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -71,7 +71,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             } catch (Exception e) {
                 log.error("Error on filter once per request, path {}, error{}", request.getRequestURI(), e.getMessage());
 
-                BaseResponseDto responseDto = new BaseResponseDto();
+                BaseResponse responseDto = new BaseResponse();
                 responseDto.setCode(HttpStatus.UNAUTHORIZED.value());
                 responseDto.setMessage(e.getLocalizedMessage());
 

@@ -1,8 +1,7 @@
 package com.example.taskmanage.exception;
 
-import com.example.taskmanage.utils.BaseResponseDto;
+import com.example.taskmanage.dto.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,13 +14,13 @@ import java.util.Objects;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<BaseResponseDto> handleAllException(RuntimeException exception) {
+    public ResponseEntity<BaseResponse> handleAllException(RuntimeException exception) {
 
         ErrorCode errorCode = ErrorCode.UN_CATEGORY;
 
         log.error("Exception ", exception);
 
-        BaseResponseDto responseDto = BaseResponseDto.builder()
+        BaseResponse responseDto = BaseResponse.builder()
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();
@@ -30,7 +29,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<BaseResponseDto> handleMethodArgumentNotValidException(
+    public ResponseEntity<BaseResponse> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException exception) {
 
         String enumKey = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
@@ -46,7 +45,7 @@ public class GlobalExceptionHandler {
             log.warn(e.getMessage());
         }
 
-        BaseResponseDto responseDto = BaseResponseDto.builder()
+        BaseResponse responseDto = BaseResponse.builder()
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();
@@ -55,11 +54,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = BaseException.class)
-    public ResponseEntity<BaseResponseDto> handleBaseException(BaseException exception) {
+    public ResponseEntity<BaseResponse> handleBaseException(BaseException exception) {
 
         ErrorCode errorCode = exception.getErrorCode();
 
-        BaseResponseDto responseDto = BaseResponseDto.builder()
+        BaseResponse responseDto = BaseResponse.builder()
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();

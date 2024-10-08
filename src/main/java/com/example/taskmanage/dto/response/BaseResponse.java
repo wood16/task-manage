@@ -1,4 +1,4 @@
-package com.example.taskmanage.utils;
+package com.example.taskmanage.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,8 +8,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BaseResponseDto {
+public class BaseResponse<T> {
 
-    int code;
+    @Builder.Default
+    int code = 1000;
     String message;
+    T result;
 }

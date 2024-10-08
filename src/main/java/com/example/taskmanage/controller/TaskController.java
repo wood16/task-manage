@@ -1,6 +1,7 @@
 package com.example.taskmanage.controller;
 
 import com.example.taskmanage.dto.request.TaskRequest;
+import com.example.taskmanage.dto.response.BaseResponse;
 import com.example.taskmanage.dto.response.TaskResponse;
 import com.example.taskmanage.dto.response.UserContextResponse;
 import com.example.taskmanage.service.TaskService;
@@ -11,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +29,7 @@ public class TaskController {
     TaskValidator taskValidator;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getAll(
+    public BaseResponse<Map<String, Object>> getAll(
             @RequestParam(required = false) String filter,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "1") int pageSize,
@@ -47,47 +47,60 @@ public class TaskController {
         response.put("totalItems", taskModels.getTotalElements());
         response.put("totalPages", taskModels.getTotalPages());
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return BaseResponse.<Map<String, Object>>builder()
+                .result(response).build();
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponse> postTask(@RequestBody @Valid TaskRequest taskRequest) {
+    public BaseResponse<TaskResponse> postTask(@RequestBody @Valid TaskRequest taskRequest) {
 
         taskValidator.validateForAdd(taskRequest);
 
-        return ResponseEntity.ok(taskService.addTask(getUserContext().getUserId(), taskRequest));
+        return BaseResponse.<TaskResponse>builder()
+                .result(taskService.addTask(getUserContext().getUserId(), taskRequest))
+                .build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponse> putTask(@RequestBody @Valid TaskRequest taskRequest, @PathVariable long id) {
+    public BaseResponse<TaskResponse> putTask(@RequestBody @Valid TaskRequest taskRequest, @PathVariable long id) {
 
         taskValidator.validateForUpdate(id, taskRequest);
 
-        return ResponseEntity.ok(taskService.putTask(getUserContext().getUserId(), id, taskRequest));
+        return BaseResponse.<TaskResponse>builder()
+                .result(taskService.putTask(getUserContext().getUserId(), id, taskRequest))
+                .build();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TaskResponse> patchTask(@RequestBody TaskRequest taskRequest, @PathVariable long id) {
+    public BaseResponse<TaskResponse> patchTask(@RequestBody TaskRequest taskRequest, @PathVariable long id) {
 
         taskValidator.validateForPatch(id, taskRequest);
 
-        return ResponseEntity.ok(taskService.patchTask(getUserContext().getUserId(), id, taskRequest));
+        return BaseResponse.<TaskResponse>builder()
+                .result(taskService.patchTask(getUserContext().getUserId(), id, taskRequest))
+                .build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponse> getOne(@PathVariable long id) {
+    public BaseResponse<TaskResponse> getOne(@PathVariable long id) {
 
         taskValidator.validateExist(id);
 
-        return ResponseEntity.ok(taskService.getTask(id));
+        return BaseResponse.<TaskResponse>builder()
+                .result(taskService.getTask(id))
+                .build();
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable long id) {
+    public BaseResponse<?> deleteById(@PathVariable long id) {
 
         taskValidator.validateExist(id);
 
         taskService.deleteTaskById(getUserContext().getUserId(), id);
+
+        return BaseResponse.builder()
+                .message("Delete success")
+                .build();
     }
 
     @GetMapping("/childTasks/{id}")
@@ -113,11 +126,11 @@ public class TaskController {
     }
 
     @GetMapping("/reindex")
-    public ResponseEntity<String> reindexAllTask() {
+    public BaseResponse<?> reindexAllTask() {
 
         taskService.reindexAllTask();
 
-        return ResponseEntity.ok("Success");
+        return BaseResponse.builder().message("Success").build();
     }
 
 }

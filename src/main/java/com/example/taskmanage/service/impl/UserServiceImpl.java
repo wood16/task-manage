@@ -10,7 +10,7 @@ import com.example.taskmanage.mapper.UserStructMapper;
 import com.example.taskmanage.repository.RoleRepository;
 import com.example.taskmanage.repository.UserRepository;
 import com.example.taskmanage.service.UserService;
-import com.example.taskmanage.utils.BaseResponseDto;
+import com.example.taskmanage.dto.response.BaseResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -32,8 +32,7 @@ public class UserServiceImpl implements UserService {
     UserStructMapper userStructMapper;
 
     @Override
-    public BaseResponseDto registerAccount(UserRequest userRequest) {
-        BaseResponseDto responseDto = new BaseResponseDto();
+    public void registerAccount(UserRequest userRequest) {
 
 //        validateAccount(userDto);
 
@@ -42,15 +41,12 @@ public class UserServiceImpl implements UserService {
 //        try {
 
             userRepository.save(userEntity);
-            responseDto.setCode(HttpStatus.OK.value());
-            responseDto.setMessage("Create account success");
 //        } catch (Exception e) {
 //
 //            responseDto.setCode(HttpStatus.SERVICE_UNAVAILABLE.value());
 //            responseDto.setMessage("Service unavailable");
 //        }
 
-        return responseDto;
     }
 
     @Override

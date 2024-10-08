@@ -1,12 +1,12 @@
 package com.example.taskmanage.controller;
 
+import com.example.taskmanage.dto.response.BaseResponse;
 import com.example.taskmanage.dto.response.NotificationResponse;
 import com.example.taskmanage.dto.response.UserContextResponse;
 import com.example.taskmanage.service.NotificationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +21,11 @@ public class NotificationController {
     NotificationService notificationService;
 
     @GetMapping("/user")
-    public ResponseEntity<List<NotificationResponse>> getNotificationOfUser() {
+    public BaseResponse<List<NotificationResponse>> getNotificationOfUser() {
 
-        return ResponseEntity.ok(notificationService.getNotificationOfUser(getUserContext().getUserId()));
+        return BaseResponse.<List<NotificationResponse>>builder()
+                .result(notificationService.getNotificationOfUser(getUserContext().getUserId()))
+                .build();
     }
 
     @PatchMapping("/{id}")
@@ -34,11 +36,11 @@ public class NotificationController {
     }
 
     @GetMapping("/reindex")
-    public ResponseEntity<String> reindexAllNotification() {
+    public BaseResponse<?> reindexAllNotification() {
 
         notificationService.reindexAllNotification();
 
-        return ResponseEntity.ok("Success");
+        return BaseResponse.builder().message("Success").build();
     }
 
     private UserContextResponse getUserContext() {

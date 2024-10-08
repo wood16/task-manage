@@ -1,12 +1,12 @@
 package com.example.taskmanage.service;
 
 import com.example.taskmanage.dto.request.UserRequest;
-import com.example.taskmanage.utils.BaseResponseDto;
+import com.example.taskmanage.dto.response.BaseResponse;
 
 import java.util.List;
 
 public interface UserService {
-    BaseResponseDto registerAccount(UserRequest userRequest);
+    void registerAccount(UserRequest userRequest);
 
     List<UserRequest> getAllUser(String search);
 

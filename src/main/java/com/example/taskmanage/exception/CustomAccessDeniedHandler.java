@@ -1,6 +1,6 @@
 package com.example.taskmanage.exception;
 
-import com.example.taskmanage.utils.BaseResponseDto;
+import com.example.taskmanage.dto.response.BaseResponse;
 import com.example.taskmanage.utils.HelperUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +17,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                        HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
 
-        BaseResponseDto responseDto = new BaseResponseDto();
+        BaseResponse responseDto = new BaseResponse();
 
         responseDto.setMessage("You don't have permission to access this resource");
         responseDto.setCode(HttpStatus.FORBIDDEN.value());

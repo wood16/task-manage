@@ -5,7 +5,7 @@ import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
 import com.example.taskmanage.service.RefreshTokenService;
 import com.example.taskmanage.service.security.UserDetailsCustom;
-import com.example.taskmanage.utils.BaseResponseDto;
+import com.example.taskmanage.dto.response.BaseResponse;
 import com.example.taskmanage.utils.HelperUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -95,7 +95,7 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
                                               HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
 
-        BaseResponseDto responseDto = new BaseResponseDto();
+        BaseResponse responseDto = new BaseResponse();
 
         responseDto.setCode(HttpStatus.UNAUTHORIZED.value());
         responseDto.setMessage(failed.getLocalizedMessage());

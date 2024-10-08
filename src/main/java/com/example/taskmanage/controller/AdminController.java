@@ -1,6 +1,6 @@
 package com.example.taskmanage.controller;
 
-import org.springframework.http.ResponseEntity;
+import com.example.taskmanage.dto.response.BaseResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,8 +12,10 @@ import java.security.Principal;
 public class AdminController {
 
     @GetMapping("/index")
-    public ResponseEntity<String> index(Principal principal) {
+    public BaseResponse<?> index(Principal principal) {
 
-        return ResponseEntity.ok("Wellcome to admin Page : " + principal.getName());
+        return BaseResponse.builder()
+                .message("Wellcome to admin Page : " + principal.getName())
+                .build();
     }
 }
