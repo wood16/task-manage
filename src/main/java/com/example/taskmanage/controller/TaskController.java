@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -104,14 +103,16 @@ public class TaskController {
     }
 
     @GetMapping("/childTasks/{id}")
-    public Page<TaskResponse> getChildTasks(@PathVariable long id,
-                                            @RequestParam(defaultValue = "0") int page,
-                                            @RequestParam(defaultValue = "1") int pageSize,
-                                            @RequestParam(required = false) String search,
-                                            @RequestParam(required = false) String sortBy,
-                                            @RequestParam(required = false, defaultValue = "ASC") Sort.Direction sortOrder) {
+    public BaseResponse<Page<TaskResponse>> getChildTasks(@PathVariable long id,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "1") int pageSize,
+                                                          @RequestParam(required = false) String search,
+                                                          @RequestParam(required = false) String sortBy,
+                                                          @RequestParam(required = false, defaultValue = "ASC") Sort.Direction sortOrder) {
 
-        return taskService.getChildTasks(id, page, pageSize, search, sortBy, sortOrder);
+        return BaseResponse.<Page<TaskResponse>>builder()
+                .result(taskService.getChildTasks(id, page, pageSize, search, sortBy, sortOrder))
+                .build();
     }
 
     @GetMapping("/export")
