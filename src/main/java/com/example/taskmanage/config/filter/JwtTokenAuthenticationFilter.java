@@ -1,6 +1,8 @@
 package com.example.taskmanage.config.filter;
 
 import com.example.taskmanage.dto.response.UserContextResponse;
+import com.example.taskmanage.exception.BaseException;
+import com.example.taskmanage.exception.ErrorCode;
 import com.example.taskmanage.jwt.JwtConfig;
 import com.example.taskmanage.jwt.JwtService;
 import com.example.taskmanage.dto.response.BaseResponse;
@@ -68,12 +70,15 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     }
                 }
-            } catch (Exception e) {
+            } catch (BaseException e) {
                 log.error("Error on filter once per request, path {}, error{}", request.getRequestURI(), e.getMessage());
 
+//                get ErrorCode throw
+                ErrorCode errorCode = e.getErrorCode();
+
                 BaseResponse responseDto = new BaseResponse();
-                responseDto.setCode(HttpStatus.UNAUTHORIZED.value());
-                responseDto.setMessage(e.getLocalizedMessage());
+                responseDto.setCode(errorCode.getCode());
+                responseDto.setMessage(errorCode.getMessage());
 
                 String json = HelperUtils.JSON_WRITER.writeValueAsString(responseDto);
 

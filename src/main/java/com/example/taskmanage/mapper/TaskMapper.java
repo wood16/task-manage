@@ -87,11 +87,6 @@ public class TaskMapper {
 
         TaskElasticModel to = taskStructMapper.mapForIndex(from);
 
-        to.setStartDate(mapToDate(from.getStartDate()));
-        to.setEndDate(mapToDate(from.getEndDate()));
-        to.setCreateDate(mapToDate(from.getCreateDate()));
-        to.setModifiedDate(mapToDate(from.getModifiedDate()));
-
         to.setPriorityNumber(getPriorityNumber(from.getPriority()));
 
         return to;
@@ -108,15 +103,15 @@ public class TaskMapper {
         to.setId(from.getId());
         to.setName(from.getName());
         to.setDescription(from.getDescription());
-        to.setStartDate(mapToLocalDateTime(from.getStartDate()));
-        to.setEndDate(mapToLocalDateTime(from.getEndDate()));
+        to.setStartDate(from.getStartDate());
+        to.setEndDate(from.getEndDate());
         to.setPriority(from.getPriority());
         to.setStatus(from.getStatus());
         to.setProgress(from.getProgress());
-        to.setCreateDate(mapToLocalDateTime(from.getCreateDate()));
+        to.setCreateDate(from.getCreateDate());
         to.setCreatorId(from.getCreatorId());
         to.setCreatorName(mapperUtil.getUserName(from.getCreatorId()));
-        to.setModifiedDate(mapToLocalDateTime(from.getModifiedDate()));
+        to.setModifiedDate(from.getModifiedDate());
         to.setModifiedId(from.getModifiedId());
         to.setModifiedName(mapperUtil.getUserName(from.getModifiedId()));
 

@@ -18,8 +18,8 @@ public class TaskExportMapper {
 
         to.setName(from.getName());
         to.setStatus(from.getStatus());
-        to.setStartDate(mapToLocalDateTime(from.getStartDate()));
-        to.setEndDate(mapToLocalDateTime(from.getEndDate()));
+        to.setStartDate(from.getStartDate());
+        to.setEndDate(from.getEndDate());
         to.setPriority(from.getPriority());
         to.setAssignee(String.valueOf(from.getAssigneeId()));
 

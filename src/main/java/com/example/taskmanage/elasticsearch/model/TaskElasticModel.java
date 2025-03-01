@@ -4,8 +4,10 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Document(indexName = "tbl_task")
@@ -13,17 +15,18 @@ import java.util.Date;
 public class TaskElasticModel {
 
     Long id;
+    @Field(type = FieldType.Keyword)
     String name;
-    Date startDate;
-    Date endDate;
+    LocalDateTime startDate;
+    LocalDateTime endDate;
     String priority;
     String description;
     Long progress;
     String status;
     Long creatorId;
-    Date createDate;
+    LocalDateTime createDate;
     Long modifiedId;
-    Date modifiedDate;
+    LocalDateTime modifiedDate;
     Long assigneeId;
     Long priorityNumber;
 

@@ -9,4 +9,5 @@ public class TaskKeys {
     public static final String NAME = "name";
     public static final String CREATOR_ID = "creatorId";
     public static final String ASSIGNEE_ID = "assigneeId";
+    public static final String KEY_WORD = ".keyword";
 }
