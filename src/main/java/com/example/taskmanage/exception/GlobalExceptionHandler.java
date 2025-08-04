@@ -2,7 +2,6 @@ package com.example.taskmanage.exception;
 
 import com.example.taskmanage.dto.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -64,6 +63,6 @@ public class GlobalExceptionHandler {
                 .message(errorCode.getMessage())
                 .build();
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+        return ResponseEntity.status(errorCode.getStatusCode().value()).body(responseDto);
     }
 }
