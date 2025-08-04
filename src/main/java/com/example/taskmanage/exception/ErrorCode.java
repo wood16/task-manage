@@ -27,6 +27,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(1019, "User not found", HttpStatus.NOT_FOUND),
     INVALID_ROLE(1020, "Invalid role", HttpStatus.BAD_REQUEST),
     INVALID_USERNAME_PASSWORD(1021, "Invalid username or password", HttpStatus.BAD_REQUEST),
+    ROLE_NOT_FOUND(1022, "Role not found", HttpStatus.NOT_FOUND),
     INVALID_KEY(9998, "Invalid message key", HttpStatus.BAD_REQUEST),
     UN_CATEGORY(9999, "Un category error", HttpStatus.BAD_REQUEST);
 
