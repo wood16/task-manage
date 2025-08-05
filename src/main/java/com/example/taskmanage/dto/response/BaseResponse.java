@@ -12,6 +12,7 @@ public class BaseResponse<T> {
 
     @Builder.Default
     int code = 1000;
-    String message;
+    @Builder.Default
+    String message = "SUCCESS";
     T result;
 }

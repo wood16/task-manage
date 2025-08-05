@@ -47,7 +47,7 @@ public class TaskElasticSearch {
         BoolQuery searchQuery = BoolQuery.of(
                 b -> b.must(
                         m -> m.wildcard(
-                                w -> w.field(TaskKeys.NAME.concat(TaskKeys.KEY_WORD))
+                                w -> w.field(TaskKeys.NAME)
                                         .wildcard("*".concat(
                                                 Objects.requireNonNullElse(searchTerm, "")).concat("*"))
                                         .caseInsensitive(true)

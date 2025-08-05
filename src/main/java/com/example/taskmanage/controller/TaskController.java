@@ -29,16 +29,18 @@ public class TaskController {
 
     @GetMapping
     public BaseResponse<Map<String, Object>> getAll(
-            @RequestParam(required = false) String filter,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "1") int pageSize,
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false, defaultValue = "ASC") Sort.Direction sortOrder
+//            @RequestParam(required = false) String filter,
+//            @RequestParam(defaultValue = "1") int page,
+//            @RequestParam(defaultValue = "10") int pageSize,
+//            @RequestParam(required = false) String search,
+//            @RequestParam(required = false) String sortBy,
+//            @RequestParam(required = false, defaultValue = "ASC") Sort.Direction sortOrder,
+            @RequestParam Map<String, Object> queryParams
     ) {
 
-        Page<TaskResponse> taskModels = taskService.getAllTask(
-                getUserContext().getUserId(), filter, page, pageSize, search, sortBy, sortOrder);
+
+
+        Page<TaskResponse> taskModels = taskService.getAllTask(getUserContext().getUserId(), queryParams);
 
         Map<String, Object> response = new HashMap<>();
         response.put("tasks", taskModels.getContent());
