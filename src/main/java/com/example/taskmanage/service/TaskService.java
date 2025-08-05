@@ -5,15 +5,12 @@ import com.example.taskmanage.dto.response.TaskResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
+import java.util.Map;
+
 public interface TaskService {
 
     Page<TaskResponse> getAllTask(long userId,
-                                  String filter,
-                                  int page,
-                                  int pageSize,
-                                  String search,
-                                  String sortBy,
-                                  Sort.Direction sortOrder);
+                                  Map<String, Object> queryParams);
 
     TaskResponse addTask(long userId, TaskRequest taskRequest);
 

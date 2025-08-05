@@ -1,6 +1,7 @@
 package com.example.taskmanage.service.impl;
 
 import com.example.taskmanage.common.constant.HistoryAction;
+import com.example.taskmanage.dto.request.DynamicSpecification;
 import com.example.taskmanage.dto.request.TaskRequest;
 import com.example.taskmanage.dto.response.TaskExportResponse;
 import com.example.taskmanage.dto.response.TaskResponse;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -44,18 +46,49 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Page<TaskResponse> getAllTask(long userId,
-                                         String filter,
-                                         int page,
-                                         int pageSize,
-                                         String search,
-                                         String sortBy,
-                                         Sort.Direction sortOrder) {
-        Sort sort = Objects.isNull(sortBy) ?
-                Sort.by(Sort.Direction.DESC, TaskKeys.MODIFIED_DATE) : Sort.by(sortOrder, sortBy);
+                                         Map<String, Object> queryParams) {
+
+        Sort sort = Sort.by(Sort.Direction.DESC, TaskKeys.MODIFIED_DATE);
+        if (queryParams.containsKey("sortOrder") && queryParams.containsKey("sortBy")) {
+            sort = Sort.by(queryParams.get("sortOrder").toString(), queryParams.get("sortBy").toString());
+            queryParams.remove("sortOrder");
+            queryParams.remove("sortBy");
+        }
+
+        int page = 1;
+        if (queryParams.containsKey("page")) {
+            page = Integer.parseInt(queryParams.get("page").toString());
+            queryParams.remove("page");
+        }
+
+        int pageSize = 10;
+        if (queryParams.containsKey("pageSize")) {
+            pageSize = Integer.parseInt(queryParams.get("pageSize").toString());
+            queryParams.remove("pageSize");
+        }
+
+        String search = null;
+        if (queryParams.containsKey("search")) {
+            search = queryParams.get("search").toString();
+            queryParams.remove("search");
+        }
+
+        String type = null;
+        if (queryParams.containsKey("type")) {
+            type = queryParams.get("type").toString();
+            queryParams.remove("type");
+        }
+
+//        Sort sort = Objects.isNull(sortBy) ?
+//                Sort.by(Sort.Direction.DESC, TaskKeys.MODIFIED_DATE) : Sort.by(sortOrder, sortBy);
 
         Pageable paging = PageRequest.of(Math.max(page - 1, 0), pageSize, sort);
 
-        Page<TaskElasticModel> resultSearch = taskElasticSearch.getMyTask(filter, userId, search, paging);
+        Page<TaskElasticModel> resultSearch = taskElasticSearch.getMyTask(type, userId, search, paging);
+
+//        test với Criteria query
+        Specification<TaskEntity> spec = buildSpecificationFromParams(queryParams);
+        Page<TaskEntity> result = taskRepository.findAll(spec, paging);
 
         long total = resultSearch.getTotalElements();
 
@@ -316,5 +349,22 @@ public class TaskServiceImpl implements TaskService {
     private void setModifiedInfo(long modifiedId, TaskEntity taskEntity) {
         taskEntity.setModifiedId(modifiedId);
         taskEntity.setModifiedDate(LocalDateTime.now());
+    }
+
+    private Specification<TaskEntity> buildSpecificationFromParams(Map<String, Object> filters) {
+        Specification<TaskEntity> spec = Specification.where(null);
+
+        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+            String[] keyParts = entry.getKey().split("\\.");
+            if (keyParts.length != 2) continue;
+
+            String field = keyParts[0];
+            String operator = keyParts[1];
+            String value = entry.getValue().toString();
+
+            spec = spec.and(new DynamicSpecification<>(field, operator, value));
+        }
+
+        return spec;
     }
 }
