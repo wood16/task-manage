@@ -124,7 +124,7 @@ public class JwtServiceImpl implements JwtService {
         Claims claims = null;
 
         try {
-            claims = Jwts.parserBuilder()
+             claims = Jwts.parserBuilder()
                     .setSigningKey(getKey())
                     .build()
                     .parseClaimsJws(token)

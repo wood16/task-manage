@@ -20,7 +20,7 @@ public interface TaskService {
 
     TaskResponse getTask(long taskId);
 
-    Page<TaskResponse> getChildTasks(long taskId, int page, int pageSize, String search, String sortBy, Sort.Direction sortOrder);
+    Page<TaskResponse> getChildTasks(long taskId, Map<String, Object> queryParams);
 
     void deleteTaskById(long userId, long taskId);
 
