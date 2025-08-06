@@ -1,9 +1,11 @@
 package com.example.taskmanage.elasticsearch.service;
 
-import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.FieldValue;
+import co.elastic.clients.elasticsearch._types.query_dsl.*;
+import co.elastic.clients.json.JsonData;
 import com.example.taskmanage.dto.response.TaskResponse;
-import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.elasticsearch.elasticrepository.TaskElasticRepository;
+import com.example.taskmanage.elasticsearch.keys.TaskKeys;
 import com.example.taskmanage.elasticsearch.model.TaskElasticModel;
 import com.example.taskmanage.mapper.TaskMapper;
 import com.example.taskmanage.repository.TaskRepository;
@@ -24,9 +26,7 @@ import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -40,9 +40,13 @@ public class TaskElasticSearch {
     UserService userService;
     TaskMapper taskMapper;
 
-    public Page<TaskElasticModel> getMyTask(String type, long userId, String searchTerm, Pageable pageable) {
+    public Page<TaskElasticModel> getMyTask(String type, long userId, String searchTerm, Pageable pageable, Map<String, Object> filters) {
 
         boolean isAdmin = userService.checkUserRole(userId, "admin");
+
+        // Build search filter từ DSL
+        List<co.elastic.clients.elasticsearch._types.query_dsl.Query> filterQueries =
+                filters != null ? buildFilterQueries(filters) : List.of();
 
         BoolQuery searchQuery = BoolQuery.of(
                 b -> b.must(
@@ -52,7 +56,7 @@ public class TaskElasticSearch {
                                                 Objects.requireNonNullElse(searchTerm, "")).concat("*"))
                                         .caseInsensitive(true)
                         )
-                )
+                ).must(filterQueries)
         );
 
         BoolQuery ownQuery = Objects.nonNull(type) && type.equals("assignee") ? BoolQuery.of(
@@ -92,6 +96,53 @@ public class TaskElasticSearch {
                 hits.getSearchHits().stream().map(SearchHit::getContent).toList(),
                 pageable,
                 hits.getTotalHits());
+    }
+
+    private List<co.elastic.clients.elasticsearch._types.query_dsl.Query> buildFilterQueries(Map<String, Object> filters) {
+        if (filters == null || filters.isEmpty()) return List.of();
+
+        List<co.elastic.clients.elasticsearch._types.query_dsl.Query> queries = new ArrayList<>();
+
+        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+            String key = entry.getKey(); // ví dụ: "name.like"
+            Object value = entry.getValue(); // ví dụ: "Lam" hoặc List.of("NEW", "IN_PROGRESS")
+
+            String[] parts = key.split("\\.");
+            if (parts.length != 2) continue;
+
+            String field = parts[0];
+            String operator = parts[1];
+
+            switch (operator) {
+                case "eq":
+                    queries.add(TermQuery.of(t -> t.field(field).value(value.toString()))._toQuery());
+                    break;
+                case "in":
+                    if (value instanceof Collection<?> list) {
+                        List<FieldValue> values = list.stream()
+                                .map(Object::toString)
+                                .map(FieldValue::of)
+                                .toList();
+                        queries.add(TermsQuery.of(t -> t.field(field).terms(ts -> ts.value(values)))._toQuery());
+                    }
+                    break;
+                case "like":
+                    queries.add(WildcardQuery.of(
+                            w -> w.field(field).wildcard("*" + value + "*").caseInsensitive(true))._toQuery());
+                    break;
+                case "gt":
+                    queries.add(RangeQuery.of(r -> r.field(field).gt(JsonData.of(value)))._toQuery());
+                    break;
+                case "lt":
+                    queries.add(RangeQuery.of(r -> r.field(field).lt(JsonData.of(value)))._toQuery());
+                    break;
+                // Bạn có thể mở rộng thêm ở đây
+                default:
+                    throw new IllegalArgumentException("Unsupported operator: " + operator);
+            }
+        }
+
+        return queries;
     }
 
     public Page<TaskElasticModel> searchByName(String searchTerm, Pageable pageable) {

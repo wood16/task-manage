@@ -66,11 +66,11 @@ public class TaskServiceImpl implements TaskService {
 
         Pageable paging = baseService.mapPageable(queryParams, Sort.by(Sort.Direction.DESC, TaskKeys.MODIFIED_DATE));
 
-        Page<TaskElasticModel> resultSearch = taskElasticSearch.getMyTask(type, userId, search, paging);
+        Page<TaskElasticModel> resultSearch = taskElasticSearch.getMyTask(type, userId, search, paging, queryParams);
 
 //        test với Criteria query
-        Specification<TaskEntity> spec = buildSpecificationFromParams(queryParams);
-        Page<TaskEntity> result = taskRepository.findAll(spec, paging);
+//        Specification<TaskEntity> spec = buildSpecificationFromParams(queryParams);
+//        Page<TaskEntity> result = taskRepository.findAll(spec, paging);
 
         long total = resultSearch.getTotalElements();
 
