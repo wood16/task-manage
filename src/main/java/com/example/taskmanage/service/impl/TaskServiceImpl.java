@@ -43,29 +43,11 @@ public class TaskServiceImpl implements TaskService {
     NotificationService notificationService;
     ImportExportService importExportService;
     TaskExportMapper taskExportMapper;
+    BaseService baseService;
 
     @Override
     public Page<TaskResponse> getAllTask(long userId,
                                          Map<String, Object> queryParams) {
-
-        Sort sort = Sort.by(Sort.Direction.DESC, TaskKeys.MODIFIED_DATE);
-        if (queryParams.containsKey("sortOrder") && queryParams.containsKey("sortBy")) {
-            sort = Sort.by(queryParams.get("sortOrder").toString(), queryParams.get("sortBy").toString());
-            queryParams.remove("sortOrder");
-            queryParams.remove("sortBy");
-        }
-
-        int page = 1;
-        if (queryParams.containsKey("page")) {
-            page = Integer.parseInt(queryParams.get("page").toString());
-            queryParams.remove("page");
-        }
-
-        int pageSize = 10;
-        if (queryParams.containsKey("pageSize")) {
-            pageSize = Integer.parseInt(queryParams.get("pageSize").toString());
-            queryParams.remove("pageSize");
-        }
 
         String search = null;
         if (queryParams.containsKey("search")) {
@@ -82,7 +64,7 @@ public class TaskServiceImpl implements TaskService {
 //        Sort sort = Objects.isNull(sortBy) ?
 //                Sort.by(Sort.Direction.DESC, TaskKeys.MODIFIED_DATE) : Sort.by(sortOrder, sortBy);
 
-        Pageable paging = PageRequest.of(Math.max(page - 1, 0), pageSize, sort);
+        Pageable paging = baseService.mapPageable(queryParams, Sort.by(Sort.Direction.DESC, TaskKeys.MODIFIED_DATE));
 
         Page<TaskElasticModel> resultSearch = taskElasticSearch.getMyTask(type, userId, search, paging);
 
@@ -225,15 +207,18 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Page<TaskResponse> getChildTasks(long taskId,
-                                            int page,
-                                            int pageSize,
-                                            String search,
-                                            String sortBy,
-                                            Sort.Direction sortOrder) {
+                                            Map<String, Object> queryParams) {
 
-        Sort sort = Objects.isNull(sortBy) ? Sort.unsorted() : Sort.by(sortOrder, sortBy);
+//        Sort sort = Objects.isNull(sortBy) ? Sort.unsorted() : Sort.by(sortOrder, sortBy);
+//        Pageable pageable = PageRequest.of(Math.max(page - 1, 0), pageSize, sort);
 
-        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        String search = null;
+        if (queryParams.containsKey("search")) {
+            search = queryParams.get("search").toString();
+            queryParams.remove("search");
+        }
+
+        Pageable pageable = baseService.mapPageable(queryParams, null);
 
         return taskElasticSearch.getChildTasks(taskId, pageable, search);
 
