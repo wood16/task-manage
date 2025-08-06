@@ -21,9 +21,9 @@ import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -40,55 +40,102 @@ public class TaskElasticSearch {
     UserService userService;
     TaskMapper taskMapper;
 
-    public Page<TaskElasticModel> getMyTask(String type, long userId, String searchTerm, Pageable pageable, Map<String, Object> filters) {
+    public Page<TaskElasticModel> getMyTask(String type,
+                                            long userId,
+                                            String searchTerm,
+                                            Pageable pageable,
+                                            Map<String, Object> filters) {
 
         boolean isAdmin = userService.checkUserRole(userId, "admin");
 
-        // Build search filter từ DSL
-        List<co.elastic.clients.elasticsearch._types.query_dsl.Query> filterQueries =
-                filters != null ? buildFilterQueries(filters) : List.of();
+//        Cách 2
+        List<Query> mustQueries = new ArrayList<>();
+        List<Query> shouldQueries = new ArrayList<>();
 
-        BoolQuery searchQuery = BoolQuery.of(
-                b -> b.must(
-                        m -> m.wildcard(
-                                w -> w.field(TaskKeys.NAME)
-                                        .wildcard("*".concat(
-                                                Objects.requireNonNullElse(searchTerm, "")).concat("*"))
-                                        .caseInsensitive(true)
-                        )
-                ).must(filterQueries)
-        );
+        BoolQuery.Builder boolBuilder = new BoolQuery.Builder();
 
-        BoolQuery ownQuery = Objects.nonNull(type) && type.equals("assignee") ? BoolQuery.of(
-                b -> b.should(
-                        s1 -> s1.term(
-                                t1 -> t1.field(TaskKeys.ASSIGNEE_ID).value(userId))
-                )
-        ) : BoolQuery.of(
-                b -> b.should(s1 -> s1.term(
-                                t1 -> t1.field(TaskKeys.CREATOR_ID).value(userId)
-                        )
-                ).should(
-                        s2 -> s2.term(
-                                t2 -> t2.field(TaskKeys.ASSIGNEE_ID).value(userId)
-                        )
-                )
-        );
+        // 1. Filter conditions
+        if (Objects.nonNull(filters)) {
+//            mustQueries.addAll(buildFilterQueries(filters));
 
-        Query query = NativeQuery.builder()
-                .withQuery(q -> q.bool(
-                        isAdmin ?
-                                b -> b.must(
-                                        m1 -> m1.bool(searchQuery))
-                                :
-                                b -> b.must(
-                                        m1 -> m1.bool(ownQuery)
-                                ).must(
-                                        m2 -> m2.bool(searchQuery)
-                                )
-                ))
+            boolBuilder.filter(buildFilterQueries(filters));
+        }
+
+        // 2. Search by name
+        if (StringUtils.hasText(searchTerm)) {
+
+            mustQueries.add(WildcardQuery.of(
+                    w -> w.field(TaskKeys.NAME)
+                            .wildcard("*".concat(searchTerm).concat("*")).caseInsensitive(true))._toQuery());
+        }
+
+        // 3. Role-based access control
+        if (!isAdmin) {
+
+            if (Objects.nonNull(type) && type.equals("assignee")) {
+                shouldQueries.add(TermQuery.of(t -> t.field(TaskKeys.ASSIGNEE_ID).value(userId))._toQuery());
+            } else {
+                shouldQueries.add(TermQuery.of(t -> t.field(TaskKeys.CREATOR_ID).value(userId))._toQuery());
+                shouldQueries.add(TermQuery.of(t -> t.field(TaskKeys.ASSIGNEE_ID).value(userId))._toQuery());
+            }
+
+            mustQueries.add(BoolQuery.of(b -> b.should(shouldQueries))._toQuery());
+        }
+
+        boolBuilder.must(mustQueries);
+        Query tempQuery = boolBuilder.build()._toQuery();
+
+        org.springframework.data.elasticsearch.core.query.Query query = NativeQuery.builder()
+                .withQuery(tempQuery)
+//                .withQuery(q -> q.bool(b -> b.must(mustQueries)))
                 .withPageable(pageable)
                 .build();
+
+//          Cách 1
+//        List<Query> filterQueries =
+//                filters != null ? buildFilterQueries(filters) : List.of();
+//
+//        BoolQuery searchQuery = BoolQuery.of(
+//                b -> b.must(
+//                        m -> m.wildcard(
+//                                w -> w.field(TaskKeys.NAME)
+//                                        .wildcard("*".concat(
+//                                                Objects.requireNonNullElse(searchTerm, "")).concat("*"))
+//                                        .caseInsensitive(true)
+//                        )
+//                ).must(filterQueries)
+//        );
+//
+//        BoolQuery ownQuery = Objects.nonNull(type) && type.equals("assignee") ? BoolQuery.of(
+//                b -> b.should(
+//                        s1 -> s1.term(
+//                                t1 -> t1.field(TaskKeys.ASSIGNEE_ID).value(userId))
+//                )
+//        ) : BoolQuery.of(
+//                b -> b.should(s1 -> s1.term(
+//                                t1 -> t1.field(TaskKeys.CREATOR_ID).value(userId)
+//                        )
+//                ).should(
+//                        s2 -> s2.term(
+//                                t2 -> t2.field(TaskKeys.ASSIGNEE_ID).value(userId)
+//                        )
+//                )
+//        );
+//
+//        org.springframework.data.elasticsearch.core.query.Query query = NativeQuery.builder()
+//                .withQuery(q -> q.bool(
+//                        isAdmin ?
+//                                b -> b.must(
+//                                        m1 -> m1.bool(searchQuery))
+//                                :
+//                                b -> b.must(
+//                                        m1 -> m1.bool(ownQuery)
+//                                ).must(
+//                                        m2 -> m2.bool(searchQuery)
+//                                )
+//                ))
+//                .withPageable(pageable)
+//                .build();
 
         SearchHits<TaskElasticModel> hits = elasticsearchOperations.search(query, TaskElasticModel.class);
 
@@ -98,10 +145,10 @@ public class TaskElasticSearch {
                 hits.getTotalHits());
     }
 
-    private List<co.elastic.clients.elasticsearch._types.query_dsl.Query> buildFilterQueries(Map<String, Object> filters) {
+    private List<Query> buildFilterQueries(Map<String, Object> filters) {
         if (filters == null || filters.isEmpty()) return List.of();
 
-        List<co.elastic.clients.elasticsearch._types.query_dsl.Query> queries = new ArrayList<>();
+        List<Query> queries = new ArrayList<>();
 
         for (Map.Entry<String, Object> entry : filters.entrySet()) {
             String key = entry.getKey(); // ví dụ: "name.like"
@@ -123,7 +170,8 @@ public class TaskElasticSearch {
                                 .map(Object::toString)
                                 .map(FieldValue::of)
                                 .toList();
-                        queries.add(TermsQuery.of(t -> t.field(field).terms(ts -> ts.value(values)))._toQuery());
+                        queries.add(TermsQuery.of(
+                                t -> t.field(field).terms(ts -> ts.value(values)))._toQuery());
                     }
                     break;
                 case "like":
@@ -148,9 +196,10 @@ public class TaskElasticSearch {
     public Page<TaskElasticModel> searchByName(String searchTerm, Pageable pageable) {
         //text field can not sort
 
-        Query query = new StringQuery("{ \"match\": { \"name\": { \"query\": \"Jack\" } } } ");
+        org.springframework.data.elasticsearch.core.query.Query query =
+                new StringQuery("{ \"match\": { \"name\": { \"query\": \"Jack\" } } } ");
 
-        Query search = NativeQuery.builder()
+        org.springframework.data.elasticsearch.core.query.Query search = NativeQuery.builder()
                 .withQuery(p -> p
                         .bool(b -> b
                                 .should(s -> s
@@ -182,7 +231,7 @@ public class TaskElasticSearch {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
-        Query search = NativeQuery.builder()
+        org.springframework.data.elasticsearch.core.query.Query search = NativeQuery.builder()
                 .withQuery(q -> q
                         .range(m -> m
                                 .field("startDate")
@@ -206,8 +255,8 @@ public class TaskElasticSearch {
                                             String search) {
 
 
-        co.elastic.clients.elasticsearch._types.query_dsl.Query searchQuery =
-                new co.elastic.clients.elasticsearch._types.query_dsl.Query.Builder()
+        Query searchQuery =
+                new Query.Builder()
                         .bool(b1 -> b1
                                 .must(m1 -> m1
                                         .wildcard(w1 -> w1
@@ -218,7 +267,7 @@ public class TaskElasticSearch {
                         )
                         .build();
 
-        Query searchChildTask = NativeQuery.builder()
+        org.springframework.data.elasticsearch.core.query.Query searchChildTask = NativeQuery.builder()
                 .withQuery(q -> q
                                 .bool(b1 -> b1
                                                 .must(searchQuery)
@@ -265,7 +314,7 @@ public class TaskElasticSearch {
                 )
         );
 
-        Query query = NativeQuery.builder()
+        org.springframework.data.elasticsearch.core.query.Query query = NativeQuery.builder()
                 .withQuery(q -> q.bool(
                         b -> b.must(m -> m.bool(ownQuery))
                 ))
