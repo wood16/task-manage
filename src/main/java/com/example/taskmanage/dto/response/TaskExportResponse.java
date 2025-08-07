@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class TaskExportResponse {
 
     String name;
+    LocalDateTime createDate;
     LocalDateTime startDate;
     LocalDateTime endDate;
     String priority;

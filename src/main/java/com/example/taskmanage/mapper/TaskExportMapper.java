@@ -17,6 +17,7 @@ public class TaskExportMapper {
         TaskExportResponse to = new TaskExportResponse();
 
         to.setName(from.getName());
+        to.setCreateDate(from.getCreateDate());
         to.setStatus(from.getStatus());
         to.setStartDate(from.getStartDate());
         to.setEndDate(from.getEndDate());

@@ -3,6 +3,7 @@ package com.example.taskmanage.service.impl;
 import com.example.taskmanage.common.constant.HistoryAction;
 import com.example.taskmanage.dto.request.DynamicSpecification;
 import com.example.taskmanage.dto.request.TaskRequest;
+import com.example.taskmanage.dto.request.UserRequest;
 import com.example.taskmanage.dto.response.TaskExportResponse;
 import com.example.taskmanage.dto.response.TaskResponse;
 import com.example.taskmanage.elasticsearch.elasticrepository.TaskElasticRepository;
@@ -20,13 +21,17 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +49,7 @@ public class TaskServiceImpl implements TaskService {
     ImportExportService importExportService;
     TaskExportMapper taskExportMapper;
     BaseService baseService;
+    UserService userService;
 
     @Override
     public Page<TaskResponse> getAllTask(long userId,
@@ -245,7 +251,23 @@ public class TaskServiceImpl implements TaskService {
 
         List<TaskElasticModel> taskElasticModels = taskElasticSearch.getMyTaskForExport("", userId);
 
+        Map<String, UserRequest> userMap = userService.getAllUser(null).stream()
+                .collect(Collectors.toMap(
+                        user -> String.valueOf(user.getId()),
+                        Function.identity()
+                ));
+
         TaskExportResponse[] data = taskExportMapper.mapFromModels(taskElasticModels);
+
+        for (TaskExportResponse taskExportResponse : data) {
+            taskExportResponse.setAssignee(
+                    Optional.ofNullable(userMap.get(taskExportResponse.getAssignee()))
+                            .map(UserRequest::getUsername)
+                            .orElse(taskExportResponse.getAssignee())
+            );
+            taskExportResponse.setStatus(importExportService.mapStatus(taskExportResponse.getStatus()));
+            taskExportResponse.setPriority(importExportService.mapPriority(taskExportResponse.getPriority()));
+        }
 
         return importExportService.exportObject(data);
     }
