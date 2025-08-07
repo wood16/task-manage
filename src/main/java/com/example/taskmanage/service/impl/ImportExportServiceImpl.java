@@ -13,11 +13,14 @@ import org.springframework.stereotype.Service;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Service
 public class ImportExportServiceImpl implements ImportExportService {
 
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Override
     public byte[] exportObject(Object[] data) {
@@ -47,7 +50,11 @@ public class ImportExportServiceImpl implements ImportExportService {
 
                         cell.setCellValue((String) field.get(rowData));
                     } else if (field.getType().equals(Long.class)) {
+
                         cell.setCellValue((Long) field.get(rowData));
+                    } else if (field.getType().equals(LocalDateTime.class)) {
+
+                        cell.setCellValue(formatter.format((LocalDateTime) field.get(rowData)));
                     }
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
@@ -73,6 +80,29 @@ public class ImportExportServiceImpl implements ImportExportService {
         }
 
         return new byte[0];
+    }
+
+    @Override
+    public String mapStatus(String status) {
+
+        return switch (status) {
+            case "pending" -> "Chờ xử lý";
+            case "processing" -> "Đang xử lý";
+            case "complete" -> "Hoàn thành";
+            case "cancel" -> "Hủy";
+            case "pause" -> "Tạm dừng";
+            default -> "Mặc định";
+        };
+    }
+
+    @Override
+    public String mapPriority(String priority) {
+        return switch (priority.toLowerCase()) {
+            case "high" -> "Cao";
+            case "normal" -> "Trung bình";
+            case "low" -> "Thấp";
+            default -> "Trung bình";
+        };
     }
 
     private void createHeaderRow(Sheet sheet, String[] headers) {

@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -340,15 +341,18 @@ public class TaskElasticSearch {
 
         BoolQuery.Builder boolQueryBuilder = new BoolQuery.Builder();
 
-        List<Query> shouldQueries = new ArrayList<>();
+        if (!isAdmin) {
+            List<Query> shouldQueries = new ArrayList<>();
 
-        shouldQueries.add(TermQuery.of(t -> t.field(TaskKeys.CREATOR_ID).value(userId))._toQuery());
-        shouldQueries.add(TermQuery.of(t -> t.field(TaskKeys.ASSIGNEE_ID).value(userId))._toQuery());
+            shouldQueries.add(TermQuery.of(t -> t.field(TaskKeys.CREATOR_ID).value(userId))._toQuery());
+            shouldQueries.add(TermQuery.of(t -> t.field(TaskKeys.ASSIGNEE_ID).value(userId))._toQuery());
 
-        boolQueryBuilder.should(shouldQueries);
+            boolQueryBuilder.should(shouldQueries);
+        }
 
         org.springframework.data.elasticsearch.core.query.Query query = NativeQuery.builder()
                 .withQuery(boolQueryBuilder.build()._toQuery())
+                .withSort(Sort.by(Sort.Order.desc(TaskKeys.MODIFIED_DATE)))
                 .build();
 
 //        BoolQuery ownQuery = BoolQuery.of(
