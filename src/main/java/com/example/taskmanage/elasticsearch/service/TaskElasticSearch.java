@@ -199,25 +199,36 @@ public class TaskElasticSearch {
         org.springframework.data.elasticsearch.core.query.Query query =
                 new StringQuery("{ \"match\": { \"name\": { \"query\": \"Jack\" } } } ");
 
+        BoolQuery.Builder boolQueryBuilder = new BoolQuery.Builder();
+
+        boolQueryBuilder.must(
+                WildcardQuery.of(w -> w.field(TaskKeys.NAME)
+                                .wildcard("*".concat(Objects.requireNonNullElse(searchTerm, "")).concat("*")))
+                        ._toQuery());
+
         org.springframework.data.elasticsearch.core.query.Query search = NativeQuery.builder()
-                .withQuery(p -> p
-                        .bool(b -> b
-                                .should(s -> s
-                                        .bool(b1 -> b1
-                                                .must(w -> w
-                                                        .wildcard(s1 -> s1
-                                                                .field(TaskKeys.NAME)
-                                                                .wildcard("*"
-                                                                        .concat(Objects.requireNonNullElse(searchTerm, ""))
-                                                                        .concat("*"))
-                                                        )
-                                                )
-                                        )
-                                )
-                        )
-                )
-                .withPageable(pageable)
+                .withQuery(boolQueryBuilder.build()._toQuery())
                 .build();
+
+//        org.springframework.data.elasticsearch.core.query.Query search = NativeQuery.builder()
+//                .withQuery(p -> p
+//                        .bool(b -> b
+//                                .should(s -> s
+//                                        .bool(b1 -> b1
+//                                                .must(w -> w
+//                                                        .wildcard(s1 -> s1
+//                                                                .field(TaskKeys.NAME)
+//                                                                .wildcard("*"
+//                                                                        .concat(Objects.requireNonNullElse(searchTerm, ""))
+//                                                                        .concat("*"))
+//                                                        )
+//                                                )
+//                                        )
+//                                )
+//                        )
+//                )
+//                .withPageable(pageable)
+//                .build();
 
         SearchHits<TaskElasticModel> hits = elasticsearchOperations.search(search, TaskElasticModel.class);
 
@@ -231,16 +242,29 @@ public class TaskElasticSearch {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
+        BoolQuery.Builder boolQueryBuilder = new BoolQuery.Builder();
+
+        Query rangeQuery = RangeQuery.of(range -> range.field("startDate")
+                .from("1680557640000")
+                .to(String.valueOf(startDate.getTime())))._toQuery();
+
+        boolQueryBuilder.must(rangeQuery);
+
         org.springframework.data.elasticsearch.core.query.Query search = NativeQuery.builder()
-                .withQuery(q -> q
-                        .range(m -> m
-                                .field("startDate")
-                                .from("1680557640000")
-                                .to(String.valueOf(startDate.getTime()))
-                        )
-                )
+                .withQuery(boolQueryBuilder.build()._toQuery())
                 .withPageable(pageable)
                 .build();
+
+//        org.springframework.data.elasticsearch.core.query.Query search = NativeQuery.builder()
+//                .withQuery(q -> q
+//                        .range(m -> m
+//                                .field("startDate")
+//                                .from("1680557640000")
+//                                .to(String.valueOf(startDate.getTime()))
+//                        )
+//                )
+//                .withPageable(pageable)
+//                .build();
 
         SearchHits<TaskElasticModel> hits = elasticsearchOperations.search(search, TaskElasticModel.class);
 
@@ -254,42 +278,53 @@ public class TaskElasticSearch {
                                             Pageable pageable,
                                             String search) {
 
+//      Cách 2
+        BoolQuery.Builder boolQueryBuilder = new BoolQuery.Builder();
 
-        Query searchQuery =
-                new Query.Builder()
-                        .bool(b1 -> b1
-                                .must(m1 -> m1
-                                        .wildcard(w1 -> w1
-                                                .field("name")
-                                                .wildcard(search.concat("*"))
-                                        )
-                                )
-                        )
-                        .build();
+        if (StringUtils.hasText(search)) {
+            Query searchQuery = WildcardQuery.of(
+                    w -> w.field(TaskKeys.NAME).wildcard("*".concat(search).concat("*")))._toQuery();
+
+            boolQueryBuilder.must(searchQuery);
+        }
+
+        Query prentTask = TermQuery.of(
+                t -> t.field("parentTask.id").value(id))._toQuery();
+
+        boolQueryBuilder.filter(prentTask);
 
         org.springframework.data.elasticsearch.core.query.Query searchChildTask = NativeQuery.builder()
-                .withQuery(q -> q
-                                .bool(b1 -> b1
-                                                .must(searchQuery)
+                .withQuery(boolQueryBuilder.build()._toQuery())
+                .withPageable(pageable)
+                .build();
+
+//        Cách 1
+//        Query searchQuery =
+//                new Query.Builder()
+//                        .bool(b1 -> b1
 //                                .must(m1 -> m1
 //                                        .wildcard(w1 -> w1
 //                                                .field("name")
-//                                                .wildcard(
-//                                                        Objects.nonNull(search) ? search.concat("*") : "")
+//                                                .wildcard(search.concat("*"))
 //                                        )
 //                                )
-                                                .filter(f1 -> f1
-                                                        .term(t1 -> t1
-                                                                .field("parentTask.id")
-                                                                .value(id)
-                                                        )
-                                                )
-
-                                )
-                )
-//                .withSort()
-                .withPageable(pageable)
-                .build();
+//                        )
+//                        .build();
+//
+//        org.springframework.data.elasticsearch.core.query.Query searchChildTask = NativeQuery.builder()
+//                .withQuery(q -> q
+//                        .bool(b1 -> b1
+//                                .must(searchQuery)
+//                                .filter(f1 -> f1
+//                                        .term(t1 -> t1
+//                                                .field("parentTask.id")
+//                                                .value(id)
+//                                        )
+//                                )
+//                        )
+//                )
+//                .withPageable(pageable)
+//                .build();
 
         SearchHits<TaskElasticModel> hits = elasticsearchOperations.search(searchChildTask, TaskElasticModel.class);
 
@@ -303,22 +338,35 @@ public class TaskElasticSearch {
 
         boolean isAdmin = userService.checkUserRole(userId, "admin");
 
-        BoolQuery ownQuery = BoolQuery.of(
-                b -> b.should(s1 -> s1.term(
-                                t1 -> t1.field(TaskKeys.CREATOR_ID).value(userId)
-                        )
-                ).should(
-                        s2 -> s2.term(
-                                t2 -> t2.field(TaskKeys.ASSIGNEE_ID).value(userId)
-                        )
-                )
-        );
+        BoolQuery.Builder boolQueryBuilder = new BoolQuery.Builder();
+
+        List<Query> shouldQueries = new ArrayList<>();
+
+        shouldQueries.add(TermQuery.of(t -> t.field(TaskKeys.CREATOR_ID).value(userId))._toQuery());
+        shouldQueries.add(TermQuery.of(t -> t.field(TaskKeys.ASSIGNEE_ID).value(userId))._toQuery());
+
+        boolQueryBuilder.should(shouldQueries);
 
         org.springframework.data.elasticsearch.core.query.Query query = NativeQuery.builder()
-                .withQuery(q -> q.bool(
-                        b -> b.must(m -> m.bool(ownQuery))
-                ))
+                .withQuery(boolQueryBuilder.build()._toQuery())
                 .build();
+
+//        BoolQuery ownQuery = BoolQuery.of(
+//                b -> b.should(s1 -> s1.term(
+//                                t1 -> t1.field(TaskKeys.CREATOR_ID).value(userId)
+//                        )
+//                ).should(
+//                        s2 -> s2.term(
+//                                t2 -> t2.field(TaskKeys.ASSIGNEE_ID).value(userId)
+//                        )
+//                )
+//        );
+//
+//        org.springframework.data.elasticsearch.core.query.Query query = NativeQuery.builder()
+//                .withQuery(q -> q.bool(
+//                        b -> b.must(m -> m.bool(ownQuery))
+//                ))
+//                .build();
 
         SearchHits<TaskElasticModel> hits = elasticsearchOperations.search(query, TaskElasticModel.class);
 
